@@ -143,6 +143,8 @@ namespace ACE.Server.Factories
                     return new SpellConduit(weenie, guid);
                 case WeenieType.SpellTransferScroll:
                     return new SpellTransferScroll(weenie, guid);
+                case WeenieType.TreasureMap:
+                    return new TreasureMap(weenie, guid);
                 default:
                     return new GenericObject(weenie, guid);
             }
@@ -264,6 +266,8 @@ namespace ACE.Server.Factories
                     return new SpellConduit(biota);
                 case WeenieType.SpellTransferScroll:
                     return new SpellTransferScroll(biota);
+                case WeenieType.TreasureMap:
+                    return new TreasureMap(biota);
                 default:
                     return new GenericObject(biota);
             }

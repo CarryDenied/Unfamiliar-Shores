@@ -74,7 +74,7 @@ namespace ACE.Server.WorldObjects
         {
             var lastDamager = lastDamagerInfo?.TryGetAttacker();
 
-            if (lastDamagerInfo == null || lastDamagerInfo.Guid == Guid || lastDamager is Hotspot)
+            if (lastDamagerInfo == null || lastDamagerInfo.Guid == Guid || lastDamager is Hotspot || lastDamager is Food)   // !(lastDamager is Creature)?
                 return Strings.General[1];
 
             var deathMessage = Strings.GetDeathMessage(damageType, criticalHit);
@@ -807,7 +807,7 @@ namespace ACE.Server.WorldObjects
 
             corpse.EnterWorld();
 
-            if (player != null)
+            if (player != null && log.IsDebugEnabled)
             {
                 if (corpse.PhysicsObj == null || corpse.PhysicsObj.Position == null)
                     log.Debug($"[CORPSE] {Name}'s corpse (0x{corpse.Guid}) failed to spawn! Tried at {player.Location.ToLOCString()}");

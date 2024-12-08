@@ -240,7 +240,13 @@ namespace ACE.Entity.Enum.Properties
         AttacksCauseBleedChance        = 10014,
         [ServerOnly]
         VendorIncomeDecayTimestamp     = 10015,
-
+        //[ServerOnly] 
+        //VitaeDecayTimestamp = 10016,
+        [ServerOnly]
+        NSCoordinates                  = 10017,
+        [ServerOnly]
+        EWCoordinates                  = 10018,
+       
         //Elite Implementation
         [ServerOnly]
         TrophyTime                     = 9001,
@@ -253,9 +259,10 @@ namespace ACE.Entity.Enum.Properties
         [ServerOnly]
         EnrageDamageMultiplier         = 9005,
         [ServerOnly]
-        EnrageDamageReduction          = 9006,
         [ServerOnly]
-        EnrageThreshold                = 9007,
+        EnrageDamageReduction = 9006,
+        [ServerOnly]
+        EnrageThreshold = 9007,
     }
 
     public static class PropertyFloatExtensions
