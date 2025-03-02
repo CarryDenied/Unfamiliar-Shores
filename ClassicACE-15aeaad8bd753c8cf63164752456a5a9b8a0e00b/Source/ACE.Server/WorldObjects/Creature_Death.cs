@@ -850,6 +850,18 @@ namespace ACE.Server.WorldObjects
 
                     DoCantripLogging(killer, wo);
                 }
+
+                if (IsMonster && 0.002 > ThreadSafeRandom.Next(0.0f, 1.0f))
+                {
+                    var map = TreasureMap.TryCreateTreasureMap(this);
+                    if (map != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(map);
+                        else
+                            droppedItems.Add(map);
+                    }
+                }
             }
 
             // move wielded treasure over, which also should include Wielded objects not marked for destroy on death.
@@ -994,10 +1006,10 @@ namespace ACE.Server.WorldObjects
             var epicCantrips = wo.EpicCantrips;
             var legendaryCantrips = wo.LegendaryCantrips;
 
-            if (epicCantrips.Count > 0)
+            if (epicCantrips.Count > 0 && log.IsDebugEnabled)
                 log.Debug($"[LOOT][EPIC] {Name} ({Guid}) generated item with {epicCantrips.Count} epic{(epicCantrips.Count > 1 ? "s" : "")} - {wo.Name} ({wo.Guid}) - {GetSpellList(epicCantrips)} - killed by {killer?.Name} ({killer?.Guid})");
 
-            if (legendaryCantrips.Count > 0)
+            if (legendaryCantrips.Count > 0 && log.IsDebugEnabled)
                 log.Debug($"[LOOT][LEGENDARY] {Name} ({Guid}) generated item with {legendaryCantrips.Count} legendar{(legendaryCantrips.Count > 1 ? "ies" : "y")} - {wo.Name} ({wo.Guid}) - {GetSpellList(legendaryCantrips)} - killed by {killer?.Name} ({killer?.Guid})");
         }
 
