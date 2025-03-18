@@ -569,46 +569,46 @@ namespace ACE.Server.Entity
                         case Skill.LightWeapons:
                         case Skill.Axe:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_axe", "pvp_dmg_mod_high_axe", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.85f;
+                            pvpDamageCapPercentageMaxHealth = 0.55f;
                             break;
                         case Skill.HeavyWeapons:
                         case Skill.Sword:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_sword", "pvp_dmg_mod_high_sword", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.85f;
+                            pvpDamageCapPercentageMaxHealth = 0.55f;
                             break;
                         case Skill.Mace:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_mace", "pvp_dmg_mod_high_mace", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.85f;
+                            pvpDamageCapPercentageMaxHealth = 0.55f;
                             break;
                         case Skill.Spear:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_spear", "pvp_dmg_mod_high_spear", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.75f;
+                            pvpDamageCapPercentageMaxHealth = 0.55f;
                             break;
                         case Skill.Staff:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_staff", "pvp_dmg_mod_high_staff", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.75f;
+                            pvpDamageCapPercentageMaxHealth = 0.55f;
                             break;
                         case Skill.UnarmedCombat:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_unarmed", "pvp_dmg_mod_high_unarmed", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.65f;
+                            pvpDamageCapPercentageMaxHealth = 0.45f;
                             break;
                         case Skill.FinesseWeapons:
                         case Skill.Dagger:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_dagger", "pvp_dmg_mod_high_dagger", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.65f;
+                            pvpDamageCapPercentageMaxHealth = 0.35f;
                             break;
                         case Skill.MissileWeapons:
                         case Skill.Bow:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_bow", "pvp_dmg_mod_high_bow", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.85f;
+                            pvpDamageCapPercentageMaxHealth = 0.55f;
                             break;
                         case Skill.Crossbow:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_crossbow", "pvp_dmg_mod_high_crossbow", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.85f;
+                            pvpDamageCapPercentageMaxHealth = 0.65f;
                             break;
                         case Skill.ThrownWeapon:
                             pvpMod *= (float)PropertyManager.GetInterpolatedDouble(playerAttacker.Level ?? 1, "pvp_dmg_mod_low_thrown", "pvp_dmg_mod_high_thrown", "pvp_dmg_mod_low_level", "pvp_dmg_mod_high_level");
-                            pvpDamageCapPercentageMaxHealth = 0.85f;
+                            pvpDamageCapPercentageMaxHealth = 0.65f;
                             break;
                     }
 
