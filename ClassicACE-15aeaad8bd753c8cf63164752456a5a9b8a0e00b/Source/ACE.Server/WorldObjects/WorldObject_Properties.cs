@@ -3313,5 +3313,41 @@ namespace ACE.Server.WorldObjects
             get => GetProperty(PropertyInt.SlayerAdded);
             set { if (!value.HasValue) RemoveProperty(PropertyInt.SlayerAdded); else SetProperty(PropertyInt.SlayerAdded, value.Value); }
         }
+
+        public float? EnrageDamageMultiplier
+        {
+            get => (float?)GetProperty(PropertyFloat.EnrageDamageMultiplier);
+            set { if (!value.HasValue) RemoveProperty(PropertyFloat.EnrageDamageMultiplier); else SetProperty(PropertyFloat.EnrageDamageMultiplier, value.Value); }
+        }
+
+        public float? EnrageDamageReduction
+        {
+            get => (float?)GetProperty(PropertyFloat.EnrageDamageReduction);
+            set { if (!value.HasValue) RemoveProperty(PropertyFloat.EnrageDamageReduction); else SetProperty(PropertyFloat.EnrageDamageReduction, value.Value); }
+        }
+
+        public float? EnrageThreshold
+        {
+            get => (float?)GetProperty(PropertyFloat.EnrageThreshold);
+            set { if (!value.HasValue) RemoveProperty(PropertyFloat.EnrageThreshold); else SetProperty(PropertyFloat.EnrageThreshold, value.Value); }
+        }
+
+        public int? EnrageFogColor
+        {
+            get => GetProperty(PropertyInt.EnrageFogColor);
+            set { if (!value.HasValue) RemoveProperty(PropertyInt.EnrageFogColor); else SetProperty(PropertyInt.EnrageFogColor, value.Value); }
+        }
+
+        public int? EnrageSound
+        {
+            get => GetProperty(PropertyInt.EnrageSound);
+            set { if (!value.HasValue) RemoveProperty(PropertyInt.EnrageSound); else SetProperty(PropertyInt.EnrageSound, value.Value); }
+        }
+
+        public int? EnrageVisualEffect
+        {
+            get => GetProperty(PropertyInt.EnrageVisualEffect);
+            set { if (!value.HasValue) RemoveProperty(PropertyInt.EnrageVisualEffect); else SetProperty(PropertyInt.EnrageVisualEffect, value.Value); }
+        }
     }
 }

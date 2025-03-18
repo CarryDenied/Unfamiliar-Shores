@@ -252,6 +252,14 @@ namespace ACE.Entity.Enum.Properties
         MirrorMod                        = 9123,
         [ServerOnly]
         MirrorMob                        = 9124,
+        [ServerOnly]
+        CanEnrage                        = 9125,
+        [ServerOnly]
+        CanGrapple                       = 9126,
+        [ServerOnly]
+        CanAOE                           = 9127,
+        [ServerOnly]
+        EnragedHotspot                   = 9128,
     }
 
     public static class PropertyBoolExtensions

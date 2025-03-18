@@ -682,6 +682,12 @@ namespace ACE.Entity.Enum.Properties
         ChargenTitleId                           = 10025,
         [ServerOnly]
         MaxReachedLevel                          = 10026,
+        [ServerOnly]
+        EnrageFogColor                           = 10027,
+        [ServerOnly]
+        EnrageSound                              = 10028,
+        [ServerOnly]
+        EnrageVisualEffect                       = 10029,
 
         //Elite Implementation
         [ServerOnly]
