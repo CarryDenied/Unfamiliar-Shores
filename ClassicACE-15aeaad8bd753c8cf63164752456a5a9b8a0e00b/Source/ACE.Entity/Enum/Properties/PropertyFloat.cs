@@ -250,6 +250,12 @@ namespace ACE.Entity.Enum.Properties
         MirrorCreationTime             = 9003,
         [ServerOnly]
         EliteDungeonIdleTime           = 9004,
+        [ServerOnly]
+        EnrageDamageMultiplier         = 9005,
+        [ServerOnly]
+        EnrageDamageReduction          = 9006,
+        [ServerOnly]
+        EnrageThreshold                = 9007,
     }
 
     public static class PropertyFloatExtensions

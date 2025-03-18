@@ -12,6 +12,7 @@ using ACE.Server.Managers;
 using ACE.Server.Network.GameMessages.Messages;
 using ACE.Server.WorldObjects;
 using ACE.Server.WorldObjects.Entity;
+using ACE.Entity.Enum.Properties;
 
 namespace ACE.Server.Entity
 {
@@ -225,6 +226,14 @@ namespace ACE.Server.Entity
             else
                 GetBaseDamage(attacker, AttackMotion ?? MotionCommand.Invalid, AttackHook);
 
+            // NEW: Apply enrage multiplier if the attacker is a mob and enraged
+            if (attacker.IsEnraged && !(attacker is Player))
+            {
+                var enrageMultiplier = attacker.EnrageDamageMultiplier ?? 0.0f;
+                BaseDamage *= enrageMultiplier;
+                //Console.WriteLine($"[DEBUG] Mob Attacker Enrage Multiplier Applied: {enrageMultiplier}, Updated Base Damage: {BaseDamage}");
+            }
+
             if (DamageType == DamageType.Undef)
             {
                 if ((attacker?.Guid.IsPlayer() ?? false) || (damageSource?.Guid.IsPlayer() ?? false))
@@ -291,6 +300,14 @@ namespace ACE.Server.Entity
 
             // damage before mitigation
             DamageBeforeMitigation = BaseDamage * AttributeMod * PowerMod * SlayerMod * DamageRatingMod;
+
+            // NEW: Apply enrage damage reduction if the defender is a mob and enraged
+            if (defender.IsEnraged && !(defender is Player))
+            {
+                var damageReduction = defender.EnrageDamageReduction ?? 0.0f; // Default to no reduction
+                DamageBeforeMitigation *= (1.0f - damageReduction);
+                //Console.WriteLine($"[DEBUG] Mob Defender Enrage Damage Reduction Applied: {damageReduction * 100}%, Reduced Damage: {DamageBeforeMitigation}");
+            }
 
             var attackSkill = attacker.GetCreatureSkill(attacker.GetCurrentWeaponSkill());
 
@@ -373,6 +390,26 @@ namespace ACE.Server.Entity
                     // verify: CriticalMultiplier only applied to the additional crit damage,
                     // whereas CD/CDR applied to the total damage (base damage + additional crit damage)
                     CriticalDamageMod = 1.0f + WorldObject.GetWeaponCritDamageMod(Weapon, attacker, attackSkill, defender, pkBattle);
+
+                    // NEW: Apply enrage multiplier if attacker is a mob and enraged
+                    if (attacker.IsEnraged && !(attacker is Player))
+                    {
+                        CriticalDamageMod *= attacker.EnrageDamageMultiplier ?? 1.0f;
+                        //Console.WriteLine($"[DEBUG] CriticalDamageMod After Mob Attacker Enrage Multiplier: {CriticalDamageMod}");
+                    }
+
+                    // Calculate damage before mitigation
+                    DamageBeforeMitigation = BaseDamageMod.MaxDamage * AttributeMod * PowerMod * SlayerMod * DamageRatingMod * CriticalDamageMod;
+
+                    //Console.WriteLine($"[DEBUG] Damage Before Mitigation (Critical): {DamageBeforeMitigation}");
+
+                    // Apply enrage damage reduction if defender is the mob and enraged
+                    if (defender.IsEnraged && !(defender is Player))
+                    {
+                        var damageReduction = defender.EnrageDamageReduction ?? 0.0f; // Default to no reduction
+                        DamageBeforeMitigation *= (1.0f - damageReduction); // Reduce critical hit damage
+                        //Console.WriteLine($"[DEBUG] Mob Defender Enrage Damage Reduction Applied: {damageReduction * 100}%, Final Damage Before Mitigation: {DamageBeforeMitigation}");
+                    }
 
                     // Axes and Crossbows have a respective passive increase to critical damage
                     if (Weapon != null && Weapon.WeaponSkill == Skill.Axe)
@@ -689,6 +726,14 @@ namespace ACE.Server.Entity
 
             if (attacker == defender)
                 Damage *= 1.33f; // Self-damage does extra damage.
+
+            // NEW: Apply enrage damage reduction to the final output damage if the defender is a mob and enraged
+            if (defender.IsEnraged && !(defender is Player))
+            {
+                var damageReduction = defender.EnrageDamageReduction ?? 0.0f; // Default to no reduction
+                Damage *= (1.0f - damageReduction); // Apply reduction (e.g., 0.5 = 50% reduction)
+                //Console.WriteLine($"[DEBUG] Final Mob Defender Enrage Damage Reduction Applied: {damageReduction * 100}%, Final Damage: {Damage}");
+            }
 
             DamageMitigated = DamageBeforeMitigation - Damage;
             if(ShieldMod != 1.0f)

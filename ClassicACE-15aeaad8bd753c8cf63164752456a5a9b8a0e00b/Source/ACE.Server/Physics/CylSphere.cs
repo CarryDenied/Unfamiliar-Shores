@@ -204,6 +204,17 @@ namespace ACE.Server.Physics
         /// </summary>
         public bool CollidesWithSphere(Sphere checkPos, Vector3 disp, float radsum)
         {
+            return CollidesWithSphereWithScaling(checkPos, disp, radsum, 1.0f);
+        }
+
+        public bool CollidesWithSphereEnragedHotspot(Sphere checkPos, Vector3 disp, float radsum)
+        {
+            return CollidesWithSphereWithScaling(checkPos, disp, radsum, 3.0f);
+        }
+
+        private bool CollidesWithSphereWithScaling(Sphere checkPos, Vector3 disp, float radsum, float scalingFactor)
+        {
+            radsum *= scalingFactor;
             var result = false;
 
             if (disp.X * disp.X + disp.Y * disp.Y <= radsum * radsum)
