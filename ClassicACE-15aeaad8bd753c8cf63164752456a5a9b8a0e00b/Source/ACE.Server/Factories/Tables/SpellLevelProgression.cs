@@ -563,10 +563,10 @@ namespace ACE.Server.Factories.Tables
 
         public static readonly List<SpellId> AcidVolley = new List<SpellId>()
         {
-            SpellId.Undef,
-            SpellId.Undef,
-            //SpellId.AcidVolley1,
-            //SpellId.AcidVolley2,
+            //SpellId.Undef,
+            //SpellId.Undef,
+            SpellId.AcidVolley1,
+            SpellId.AcidVolley2,
             SpellId.AcidVolley3,
             SpellId.AcidVolley4,
             SpellId.AcidVolley5,
@@ -577,10 +577,10 @@ namespace ACE.Server.Factories.Tables
 
         public static readonly List<SpellId> BludgeoningVolley = new List<SpellId>()
         {
-            SpellId.Undef,
-            SpellId.Undef,
-            //SpellId.BludgeoningVolley1,
-            //SpellId.BludgeoningVolley2,
+            //SpellId.Undef,
+            //SpellId.Undef,
+            SpellId.BludgeoningVolley1,
+            SpellId.BludgeoningVolley2,
             SpellId.BludgeoningVolley3,
             SpellId.BludgeoningVolley4,
             SpellId.BludgeoningVolley5,
@@ -647,10 +647,10 @@ namespace ACE.Server.Factories.Tables
 
         public static readonly List<SpellId> BladeVolley = new List<SpellId>()
         {
-            SpellId.Undef,
-            SpellId.Undef,
-            //SpellId.BladeVolley1,
-            //SpellId.BladeVolley2,
+            //SpellId.Undef,
+            //SpellId.Undef,
+            SpellId.BladeVolley1,
+            SpellId.BladeVolley2,
             SpellId.BladeVolley3,
             SpellId.BladeVolley4,
             SpellId.BladeVolley5,

@@ -131,6 +131,13 @@ namespace ACE.Server.Factories.Tables
             ( SpellId.WarMagicIneptitudeOther1,  1.0f ),
             ( SpellId.LifeMagicIneptitudeOther1, 1.0f ),
 
+            ( SpellId.BludgeoningVolley1, 1.0f ),
+            ( SpellId.AcidVolley1, 1.0f ),
+            ( SpellId.BladeVolley1, 1.0f ),
+
+            ( SpellId.FellowHeal1, 1.0f ),
+            ( SpellId.HoTSelf1, 1.0f ),
+
             ( SpellId.ImperilOther1,             1.0f )
         };
 
@@ -157,6 +164,13 @@ namespace ACE.Server.Factories.Tables
             ( SpellId.VulnerabilityOther1,       1.0f ),
             ( SpellId.WarMagicIneptitudeOther1,  1.0f ),
             ( SpellId.LifeMagicIneptitudeOther1, 1.0f ),
+
+            ( SpellId.BludgeoningVolley1, 1.0f ),
+            ( SpellId.AcidVolley1, 1.0f ),
+            ( SpellId.BladeVolley1, 1.0f ),
+
+            ( SpellId.FellowHeal1, 1.0f ),
+            ( SpellId.HoTSelf1, 1.0f ),
 
             ( SpellId.ImperilOther1,             1.0f )
         };
