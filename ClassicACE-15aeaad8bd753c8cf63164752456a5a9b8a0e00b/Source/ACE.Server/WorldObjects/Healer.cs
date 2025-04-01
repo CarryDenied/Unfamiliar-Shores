@@ -279,6 +279,16 @@ namespace ACE.Server.WorldObjects
             var healMax = healBase * 0.5f;
             var healAmount = ThreadSafeRandom.Next(healMin, healMax);
 
+            // verify healing boost comes from target instead of healer?
+            // sounds like target in LumAugHealingRating..
+            var healerMod = healer.GetHealingRatingMod();
+            var targetMod = target.GetHealingRatingMod();
+
+            var ratingMod = Creature.AdditiveCombine(healerMod, targetMod);
+            Console.WriteLine($"HealerMod: {healerMod}, TargetMod: {targetMod}, Combined: {ratingMod}");
+
+            healAmount *= ratingMod;
+
             // chance for critical healing
             criticalHeal = ThreadSafeRandom.Next(0.0f, 1.0f) < 0.1f;
             if (criticalHeal) healAmount *= 2;
@@ -297,13 +307,6 @@ namespace ACE.Server.WorldObjects
                 staminaCost = healer.Stamina.Current;
                 healAmount = staminaCost * 5;
             }
-
-            // verify healing boost comes from target instead of healer?
-            // sounds like target in LumAugHealingRating...
-            var ratingMod = target.GetHealingRatingMod();
-
-            healAmount *= ratingMod;
-
             return (uint)Math.Round(healAmount);
         }
     }
