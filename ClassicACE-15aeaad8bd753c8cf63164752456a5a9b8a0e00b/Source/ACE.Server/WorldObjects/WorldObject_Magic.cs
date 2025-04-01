@@ -572,6 +572,15 @@ namespace ACE.Server.WorldObjects
 
             tryBoost = (int)Math.Round(tryBoost * targetCreature.GetResistanceMod(resistanceType));
 
+            // ✅ Apply healing rating bonus if the spell is beneficial and heals
+            if (spell.IsBeneficial && tryBoost > 0)
+            {
+                var casterMod = player?.GetHealingRatingMod() ?? 1.0f;
+                var targetMod = targetCreature.GetHealingRatingMod();
+                var ratingMod = Creature.AdditiveCombine(casterMod, targetMod);
+                tryBoost = (int)Math.Round(tryBoost * ratingMod);
+            }
+
             int boost = tryBoost;
 
             // handle cloak damage proc for harm other
