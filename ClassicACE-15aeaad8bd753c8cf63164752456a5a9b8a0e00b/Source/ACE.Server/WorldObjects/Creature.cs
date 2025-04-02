@@ -173,6 +173,7 @@ namespace ACE.Server.WorldObjects
             {
                 UpdateDefenseCapBonus();
             }
+        }
 
         public override void OnGeneration(WorldObject generator)
         {
@@ -182,7 +183,7 @@ namespace ACE.Server.WorldObjects
             {
                 int seed = Time.GetDateTimeFromTimestamp(Time.GetUnixTime()).DayOfYear + (CurrentLandblock.Id.LandblockX << 8 | CurrentLandblock.Id.LandblockY);
 
-                var baseChestChance = 0.005; //Was 0.15. Now three chances at .005.
+                var baseChestChance = 0.005; //Was 0.015. Now three chances at 0.005.
                 var baseTrapChance = 0.05; 
                 
                 Random pseudoRandom = new Random(seed);
@@ -196,30 +197,27 @@ namespace ACE.Server.WorldObjects
                         DeployRandomTrap();
                 }
 
-                    bool hasChest = false;
-                    if (!InDungeon)
-                    {
-                        var chestRoll = ThreadSafeRandom.Next(0.0f, 1.0f);
-                        if (chestRoll < baseChestChance + (baseChestChance * chestExtraChance))
-                            hasChest = DeploySpecialChest();
-                    }
+                bool hasChest = false;
+                if (!CurrentLandblock.IsDungeon)
+                {
+                    var chestRoll = ThreadSafeRandom.Next(0.0f, 1.0f);
+                    if (chestRoll < baseChestChance + (baseChestChance * chestExtraChance))
+                        hasChest = DeploySpecialChest();
+                }
 
-                    if (!hasChest && Indoors)
-                    {
-                        var chestRoll = ThreadSafeRandom.Next(0.0f, 1.0f);
-                        if (chestRoll < baseChestChance + (baseChestChance * chestExtraChance))
-                            hasChest = DeployHiddenChest();
-                    }
+                if (!hasChest && Location.Indoors)
+                {
+                    var chestRoll = ThreadSafeRandom.Next(0.0f, 1.0f);
+                    if (chestRoll < baseChestChance + (baseChestChance * chestExtraChance))
+                        hasChest = DeployHiddenChest();
+                }
 
-
-                    if (!hasChest)
-                    {
-                        var corpseRoll = ThreadSafeRandom.Next(0.0f, 1.0f);
-                        if (corpseRoll < baseChestChance + (baseChestChance * chestExtraChance))
-                            DeployHiddenCorpse();
-                    }
-                });
-                actionChain.EnqueueChain();
+                if (!hasChest)
+                {
+                    var corpseRoll = ThreadSafeRandom.Next(0.0f, 1.0f);
+                    if (corpseRoll < baseChestChance + (baseChestChance * chestExtraChance))
+                        DeployHiddenCorpse();
+                }
             }
         }
 
@@ -250,10 +248,8 @@ namespace ACE.Server.WorldObjects
             DeployedObjects.RemoveAll(x => x.TryGetWorldObject() == null);
 
             var chestList = Chests;
-            var isCorpse = false;
             if (!IsHumanoid || ThreadSafeRandom.Next(0.0f, 1.0f) < 0.20f)
             {
-                isCorpse = true;
                 chestList = Corpses;
             }
 
@@ -274,13 +270,7 @@ namespace ACE.Server.WorldObjects
 
             var radius = PhysicsObj.GetRadius() + 0.5f;
             var chestLocation = new Position(Location);
-            chestLocation = chestLocation.InFrontOf(AiIncapableOfAnyMotion ? radius : -radius, true);
-
-            if(isCorpse)
-            {
-                var rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)ThreadSafeRandom.Next(0f, (float)(2 * Math.PI)));
-                chestLocation.Rotation = Quaternion.Normalize(rotation);
-            }
+            chestLocation = chestLocation.InFrontOf(-1, true);
 
             chest.Location = chestLocation;
             chest.Location.LandblockId = new LandblockId(chest.Location.GetCell());
@@ -317,7 +307,6 @@ namespace ACE.Server.WorldObjects
             new List<uint>{ 50258 },
             new List<uint>{ 50259 },
             new List<uint>{ 50260 },
-            new List<uint>{ 50261 }
         };
 
         private List<List<uint>> VirindiChests = new List<List<uint>>
@@ -342,7 +331,6 @@ namespace ACE.Server.WorldObjects
 
             List<uint> chestWcidsList = null;
             var chestList = RunedChests;
-            var isCorpse = false;
 
             var tier = RollTier();
 
@@ -367,7 +355,6 @@ namespace ACE.Server.WorldObjects
                     chestList = VirindiChests;
                 else if (!IsHumanoid)
                 {
-                    isCorpse = true;
                     chestList = RunedCorpses;
                 }
 
@@ -389,13 +376,7 @@ namespace ACE.Server.WorldObjects
 
             var radius = PhysicsObj.GetRadius() + 0.5f;
             var chestLocation = new Position(Location);
-            chestLocation = chestLocation.InFrontOf(AiIncapableOfAnyMotion ? radius : -radius, true);
-
-            if (isCorpse)
-            {
-                var rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)ThreadSafeRandom.Next(0f, (float)(2 * Math.PI)));
-                chestLocation.Rotation = Quaternion.Normalize(rotation);
-            }
+            chestLocation = chestLocation.InFrontOf(-1, true);
 
             specialChest.Location = chestLocation;
             specialChest.Location.LandblockId = new LandblockId(specialChest.Location.GetCell());
@@ -441,7 +422,7 @@ namespace ACE.Server.WorldObjects
 
             var radius = PhysicsObj.GetRadius() + 0.5f;
             var chestLocation = new Position(Location);
-            chestLocation = chestLocation.InFrontOf(AiIncapableOfAnyMotion ? radius : -radius, true);
+            chestLocation = chestLocation.InFrontOf(-1, true);
 
             hiddenChest.Location = chestLocation;
             hiddenChest.Location.LandblockId = new LandblockId(hiddenChest.Location.GetCell());
@@ -490,10 +471,7 @@ namespace ACE.Server.WorldObjects
 
             var radius = PhysicsObj.GetRadius() + 0.5f;
             var corpseLocation = new Position(Location);
-            corpseLocation = corpseLocation.InFrontOf(AiIncapableOfAnyMotion ? radius : -radius, true);
-
-            var rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)ThreadSafeRandom.Next(0f, (float)(2 * Math.PI)));
-            corpseLocation.Rotation = Quaternion.Normalize(rotation);
+            corpseLocation = corpseLocation.InFrontOf(-1, true);
 
             hiddenCorpse.Location = corpseLocation;
             hiddenCorpse.Location.LandblockId = new LandblockId(hiddenCorpse.Location.GetCell());
