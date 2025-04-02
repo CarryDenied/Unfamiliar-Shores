@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-
-using log4net;
-
 using ACE.Common;
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
@@ -11,12 +6,16 @@ using ACE.Entity.Enum;
 using ACE.Entity.Enum.Properties;
 using ACE.Entity.Models;
 using ACE.Server.Entity;
-using ACE.Server.Managers;
-using ACE.Server.WorldObjects.Entity;
-
-using Position = ACE.Entity.Position;
+using ACE.Server.Entity.Actions;
 using ACE.Server.Factories;
 using ACE.Server.Factories.Tables;
+using ACE.Server.Managers;
+using ACE.Server.WorldObjects.Entity;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using Position = ACE.Entity.Position;
 
 namespace ACE.Server.WorldObjects
 {
@@ -248,8 +247,10 @@ namespace ACE.Server.WorldObjects
             DeployedObjects.RemoveAll(x => x.TryGetWorldObject() == null);
 
             var chestList = Chests;
+            var isCorpse = false;
             if (!IsHumanoid || ThreadSafeRandom.Next(0.0f, 1.0f) < 0.20f)
             {
+                isCorpse = true;
                 chestList = Corpses;
             }
 
@@ -271,6 +272,9 @@ namespace ACE.Server.WorldObjects
             var radius = PhysicsObj.GetRadius() + 0.5f;
             var chestLocation = new Position(Location);
             chestLocation = chestLocation.InFrontOf(-1, true);
+
+            // if (isCorpse)
+                // chestLocation.SetRotation((float)ThreadSafeRandom.Next(0f, 360f));
 
             chest.Location = chestLocation;
             chest.Location.LandblockId = new LandblockId(chest.Location.GetCell());
@@ -307,6 +311,7 @@ namespace ACE.Server.WorldObjects
             new List<uint>{ 50258 },
             new List<uint>{ 50259 },
             new List<uint>{ 50260 },
+            new List<uint>{ 50308 }
         };
 
         private List<List<uint>> VirindiChests = new List<List<uint>>
@@ -331,6 +336,7 @@ namespace ACE.Server.WorldObjects
 
             List<uint> chestWcidsList = null;
             var chestList = RunedChests;
+            var isCorpse = false;
 
             var tier = RollTier();
 
@@ -355,6 +361,7 @@ namespace ACE.Server.WorldObjects
                     chestList = VirindiChests;
                 else if (!IsHumanoid)
                 {
+                    isCorpse = true;
                     chestList = RunedCorpses;
                 }
 
@@ -377,6 +384,9 @@ namespace ACE.Server.WorldObjects
             var radius = PhysicsObj.GetRadius() + 0.5f;
             var chestLocation = new Position(Location);
             chestLocation = chestLocation.InFrontOf(-1, true);
+
+           // if (isCorpse)
+           //    chestLocation.SetRotation((float)ThreadSafeRandom.Next(0f, 360f));
 
             specialChest.Location = chestLocation;
             specialChest.Location.LandblockId = new LandblockId(specialChest.Location.GetCell());
@@ -426,6 +436,7 @@ namespace ACE.Server.WorldObjects
 
             hiddenChest.Location = chestLocation;
             hiddenChest.Location.LandblockId = new LandblockId(hiddenChest.Location.GetCell());
+
             hiddenChest.Generator = this;
             hiddenChest.Tier = tier;
             hiddenChest.ResistAwareness = (int)(Tier * 65);
