@@ -323,6 +323,52 @@ namespace ACE.Server.WorldObjects
             }
         }
 
+        public void CheckExplorationLandblock(Landblock landblock)
+        {
+            if (landblock == null || Common.ConfigManager.Config.Server.WorldRuleset != Common.Ruleset.CustomDM)
+                return;
+
+            var landblockId = landblock.Id.Raw >> 16;
+            if (!Exploration1LandblockReached && Exploration1LandblockId != 0 && Exploration1LandblockId == landblockId)
+            {
+                Exploration1LandblockReached = true;
+                var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration1KillProgressTracker:N0} kill{(Exploration1KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration1MarkerProgressTracker:N0} marker{(Exploration1MarkerProgressTracker != 1 ? "s" : "")} remaining.";
+
+                var explorationSite = DatabaseManager.World.GetExplorationSitesByLandblock((ushort)landblockId).FirstOrDefault();
+                var level = explorationSite != null ? Math.Min(explorationSite.Level, Level ?? 1) : Level;
+                EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.Fellowship, msg);
+                PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+                if (Exploration1KillProgressTracker == 0 && Exploration1MarkerProgressTracker == 0)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat("Your exploration assignment is now fulfilled!", ChatMessageType.Broadcast));
+            }
+
+            if (!Exploration2LandblockReached && Exploration2LandblockId != 0 && Exploration2LandblockId == landblockId)
+            {
+                Exploration2LandblockReached = true;
+                var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration2KillProgressTracker:N0} kill{(Exploration2KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration2MarkerProgressTracker:N0} marker{(Exploration2MarkerProgressTracker != 1 ? "s" : "")} remaining.";
+
+                var explorationSite = DatabaseManager.World.GetExplorationSitesByLandblock((ushort)landblockId).FirstOrDefault();
+                var level = explorationSite != null ? Math.Min(explorationSite.Level, Level ?? 1) : Level;
+                EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.Fellowship, msg);
+                PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+                if (Exploration2KillProgressTracker == 0 && Exploration2MarkerProgressTracker == 0)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat("Your exploration assignment is now fulfilled!", ChatMessageType.Broadcast));
+            }
+
+            if (!Exploration3LandblockReached && Exploration3LandblockId != 0 && Exploration3LandblockId == landblockId)
+            {
+                Exploration3LandblockReached = true;
+                var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration3KillProgressTracker:N0} kill{(Exploration3KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration3MarkerProgressTracker:N0} marker{(Exploration3MarkerProgressTracker != 1 ? "s" : "")} remaining.";
+
+                var explorationSite = DatabaseManager.World.GetExplorationSitesByLandblock((ushort)landblockId).FirstOrDefault();
+                var level = explorationSite != null ? Math.Min(explorationSite.Level, Level ?? 1) : Level;
+                EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.Fellowship, msg);
+                PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+                if (Exploration3KillProgressTracker == 0 && Exploration3MarkerProgressTracker == 0)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat("Your exploration assignment is now fulfilled!", ChatMessageType.Broadcast));
+            }
+        }
+
         public bool TryGiveRandomSalvage(WorldObject giver = null, int tier = 1, float qualityMod = 0.0f)
         {
             var salvage = LootGenerationFactory.CreateRandomLootObjects_New(tier, qualityMod, TreasureItemCategory.MundaneItem, TreasureItemType_Orig.Salvage);
