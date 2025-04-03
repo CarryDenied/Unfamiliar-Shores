@@ -1665,6 +1665,11 @@ namespace ACE.Server.Factories
 
             if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
             {
+                if (wo == null)
+                {
+                    log.Error($"CreateAndMutateWcid({treasureDeath.TreasureType}, {(int)treasureRoll.Wcid} - {treasureRoll.Wcid}, {treasureRoll.GetItemType()}, {isMagical}) - lost item");
+                    return null;
+                }
                 if (wo.WieldSkillType.HasValue)
                     wo.WieldSkillType = (int)wo.ConvertToMoASkill((Skill)wo.WieldSkillType);
                 if (wo.WieldSkillType2.HasValue)

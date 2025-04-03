@@ -1057,12 +1057,11 @@ namespace ACE.Server.Factories
             if (fArcane < 0)
                 fArcane = 0;
 
-            //old calculation from Dekaru
-            //return (int)Math.Floor(fArcane + roll.ItemDifficulty);
-
+            //calculation from Dekaru
             return (int)Math.Floor(fArcane + roll.ItemDifficulty);
+
             // Use the random number for ItemDifficulty
-            return (int)Math.Floor(fArcane + randomItemDifficulty);
+            // return (int)Math.Floor(fArcane + randomItemDifficulty);
         }
     }
 }
