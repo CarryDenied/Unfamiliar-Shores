@@ -204,23 +204,25 @@ namespace ACE.Server.WorldObjects
         {
             bool useName = sourceObject?.Name.Length > 0;
 
-            var hasAssignments = false;
+            var hasAssignment1 = false;
+            var hasAssignment2 = false;
+            var hasAssignment3 = false;
             var assignment1Complete = false;
             var assignment2Complete = false;
             var assignment3Complete = false;
             if (Exploration1LandblockId != 0 && Exploration1Description.Length > 0)
             {
-                hasAssignments = true;
+                hasAssignment1 = true;
                 assignment1Complete = Exploration1LandblockReached && Exploration1KillProgressTracker <= 0 && Exploration1MarkerProgressTracker <= 0;
             }
             if (Exploration2LandblockId != 0 && Exploration2Description.Length > 0)
             {
-                hasAssignments = true;
+                hasAssignment2 = true;
                 assignment2Complete = Exploration2LandblockReached && Exploration2KillProgressTracker <= 0 && Exploration2MarkerProgressTracker <= 0;
             }
             if (Exploration3LandblockId != 0 && Exploration3Description.Length > 0)
             {
-                hasAssignments = true;
+                hasAssignment3= true;
                 assignment3Complete = Exploration3LandblockReached && Exploration3KillProgressTracker <= 0 && Exploration3MarkerProgressTracker <= 0;
             }
 
@@ -231,7 +233,7 @@ namespace ACE.Server.WorldObjects
                 TryConsumeFromInventoryWithNetworking((uint)Factories.Enum.WeenieClassName.explorationContract);
             }
 
-            if (!hasAssignments)
+            if (!hasAssignment1 && !hasAssignment2 && !hasAssignment3)
                 Session.Network.EnqueueSend(new GameMessageSystemChat($"{(useName ? $"{sourceObject.Name} tells you, \"" : "")}{"You have no assignments!"}{(useName ? $"\"" : "")}", useName ? ChatMessageType.Tell : ChatMessageType.Broadcast));
             else if (!assignment1Complete && !assignment2Complete && !assignment3Complete)
                 Session.Network.EnqueueSend(new GameMessageSystemChat($"{(useName ? $"{sourceObject.Name} tells you, \"" : "")}{"None of your assignments are complete!"}{(useName ? $"\"" : "")}", useName ? ChatMessageType.Tell : ChatMessageType.Broadcast));
@@ -280,7 +282,7 @@ namespace ACE.Server.WorldObjects
                 }
             }
 
-            if (sourceObject != null && hasAssignments && (!assignment1Complete || !assignment2Complete || !assignment3Complete))
+            if (sourceObject != null && ((hasAssignment1 && !assignment1Complete) || (hasAssignment2 && !assignment2Complete) || (hasAssignment3 && !assignment3Complete)))
             {
                 GiveFromEmote(sourceObject, (uint)Factories.Enum.WeenieClassName.explorationContract); // Return contract if there's still unfinished contracts.
             }
@@ -320,6 +322,52 @@ namespace ACE.Server.WorldObjects
                 var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration3KillProgressTracker:N0} kill{(Exploration3KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration3MarkerProgressTracker:N0} marker{(Exploration3MarkerProgressTracker != 1 ? "s" : "")} remaining.";
                 EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.None, msg);
                 PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+            }
+        }
+
+        public void CheckExplorationLandblock(Landblock landblock)
+        {
+            if (landblock == null || Common.ConfigManager.Config.Server.WorldRuleset != Common.Ruleset.CustomDM)
+                return;
+
+            var landblockId = landblock.Id.Raw >> 16;
+            if (!Exploration1LandblockReached && Exploration1LandblockId != 0 && Exploration1LandblockId == landblockId)
+            {
+                Exploration1LandblockReached = true;
+                var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration1KillProgressTracker:N0} kill{(Exploration1KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration1MarkerProgressTracker:N0} marker{(Exploration1MarkerProgressTracker != 1 ? "s" : "")} remaining.";
+
+                var explorationSite = DatabaseManager.World.GetExplorationSitesByLandblock((ushort)landblockId).FirstOrDefault();
+                var level = explorationSite != null ? Math.Min(explorationSite.Level, Level ?? 1) : Level;
+                EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.Fellowship, msg);
+                PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+                if (Exploration1KillProgressTracker == 0 && Exploration1MarkerProgressTracker == 0)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat("Your exploration assignment is now fulfilled!", ChatMessageType.Broadcast));
+            }
+
+            if (!Exploration2LandblockReached && Exploration2LandblockId != 0 && Exploration2LandblockId == landblockId)
+            {
+                Exploration2LandblockReached = true;
+                var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration2KillProgressTracker:N0} kill{(Exploration2KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration2MarkerProgressTracker:N0} marker{(Exploration2MarkerProgressTracker != 1 ? "s" : "")} remaining.";
+
+                var explorationSite = DatabaseManager.World.GetExplorationSitesByLandblock((ushort)landblockId).FirstOrDefault();
+                var level = explorationSite != null ? Math.Min(explorationSite.Level, Level ?? 1) : Level;
+                EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.Fellowship, msg);
+                PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+                if (Exploration2KillProgressTracker == 0 && Exploration2MarkerProgressTracker == 0)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat("Your exploration assignment is now fulfilled!", ChatMessageType.Broadcast));
+            }
+
+            if (!Exploration3LandblockReached && Exploration3LandblockId != 0 && Exploration3LandblockId == landblockId)
+            {
+                Exploration3LandblockReached = true;
+                var msg = $"You've reached {GetCurrentLandblockName() ?? "your exploration contract's location"}! {Exploration3KillProgressTracker:N0} kill{(Exploration3KillProgressTracker != 1 ? "s" : "")} remaining and {Exploration3MarkerProgressTracker:N0} marker{(Exploration3MarkerProgressTracker != 1 ? "s" : "")} remaining.";
+
+                var explorationSite = DatabaseManager.World.GetExplorationSitesByLandblock((ushort)landblockId).FirstOrDefault();
+                var level = explorationSite != null ? Math.Min(explorationSite.Level, Level ?? 1) : Level;
+                EarnXP((int)(((-Level ?? -1) - 1000) * (PropertyManager.GetDouble("exploration_bonus_xp").Item + 0.5)), XpType.Exploration, null, null, 0, null, ShareType.Fellowship, msg);
+                PlayParticleEffect(PlayScript.AugmentationUseAttribute, Guid);
+                if (Exploration3KillProgressTracker == 0 && Exploration3MarkerProgressTracker == 0)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat("Your exploration assignment is now fulfilled!", ChatMessageType.Broadcast));
             }
         }
 
