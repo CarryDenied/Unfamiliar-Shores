@@ -547,11 +547,11 @@ namespace ACE.Server.Network.Structure
                         var msg2 = "";
                         var msg3 = "";
                         if (player.Exploration1LandblockId != 0 && player.Exploration1Description.Length > 0)
-                            msg1 = $"{player.Exploration1Description} {(assignment1Complete ? "\n    Complete!" : $"\n    Kills remaining: {player.Exploration1KillProgressTracker}\n    Markers remaining: {player.Exploration1MarkerProgressTracker}")}";
+                            msg1 = $"{player.Exploration1Description} {(assignment1Complete ? "\n    Complete!" : $"\n    Reached: {(player.Exploration1LandblockReached ? "Yes" : "No")}\n    Kills remaining: {player.Exploration1KillProgressTracker}\n    Markers remaining: {player.Exploration1MarkerProgressTracker}")}";
                         if (player.Exploration2LandblockId != 0 && player.Exploration2Description.Length > 0)
-                            msg2 = $"{player.Exploration2Description} {(assignment2Complete ? "\n    Complete!" : $"\n    Kills remaining: {player.Exploration2KillProgressTracker}\n    Markers remaining: {player.Exploration2MarkerProgressTracker}")}";
+                            msg2 = $"{player.Exploration2Description} {(assignment2Complete ? "\n    Complete!" : $"\n    Reached: {(player.Exploration2LandblockReached ? "Yes" : "No")}\n    Kills remaining: {player.Exploration2KillProgressTracker}\n    Markers remaining: {player.Exploration2MarkerProgressTracker}")}";
                         if (player.Exploration3LandblockId != 0 && player.Exploration3Description.Length > 0)
-                            msg3 = $"{player.Exploration3Description} {(assignment3Complete ? "\n    Complete!" : $"\n    Kills remaining: {player.Exploration3KillProgressTracker}\n    Markers remaining: {player.Exploration3MarkerProgressTracker}")}";
+                            msg3 = $"{player.Exploration3Description} {(assignment3Complete ? "\n    Complete!" : $"\n    Reached: {(player.Exploration3LandblockReached ? "Yes" : "No")}\n    Kills remaining: {player.Exploration3KillProgressTracker}\n    Markers remaining: {player.Exploration3MarkerProgressTracker}")}";
 
                         if (!hasAssignments)
                             PropertiesString[PropertyString.LongDesc] += " None";

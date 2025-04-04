@@ -818,6 +818,15 @@ namespace ACE.Server.WorldObjects
                 CurrentLandblock?.SetActive();
         }
 
+        public override void OnEnterLandblock(Landblock landblock)
+        {
+            CheckExplorationLandblock(landblock);
+        }
+
+        public override void OnLeaveLandblock(Landblock landblock)
+        {
+        }
+
         public static readonly float RunFactor = 1.5f;
 
         /// <summary>
