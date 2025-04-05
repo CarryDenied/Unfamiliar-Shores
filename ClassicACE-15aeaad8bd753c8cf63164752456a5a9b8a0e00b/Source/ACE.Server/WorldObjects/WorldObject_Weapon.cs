@@ -523,6 +523,7 @@ namespace ACE.Server.WorldObjects
             {
                 var cripplingBlowMod = GetCripplingBlowMod(wielder, skill, isPvP);
 
+               /* Probably not necessary, keeping around until we confirm fully 
                 if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
                 {
                     if (critDamageMod > defaultCritDamageMultiplier)
@@ -534,9 +535,10 @@ namespace ACE.Server.WorldObjects
                     }
                     else
                     {
+               */
                         critDamageMod = Math.Max(critDamageMod, cripplingBlowMod);
-                    }
-                }
+                    //}
+                //}
             }
             return critDamageMod;
         }
