@@ -49,7 +49,7 @@ namespace ACE.Server.Factories.Tables.Wcids
 
             ( WeenieClassName.materialsunstone,         1.00f ), // Armor Rending
             ( WeenieClassName.materialblackopal,        1.00f ), // Critical Strike
-            ( WeenieClassName.materialfireopal,         1.00f ), // Critical Blow
+            ( WeenieClassName.materialfireopal,         1.00f ), // Crippling Blow
             ( WeenieClassName.materialblackgarnet,      1.00f ), // Pierce Rend
             ( WeenieClassName.materialimperialtopaz,    1.00f ), // Slashing Rend
             ( WeenieClassName.materialwhitesapphire,    1.00f ), // Bludgeoning Rend
