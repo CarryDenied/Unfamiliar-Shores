@@ -547,10 +547,19 @@ namespace ACE.Server.WorldObjects
         /// <summary>
         /// Returns the maximum possible character level
         /// </summary>
-        public static uint GetMaxLevel()
+        public uint GetMaxLevel()
         {
             uint maxPossibleLevel = (uint)DatManager.PortalDat.XpTable.CharacterLevelXPList.Count - 1;
             uint maxSettingLevel = (uint)PropertyManager.GetLong("max_level").Item;
+
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+            {
+                if (GameplayMode == GameplayModes.HardcorePK || GameplayMode == GameplayModes.HardcoreNPK)
+                {
+                    uint maxHardCoreLevel = (uint)PropertyManager.GetLong("hardcore_max_level", maxSettingLevel).Item;
+                    maxSettingLevel = maxHardCoreLevel;
+                }
+            }
             return (Math.Min(maxPossibleLevel, maxSettingLevel));
         }
 
@@ -589,9 +598,8 @@ namespace ACE.Server.WorldObjects
         /// <summary>
         /// Returns the total XP required to reach a level
         /// </summary>
-        public static ulong GetTotalXP(int level)
+        public static ulong GetTotalXP(int level, int maxLevel)
         {
-            var maxLevel = GetMaxLevel();
             if (level < 0 || level > maxLevel)
                 return 0;
 

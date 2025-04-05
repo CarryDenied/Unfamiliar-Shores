@@ -716,8 +716,8 @@ namespace ACE.Server.Managers
                 ("dekaru_imbue_magic_defense_per_imbue", new Property<long>(3, "Number of magic defense points to increase per magic defense imbue on an item.")),
                 ("dekaru_imbue_melee_defense_per_imbue", new Property<long>(3, "Number of melee defense points to increase per magic defense imbue on an item.")),
                 ("dekaru_imbue_missile_defense_per_imbue", new Property<long>(3, "Number of missile defense points to increase per magic defense imbue on an item.")),
-                ("elite_mob_loot_count", new Property<long>(20, "Number of random items on an elite corpse."))
-                
+                ("elite_mob_loot_count", new Property<long>(20, "Number of random items on an elite corpse.")),
+                ("hardcore_max_level", new Property<long>(55, "Maximum Hardcore PK level."))
 
                 );
 
