@@ -19,12 +19,12 @@ namespace ACE.Server.WorldObjects
             ContractManager.Abandon(contractId);
         }
 
-        public void RefreshExplorationAssignments(WorldObject sourceObject = null, bool confirmed = false)
+        public void RefreshExplorationAssignments(WorldObject sourceObject = null, bool confirmed = false, bool fromAcademy = false)
         {
             if (Common.ConfigManager.Config.Server.WorldRuleset != Common.Ruleset.CustomDM)
                 return;
 
-            if (!confirmed && Exploration1KillProgressTracker != 0)
+            if (!fromAcademy && !confirmed && Exploration1KillProgressTracker != 0)
             {
                 if (sourceObject != null)
                 {
@@ -50,15 +50,17 @@ namespace ACE.Server.WorldObjects
             }
 
             var level = Level ?? 1;
-            var minLevel = Math.Max(level - (int)(level * 0.1f), 1);
-            var maxLevel = level + (int)(level * 0.2f);
+            var minLevel = Math.Max(level - (int)Math.Ceiling(level * 0.1f), 1);
+            var maxLevel = level + (int)Math.Ceiling(level * 0.2f);
             if (level > 100)
                 maxLevel = int.MaxValue;
             var explorationList = DatabaseManager.World.GetExplorationSitesByLevelRange(minLevel, maxLevel, level);
 
             if (explorationList.Count == 0)
             {
-                Session.Network.EnqueueSend(new GameMessageSystemChat(msg, useName ? ChatMessageType.Tell : ChatMessageType.Broadcast));
+                if(!fromAcademy)
+                    Session.Network.EnqueueSend(new GameMessageSystemChat(msg, useName ? ChatMessageType.Tell : ChatMessageType.Broadcast));
+
                 if (sourceObject != null)
                     GiveFromEmote(sourceObject, (uint)Factories.Enum.WeenieClassName.blankExplorationContract); // Return Blank Contract.
 
@@ -82,12 +84,18 @@ namespace ACE.Server.WorldObjects
                 return;
             }
 
+            // Avoid giving the same contracts the player already has active.
+            var nonRepeatList = explorationList.Where(c => c.Landblock != Exploration1LandblockId && c.Landblock != Exploration2LandblockId && c.Landblock != Exploration3LandblockId).ToList();
+            if (nonRepeatList.Count >= 3) // Only remove repeated contracts if there are enough different ones to fill a new contract.
+                explorationList = nonRepeatList;
+
             var roll = ThreadSafeRandom.Next(0, explorationList.Count - 1);
             var entry = explorationList[roll];
             explorationList.RemoveAt(roll);
 
-            var explorationKillAmount = Math.Clamp((int)ThreadSafeRandom.Next(entry.CreatureCount, entry.CreatureCount * 2.0f), 10, 200);
-            var explorationMarkerAmount = Math.Clamp(explorationKillAmount / 30, 1, 10) + ThreadSafeRandom.Next(0, 4);
+            var modifiedCreatureCount = Math.Clamp(entry.CreatureCount, 10, 200);
+            var explorationKillAmount = (int)ThreadSafeRandom.Next(modifiedCreatureCount, modifiedCreatureCount * 2.0f);
+            var explorationMarkerAmount = Math.Clamp(1 + (int)Math.Floor(explorationKillAmount / 30f), 1, 10);
 
             Exploration1LandblockId = entry.Landblock;
             Exploration1KillProgressTracker = explorationKillAmount;
@@ -100,7 +108,12 @@ namespace ACE.Server.WorldObjects
             if (entryLandblock != null)
             {
                 entryName = entryLandblock.Name;
-                entryDirections = entryLandblock.Directions;
+                if (entryLandblock.MicroRegion != "")
+                    entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference} in {entryLandblock.MicroRegion}";
+                else if (entryLandblock.MacroRegion != "" && entryLandblock.MacroRegion != "Dereth")
+                    entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference} in {entryLandblock.MacroRegion}";
+                else
+                    entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference}";
             }
             else
             {
@@ -111,17 +124,18 @@ namespace ACE.Server.WorldObjects
             Exploration1Description = $"Explore {entryName} by killing {explorationKillAmount:N0} {entry.ContentDescription} and finding {explorationMarkerAmount:N0} exploration marker{(explorationMarkerAmount > 1 ? "s" : "")}. It is located {entryDirections}.";
             msg = $"{(useName ? $"{sourceObject.Name} tells you, \"" : "")}{Exploration1Description}{(useName ? $"\"" : "")}";
 
-            if (useName)
+            if (useName && !fromAcademy)
                 Session.Network.EnqueueSend(new GameMessageSystemChat($"{sourceObject.Name} tells you, \"Here's your assignments:\"", ChatMessageType.Tell));
             Session.Network.EnqueueSend(new GameMessageSystemChat(msg, useName ? ChatMessageType.Tell : ChatMessageType.Broadcast));
 
-            if (explorationList.Count != 0)
+            if (explorationList.Count != 0 && !fromAcademy)
             {
                 roll = ThreadSafeRandom.Next(0, explorationList.Count - 1);
                 entry = explorationList[roll];
                 explorationList.RemoveAt(roll);
-                explorationKillAmount = Math.Clamp((int)ThreadSafeRandom.Next(entry.CreatureCount, entry.CreatureCount * 2.0f), 10, 200);
-                explorationMarkerAmount = Math.Clamp(explorationKillAmount / 30, 1, 10) + ThreadSafeRandom.Next(0, 4);
+                modifiedCreatureCount = Math.Clamp(entry.CreatureCount, 10, 200);
+                explorationKillAmount = (int)ThreadSafeRandom.Next(modifiedCreatureCount, modifiedCreatureCount * 2.0f);
+                explorationMarkerAmount = Math.Clamp(1 + (int)Math.Floor(explorationKillAmount / 30f), 1, 10);
 
                 Exploration2LandblockId = entry.Landblock;
                 Exploration2KillProgressTracker = explorationKillAmount;
@@ -132,7 +146,12 @@ namespace ACE.Server.WorldObjects
                 if (entryLandblock != null)
                 {
                     entryName = entryLandblock.Name;
-                    entryDirections = entryLandblock.Directions;
+                    if (entryLandblock.MicroRegion != "")
+                        entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference} in {entryLandblock.MicroRegion}";
+                    else if (entryLandblock.MacroRegion != "" && entryLandblock.MacroRegion != "Dereth")
+                        entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference} in {entryLandblock.MacroRegion}";
+                    else
+                        entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference}";
                 }
                 else
                 {
@@ -154,13 +173,14 @@ namespace ACE.Server.WorldObjects
                 Exploration2LandblockReached = false;
             }
 
-            if (explorationList.Count != 0)
+            if (explorationList.Count != 0 && !fromAcademy)
             {
                 roll = ThreadSafeRandom.Next(0, explorationList.Count - 1);
                 entry = explorationList[roll];
                 explorationList.RemoveAt(roll);
-                explorationKillAmount = Math.Clamp((int)ThreadSafeRandom.Next(entry.CreatureCount, entry.CreatureCount * 2.0f), 10, 200);
-                explorationMarkerAmount = Math.Clamp(explorationKillAmount / 30, 1, 10) + ThreadSafeRandom.Next(0, 4);
+                modifiedCreatureCount = Math.Clamp(entry.CreatureCount, 10, 200);
+                explorationKillAmount = (int)ThreadSafeRandom.Next(modifiedCreatureCount, modifiedCreatureCount * 2.0f);
+                explorationMarkerAmount = Math.Clamp(1 + (int)Math.Floor(explorationKillAmount / 30f), 1, 10);
 
                 Exploration3LandblockId = entry.Landblock;
                 Exploration3KillProgressTracker = explorationKillAmount;
@@ -171,7 +191,12 @@ namespace ACE.Server.WorldObjects
                 if (entryLandblock != null)
                 {
                     entryName = entryLandblock.Name;
-                    entryDirections = entryLandblock.Directions;
+                    if (entryLandblock.MicroRegion != "")
+                        entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference} in {entryLandblock.MicroRegion}";
+                    else if (entryLandblock.MacroRegion != "" && entryLandblock.MacroRegion != "Dereth")
+                        entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference} in {entryLandblock.MacroRegion}";
+                    else
+                        entryDirections = $"{entryLandblock.Directions} {entryLandblock.Reference}";
                 }
                 else
                 {
@@ -195,7 +220,8 @@ namespace ACE.Server.WorldObjects
 
             if (sourceObject != null)
             {
-                QuestManager.Stamp("ExplorationAssignmentsGiven");
+                if(!fromAcademy)
+                    QuestManager.Stamp("ExplorationAssignmentsGiven");
                 GiveFromEmote(sourceObject, (uint)Factories.Enum.WeenieClassName.explorationContract); // Give new contract.
             }
         }
@@ -222,7 +248,7 @@ namespace ACE.Server.WorldObjects
             }
             if (Exploration3LandblockId != 0 && Exploration3Description.Length > 0)
             {
-                hasAssignment3= true;
+                hasAssignment3 = true;
                 assignment3Complete = Exploration3LandblockReached && Exploration3KillProgressTracker <= 0 && Exploration3MarkerProgressTracker <= 0;
             }
 
