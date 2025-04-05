@@ -337,22 +337,8 @@ namespace ACE.Server.WorldObjects
 
             var weapon = GetEquippedMeleeWeapon();
             var attackType = GetWeaponAttackType(weapon);
+            setMSAttackType(weapon);
             var numStrikes = GetNumStrikes(attackType);
-
-            if (numStrikes > 1 &&
-                (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration)
-                ||
-                (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM) )
-            {
-                if (PowerLevel < MultiStrikeThreshold)
-                    numStrikes = 1;
-
-                uint baseSkill = GetCreatureSkill(GetCurrentWeaponSkill()).Base;
-                if(baseSkill < 250)
-                    numStrikes = 1;
-                else if(baseSkill < 325)
-                    numStrikes = 2;
-            }
 
             var swingTime = animLength / numStrikes / 1.5f;
 
@@ -631,23 +617,7 @@ namespace ACE.Server.WorldObjects
                 AttackType = PowerLevel > KickThreshold && !IsDualWieldAttack ? AttackType.Kick : AttackType.Punch;
             }
 
-            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration
-                || Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
-            {
-                if (AttackType.IsMultiStrike())
-                {
-                    if (PowerLevel < MultiStrikeThreshold)
-                        AttackType = AttackType.ReduceMultiStrike();
-                    else
-                    {
-                        uint baseSkill = GetCreatureSkill(GetCurrentWeaponSkill()).Base;
-                        if (baseSkill < 250)
-                            AttackType = AttackType.ReduceMultiStrike();
-                        else if (baseSkill < 325)
-                            AttackType = AttackType.ReduceMultiStrikeToDouble();
-                    }
-                }
-            }
+            setMSAttackType(weapon);
 
             var motions = CombatTable.GetMotion(CurrentMotionState.Stance, AttackHeight.Value, AttackType, PrevMotionCommand);
 
@@ -659,6 +629,41 @@ namespace ACE.Server.WorldObjects
             //Console.WriteLine($"{motion}");
 
             return motion;
+        }
+
+        private void setMSAttackType(WorldObject weapon)
+        {
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration
+             || Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+            {
+                if (AttackType.IsMultiStrike())
+                {
+                    if (PowerLevel < MultiStrikeThreshold)
+                        AttackType = AttackType.ReduceMultiStrike();
+                    else
+                    {
+                        uint baseSkill = GetCreatureSkill(GetCurrentWeaponSkill()).Base;
+                        uint multiThreshold2x = 250;
+                        uint multiThreshold3x = 325;
+
+                        if (weapon.WeaponSkill == Skill.Dagger)
+                        {
+                            multiThreshold2x = (uint)PropertyManager.GetLong("ms_dagger_2x").Item;
+                            multiThreshold3x = (uint)PropertyManager.GetLong("ms_dagger_3x").Item;
+                        }
+                        else if (weapon.WeaponSkill == Skill.Sword)
+                        {
+                            multiThreshold2x = (uint)PropertyManager.GetLong("ms_sword_2x").Item;
+                            multiThreshold3x = (uint)PropertyManager.GetLong("ms_sword_3x").Item;
+                        }
+
+                        if (baseSkill < multiThreshold2x)
+                            AttackType = AttackType.ReduceMultiStrike();
+                        else if (baseSkill < multiThreshold3x)
+                            AttackType = AttackType.ReduceMultiStrikeToDouble();
+                    }
+                }
+            }
         }
     }
 }
