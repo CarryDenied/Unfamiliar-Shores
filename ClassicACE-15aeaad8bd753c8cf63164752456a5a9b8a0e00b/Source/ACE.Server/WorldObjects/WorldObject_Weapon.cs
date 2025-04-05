@@ -1863,11 +1863,18 @@ namespace ACE.Server.WorldObjects
             }
             else if (stance == MotionStance.SwordCombat)
             {
-                // force slash animation when using no shield with a multi-strike weapon
-                if (attackType.HasFlag(AttackType.TripleSlash))
+                // Force slash animation if possible when using no shield with a multi-strike weapon
+
+                // handle old bugged stilettos that only have DoubleThrust
+                if (!attackType.HasFlag(AttackType.Thrust) && attackType.HasFlag(AttackType.DoubleThrust))
+                    attackType |= AttackType.Thrust;
+
+                if (attackType.HasFlag(AttackType.TripleSlash) || attackType.HasFlag(AttackType.TripleThrust))
                 {
                     if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+                    {
                         attackType = AttackType.TripleSlash;
+                    }
                     else
                     {
                         if (powerLevel >= ThrustThreshold || !attackType.HasFlag(AttackType.Thrust))
@@ -1876,24 +1883,24 @@ namespace ACE.Server.WorldObjects
                             attackType = AttackType.Thrust;
                     }
                 }
-                else if (attackType.HasFlag(AttackType.DoubleSlash))
+
+                if (attackType.HasFlag(AttackType.DoubleSlash) || attackType.HasFlag(AttackType.DoubleThrust))
                 {
                     if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
-                        attackType = AttackType.DoubleSlash;
+                    {
+                          attackType = AttackType.DoubleSlash;
+                    }
                     else
                     {
                         if (powerLevel >= ThrustThreshold || !attackType.HasFlag(AttackType.Thrust))
-                            attackType = AttackType.DoubleSlash;
+                            attackType = AttackType.TripleSlash;
                         else
                             attackType = AttackType.Thrust;
                     }
                 }
-
-                // handle old bugged stilettos that only have DoubleThrust
-                else if (attackType.HasFlag(AttackType.DoubleThrust))
-                    attackType = AttackType.Thrust;
             }
 
+            // If, somehow we haven't figured it out...
             if (attackType.HasFlag(AttackType.Thrust | AttackType.Slash))
             {
                 if (powerLevel >= ThrustThreshold)
