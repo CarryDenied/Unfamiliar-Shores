@@ -775,6 +775,12 @@ namespace ACE.Server.Managers
                 ("salvage_amount_multiplier", new Property<double>(1.0, "Scales the amount of salvage a player gets from items.")),
 
 
+                // MS Sword Attack Speed Modifiers (PvE and PvP)
+                ("sword_ms_animation_speed_1h", new Property<double>(1.4, "Multiplier for sword attack animation speed, if one handed with no shield.")),
+                ("sword_ms_animation_speed_dualwield", new Property<double>(1.4, "Multiplier for sword attack animation speed, if dual wielding.")),
+                ("sword_ms_animation_speed_shielded", new Property<double>(1.4, "Multiplier for sword attack animation speed, if using a shield.")),
+
+
                 // Dagger Attack Speed Modifiers (PvE and PvP)
                 ("dekaru_dagger_ms_animation_speed_1h", new Property<double>(1.8, "Multiplier for dagger attack animation speed, if one handed with no shield (with a shield is hard-coded to 1.0).")),
                 ("dekaru_dagger_ms_animation_speed_dualwield", new Property<double>(1.8, "Multiplier for dagger attack animation speed, if dual wielding.")),

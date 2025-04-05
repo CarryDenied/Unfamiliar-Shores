@@ -339,7 +339,10 @@ namespace ACE.Server.WorldObjects
             var attackType = GetWeaponAttackType(weapon);
             var numStrikes = GetNumStrikes(attackType);
 
-            if (numStrikes > 1 && Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration)
+            if (numStrikes > 1 &&
+                (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration)
+                ||
+                (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM) )
             {
                 if (PowerLevel < MultiStrikeThreshold)
                     numStrikes = 1;
@@ -531,14 +534,26 @@ namespace ACE.Server.WorldObjects
             else
             {
                 var weapon = GetEquippedMeleeWeapon();
-                if (weapon != null && weapon.WeaponSkill == Skill.Dagger && weapon.W_AttackType.IsMultiStrike())
+                if (weapon != null && weapon.W_AttackType.IsMultiStrike())
                 {
-                    if (GetEquippedOffHand() == null)
-                        animSpeedMod = (float)PropertyManager.GetDouble("dekaru_dagger_ms_animation_speed_1h").Item;
-                    else if (IsDualWieldAttack)
-                        animSpeedMod = (float)PropertyManager.GetDouble("dekaru_dagger_ms_animation_speed_dualwield").Item;
-                    else
-                        animSpeedMod = (float)PropertyManager.GetDouble("dekaru_dagger_ms_animation_speed_shielded").Item;
+                    if (weapon.WeaponSkill == Skill.Dagger)
+                    {
+                        if (GetEquippedOffHand() == null)
+                            animSpeedMod = (float)PropertyManager.GetDouble("dekaru_dagger_ms_animation_speed_1h").Item;
+                        else if (IsDualWieldAttack)
+                            animSpeedMod = (float)PropertyManager.GetDouble("dekaru_dagger_ms_animation_speed_dualwield").Item;
+                        else
+                            animSpeedMod = (float)PropertyManager.GetDouble("dekaru_dagger_ms_animation_speed_shielded").Item;
+                    }
+                    if (weapon.WeaponSkill == Skill.Sword)
+                    {
+                        if (GetEquippedOffHand() == null)
+                            animSpeedMod = (float)PropertyManager.GetDouble("sword_ms_animation_speed_1h").Item;
+                        else if (IsDualWieldAttack)
+                            animSpeedMod = (float)PropertyManager.GetDouble("sword_ms_animation_speed_dualwield").Item;
+                        else
+                            animSpeedMod = (float)PropertyManager.GetDouble("sword_ms_animation_speed_shielded").Item;
+                    }
                 }
                 else
                 {
@@ -557,6 +572,7 @@ namespace ACE.Server.WorldObjects
             }
 
             var animSpeed = baseSpeed * animSpeedMod;
+            animSpeed = animSpeed <= 0 ? baseSpeed : animSpeed; //avoid NAN on bad/missing property
 
             var swingAnimation = GetSwingAnimation();
             var animLength = MotionTable.GetAnimationLength(MotionTableId, CurrentMotionState.Stance, swingAnimation, animSpeed);
@@ -615,7 +631,8 @@ namespace ACE.Server.WorldObjects
                 AttackType = PowerLevel > KickThreshold && !IsDualWieldAttack ? AttackType.Kick : AttackType.Punch;
             }
 
-            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration)
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.Infiltration
+                || Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
             {
                 if (AttackType.IsMultiStrike())
                 {
