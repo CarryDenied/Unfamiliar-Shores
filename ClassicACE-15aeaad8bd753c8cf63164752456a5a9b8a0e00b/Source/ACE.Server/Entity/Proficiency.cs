@@ -85,7 +85,7 @@ namespace ACE.Server.Entity
                     log.Warn($"Proficiency.OnSuccessUse({player.Name}, {skill.Skill}, {difficulty}) - totalXPGranted: {totalXPGranted:N0}");
                 }
 
-                var maxLevel =player.GetMaxLevel();
+                var maxLevel = player.GetMaxLevel();
                 var remainingXP = player.GetRemainingXP(maxLevel).Value;
 
                 if (totalXPGranted > remainingXP)

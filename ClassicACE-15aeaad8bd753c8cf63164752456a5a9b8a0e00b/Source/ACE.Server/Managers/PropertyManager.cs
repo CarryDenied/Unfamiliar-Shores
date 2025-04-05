@@ -717,8 +717,11 @@ namespace ACE.Server.Managers
                 ("dekaru_imbue_melee_defense_per_imbue", new Property<long>(3, "Number of melee defense points to increase per magic defense imbue on an item.")),
                 ("dekaru_imbue_missile_defense_per_imbue", new Property<long>(3, "Number of missile defense points to increase per magic defense imbue on an item.")),
                 ("elite_mob_loot_count", new Property<long>(20, "Number of random items on an elite corpse.")),
-                ("hardcore_max_level", new Property<long>(55, "Maximum Hardcore PK level."))
-
+                ("hardcore_max_level", new Property<long>(55, "Maximum Hardcore PK level.")),
+                ("ms_dagger_2x", new Property<long>(250, "Multistrike Dagger 2x skill threshold.")),
+                ("ms_dagger_3x", new Property<long>(325, "Multistrike Dagger 2x skill threshold.")),
+                ("ms_sword_2x", new Property<long>(250, "Multistrike Sword 2x skill threshold.")),
+                ("ms_sword_3x", new Property<long>(325, "Multistrike Sword 3x skill threshold."))
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<double>> DefaultDoubleProperties =
@@ -780,8 +783,7 @@ namespace ACE.Server.Managers
                 ("sword_ms_animation_speed_dualwield", new Property<double>(1.4, "Multiplier for sword attack animation speed, if dual wielding.")),
                 ("sword_ms_animation_speed_shielded", new Property<double>(1.4, "Multiplier for sword attack animation speed, if using a shield.")),
 
-
-                // Dagger Attack Speed Modifiers (PvE and PvP)
+                // MS Dagger Attack Speed Modifiers (PvE and PvP)
                 ("dekaru_dagger_ms_animation_speed_1h", new Property<double>(1.8, "Multiplier for dagger attack animation speed, if one handed with no shield (with a shield is hard-coded to 1.0).")),
                 ("dekaru_dagger_ms_animation_speed_dualwield", new Property<double>(1.8, "Multiplier for dagger attack animation speed, if dual wielding.")),
                 ("dekaru_dagger_ms_animation_speed_shielded", new Property<double>(1.8, "Multiplier for dagger attack animation speed, if using a shield.")),
