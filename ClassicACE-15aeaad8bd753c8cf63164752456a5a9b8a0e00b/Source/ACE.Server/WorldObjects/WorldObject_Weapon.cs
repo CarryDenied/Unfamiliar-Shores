@@ -1893,7 +1893,7 @@ namespace ACE.Server.WorldObjects
                     else
                     {
                         if (powerLevel >= ThrustThreshold || !attackType.HasFlag(AttackType.Thrust))
-                            attackType = AttackType.TripleSlash;
+                            attackType = AttackType.DoubleSlash;
                         else
                             attackType = AttackType.Thrust;
                     }
