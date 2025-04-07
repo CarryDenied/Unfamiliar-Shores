@@ -259,10 +259,9 @@ namespace ACE.Entity.Enum.Properties
         [ServerOnly]
         EnrageDamageMultiplier         = 9005,
         [ServerOnly]
+        EnrageDamageReduction          = 9006,
         [ServerOnly]
-        EnrageDamageReduction = 9006,
-        [ServerOnly]
-        EnrageThreshold = 9007,
+        EnrageThreshold                = 9007,
     }
 
     public static class PropertyFloatExtensions
