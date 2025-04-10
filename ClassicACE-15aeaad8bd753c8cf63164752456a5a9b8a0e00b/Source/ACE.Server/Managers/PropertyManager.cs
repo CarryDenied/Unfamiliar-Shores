@@ -1083,7 +1083,8 @@ namespace ACE.Server.Managers
                 ("turbine_chat_webhook_audit", new Property<string>("", "Webhook to be used for ingame audit log.")),
                 ("proxycheck_api_key", new Property<string>("", "API key for proxycheck.io service for VPN detection")),
                 ("vpn_account_whitelist", new Property<string>("", "A comma separated list of account names for which VPN detection is bypassed")),
-                ("discord_login_token", new Property<string>("", "Login Token used for Discord chat integration"))
+                ("discord_login_token", new Property<string>("", "Login Token used for Discord chat integration")),
+                ("discord_server_id", new Property<string>("", "Discord server ID used for Discord chat integration"))
                 );
     }
 }

@@ -29,6 +29,7 @@ using ACE.Server.WorldObjects.Managers;
 using Character = ACE.Database.Models.Shard.Character;
 using MotionTable = ACE.DatLoader.FileTypes.MotionTable;
 using System.Linq;
+using ACE.Server.Factories;
 
 namespace ACE.Server.WorldObjects
 {
@@ -1334,6 +1335,138 @@ namespace ACE.Server.WorldObjects
                 innerChain.EnqueueChain();
             });
             actionChain.EnqueueChain();
+        }
+
+        public bool TryRemoveItemForAuction(WorldObject item)
+        {
+            if (item.GetProperty(PropertyInt.Attuned) > 0)
+            {
+                return false;
+            }
+            if (item.WeenieType == WeenieType.Container)
+            {
+                return false;
+            }
+            if (item.WeenieClassId == 90000001)
+            {
+                return false;
+            }
+            //Console.WriteLine($"[AUCTION DEBUG] Attempting to remove {item.NameWithMaterial} ({item.Guid.Full}) from inventory for auction...");
+
+            // 🔍 **Check if the item exists before removal**
+            bool existsBefore = this.Inventory.ContainsKey(item.Guid);
+            //Console.WriteLine($"[AUCTION DEBUG] Item exists before removal? {existsBefore}");
+
+            // 🚀 **Try to remove the item from inventory using networking**
+            bool removed = TryRemoveFromInventoryWithNetworking(item.Guid, out _, RemoveFromInventoryAction.ConsumeItem);
+
+            if (removed)
+            {
+                // 🔄 **Force database sync before destroying the object**
+                DeepSave(item);  // <------ This ensures database persistence
+
+                // 🔥 **Explicitly Destroy the Object**
+                // item.Destroy();
+                // Console.WriteLine($"[AUCTION DEBUG] Destroyed {item.NameWithMaterial}.");
+
+                // 🚨 **Force Client Inventory Update**
+                Session.Network.EnqueueSend(new GameEventViewContents(Session, this)); // Refresh inventory view
+
+                // 🚀 **Final Existence Check**
+                bool existsAfterDestroy = this.Inventory.ContainsKey(item.Guid);
+                //Console.WriteLine($"[AUCTION DEBUG] Item exists after destroy? {existsAfterDestroy}");
+
+                if (!existsAfterDestroy)
+                {
+                    // SendMessage($"[DEBUG] Successfully listed {item.NameWithMaterial} for auction.");
+                    return true;
+                }
+                else
+                {
+                    //Console.WriteLine($"[AUCTION ERROR] Ghost item detected after removal! Investigate.");
+                }
+            }
+
+            //Console.WriteLine($"[AUCTION ERROR] Failed to remove {item.Name} ({item.Guid.Full}) from inventory.");
+            return false;
+        }
+
+        public static void CheckForPendingAuctionRefunds(Player player)
+        {
+            using (var context = new ACE.Database.Models.Shard.ShardDbContext())
+            {
+                var refunds = context.AuctionRefunds
+                    .Where(r => r.BidderGuid == player.Guid.Full)
+                    .ToList();
+
+                if (!refunds.Any())
+                    return;
+
+                int totalRefund = refunds.Sum(r => r.RefundedAmount);
+
+                var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                coinItem.StackSize = totalRefund;
+
+                if (!player.TryCreateInInventoryWithNetworking(coinItem))
+                {
+                    AuctionHouse.StorePendingAuctionReturn(player.Guid.Full, coinItem, "REFUND", player.Guid.Full);
+                    player.SendMessage($"[AUCTION] Your refund of {totalRefund} Enlightened Coins could not be added to your inventory and has been stored. Use /auction retrieve.");
+                }
+                else
+                {
+                    player.SendMessage($"[AUCTION] You have been refunded {totalRefund} Enlightened Coins from canceled auctions.");
+                }
+
+                context.AuctionRefunds.RemoveRange(refunds);
+                context.SaveChanges();
+            }
+        }
+
+        public static void CheckForPendingAuctionPayments(Player player)
+        {
+            using (var context = new ACE.Database.Models.Shard.ShardDbContext())
+            {
+                var pendingPayments = context.AuctionPayments
+                    .Where(p => p.SellerGuid == player.Guid.Full)
+                    .ToList();
+
+                if (!pendingPayments.Any())
+                    return;
+
+                int totalPayment = pendingPayments.Sum(p => p.Amount);
+
+                var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                coinItem.StackSize = totalPayment;
+
+                if (!player.TryCreateInInventoryWithNetworking(coinItem))
+                {
+                    AuctionHouse.StorePendingAuctionReturn(player.Guid.Full, coinItem, "PAYMENT", player.Guid.Full);
+                    player.SendMessage($"[AUCTION] Your auction earnings of {totalPayment} Enlightened Coins could not be added to your inventory and have been stored. Use /auction retrieve.");
+                }
+                else
+                {
+                    player.SendMessage($"[AUCTION] You have received {totalPayment} Enlightened Coins from completed auctions.");
+                }
+
+                context.AuctionPayments.RemoveRange(pendingPayments);
+                context.SaveChanges();
+            }
+        }
+
+
+        public static void DeliverPendingAuctionReturnsOnLogin(Player player)
+        {
+            using (var context = new ACE.Database.Models.Shard.ShardDbContext())
+            {
+                var pendingReturns = context.AuctionReturns.Where(r => r.SellerGuid == player.Guid.Full).ToList();
+
+                if (!pendingReturns.Any())
+                    return;
+
+                player.SendMessage($"[AUCTION] You have {pendingReturns.Count} expired auction item(s) to retrieve. Use /auction retrieve.");
+
+                // Console.WriteLine($"[AUCTION] {player.Name} has {pendingReturns.Count} pending auction items.");
+            }
         }
     }
 }

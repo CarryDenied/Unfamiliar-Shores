@@ -1543,5 +1543,11 @@ namespace ACE.Server.WorldObjects
             get => GetProperty(PropertyInt.ChargenTitleId) ?? 0;
             set { if (value == 0) RemoveProperty(PropertyInt.ChargenTitleId); else SetProperty(PropertyInt.ChargenTitleId, value); }
         }
+
+        public long? DiscordUserId
+        {
+            get => GetProperty(PropertyInt64.DiscordUserId);
+            set { if (!value.HasValue) RemoveProperty(PropertyInt64.DiscordUserId); else SetProperty(PropertyInt64.DiscordUserId, value.Value); }
+        }
     }
 }

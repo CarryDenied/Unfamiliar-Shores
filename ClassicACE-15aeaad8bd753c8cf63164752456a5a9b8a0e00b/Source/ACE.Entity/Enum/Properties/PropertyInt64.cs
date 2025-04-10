@@ -40,6 +40,8 @@ namespace ACE.Entity.Enum.Properties
         GameplayModeExtraIdentifier = 10002,
         [ServerOnly]
         TradeNoteValue              = 10003,
+        [ServerOnly]
+        DiscordUserId               = 10004,
     }
 
     public static class PropertyInt64Extensions
