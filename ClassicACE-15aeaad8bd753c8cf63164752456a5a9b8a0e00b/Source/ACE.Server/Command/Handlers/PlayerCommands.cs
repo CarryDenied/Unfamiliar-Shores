@@ -1976,6 +1976,17 @@ namespace ACE.Server.Command.Handlers
 "list | sell <minBid> <buyoutPrice> <time> | bid <id> <amount> | buyout <id> | retrieve | cancel <id>")]
         public static void HandleAuctionCommand(Session session, params string[] parameters)
         {
+
+            // Reload the setting before proceeding
+            bool isAuctionEnabled = PropertyManager.GetBool("auction_system_enabled").Item;
+            Console.WriteLine($"[DEBUG] Auction system enabled: {isAuctionEnabled}");
+
+            if (!isAuctionEnabled)
+            {
+                session.Network.EnqueueSend(new GameMessageSystemChat("The auction system is currently disabled. Please try again later.", ChatMessageType.Broadcast));
+                return;
+            }
+
             if (parameters.Length == 0)
             {
                 session.Player.SendMessage("Usage: /auction list | sell <minBid> <buyoutPrice> <time> | bid <id> <amount> | buyout <id> | retrieve | cancel <id>");

@@ -688,8 +688,9 @@ namespace ACE.Server.Managers
 
                 ("fall_damage_enabled", new Property<bool>(true, "Toggles whether fall damage is enabled")),
                 ("dekaru_dual_wield_speed_mod", new Property<bool>(true, "Toggles whether Dekaru's dual wield speed changes (other than for dagger) are enabled")),
-                ("dekaru_hc_keep_non_equippable_bonded_on_death", new Property<bool>(true, "Toggles whether bonded items are kept on a hardcore death despite being non-equippable"))
-                
+                ("dekaru_hc_keep_non_equippable_bonded_on_death", new Property<bool>(true, "Toggles whether bonded items are kept on a hardcore death despite being non-equippable")),
+                ("auction_system_enabled", new Property<bool>(true, "If FALSE, the auction system will be disabled."))
+
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<long>> DefaultLongProperties =
