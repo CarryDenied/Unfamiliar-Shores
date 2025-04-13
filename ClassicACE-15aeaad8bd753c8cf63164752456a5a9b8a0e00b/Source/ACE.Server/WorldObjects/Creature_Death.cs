@@ -851,7 +851,9 @@ namespace ACE.Server.WorldObjects
                     DoCantripLogging(killer, wo);
                 }
 
-                if (IsMonster && 0.002 > ThreadSafeRandom.Next(0.0f, 1.0f))
+                var mapchance = PropertyManager.GetDouble("treasure_map_chance").Item;
+
+                if (IsMonster && mapchance > ThreadSafeRandom.Next(0.0f, 1.0f))
                 {
                     var map = TreasureMap.TryCreateTreasureMap(this);
                     if (map != null)
