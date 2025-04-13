@@ -311,5 +311,11 @@ namespace ACE.Server.Entity
             else
                 RemoveProperty(prop);
         }
+
+        public long? DiscordUserId
+        {
+            get => GetProperty(PropertyInt64.DiscordUserId);
+            set { if (!value.HasValue) RemoveProperty(PropertyInt64.DiscordUserId); else SetProperty(PropertyInt64.DiscordUserId, value.Value); }
+        }
     }
 }

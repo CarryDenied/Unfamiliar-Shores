@@ -275,5 +275,55 @@ namespace ACE.Server.Network
 
             return Task.CompletedTask;
         }
+
+        public static void SendAuctionNotification(ulong discordUserId, string message)
+        {
+            if (IsRunning && discordUserId != 0)
+            {
+                try
+                {
+                    var guild = DiscordClient.GetGuild((ulong)PropertyManager.GetLong("discord_server_id").Item);
+                    var user = guild?.GetUser(discordUserId);
+                    user?.SendMessageAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"[DiscordAuctionNotify] Failed to send message to Discord user {discordUserId}: {ex.Message}");
+                }
+            }
+        }
+
+        public static async void SendDiscordDM(string playerName, string message, long userId)
+        {
+            if (IsRunning)
+            {
+                try
+                {
+                    var user = await DiscordClient.GetUserAsync((ulong)userId);
+                    if (user != null)
+                    {
+                        if (user is IUser iUser)
+                        {
+                            var dmChannel = await iUser.CreateDMChannelAsync();
+                            await dmChannel.SendMessageAsync(message);
+
+                            Console.WriteLine($"[DISCORD DM LOG] Sent message to user {playerName} (ID: {userId}): {message}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[DISCORD DM ERROR] Unrecognized user type: {user.GetType().Name} for user {userId}.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[DISCORD DM ERROR] User with ID {userId} not found.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[DISCORD DM ERROR] Error sending Discord DM: {ex.Message}");
+                }
+            }
+        }
     }
 }

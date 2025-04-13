@@ -62,6 +62,11 @@ namespace ACE.Database.Models.Shard
         public virtual DbSet<CharacterLoginLog> CharacterLogins { get; set; }
         public virtual DbSet<PKKill> PKKills { get; set; }
         public virtual DbSet<HardcoreCharacterObituary> HardcoreCharacterObituary { get; set; }
+        public virtual DbSet<AuctionEntry> AuctionEntries { get; set; }
+        public virtual DbSet<AuctionReturnEntry> AuctionReturns { get; set; }
+        public virtual DbSet<AuctionRefundEntry> AuctionRefunds { get; set; }
+        public virtual DbSet<AuctionPaymentEntry> AuctionPayments { get; set; }
+        public virtual DbSet<AuctionIpTracking> AuctionIpTracking { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1722,6 +1727,170 @@ namespace ACE.Database.Models.Shard
 
                 entity.Property(e => e.MonarchId)
                     .HasColumnName("monarch_Id");
+            });
+
+            modelBuilder.Entity<AuctionEntry>(entity =>
+            {
+                entity.ToTable("auction_house"); // Database table name
+
+                entity.HasKey(e => e.Id); // Primary key
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .IsRequired()
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.ItemGuid)
+                      .HasColumnName("item_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.SellerGuid)
+                      .HasColumnName("seller_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.SellerName)
+                      .HasColumnName("seller_name")
+                      .IsRequired();
+
+                entity.Property(e => e.SellerIp) // ✅ Add Seller IP
+                      .HasColumnName("seller_ip")
+                      .IsRequired();
+
+                entity.Property(e => e.LastBidderGuid)
+                      .HasColumnName("last_bidder_guid");
+
+                entity.Property(e => e.BuyerGuid)
+                      .HasColumnName("buyer_guid");
+
+                entity.Property(e => e.MinBid)
+                      .HasColumnName("min_bid")
+                      .IsRequired();
+
+                entity.Property(e => e.BuyoutPrice)
+                      .HasColumnName("buyout_price");
+
+                entity.Property(e => e.HighestBid)
+                      .HasColumnName("highest_bid")
+                      .IsRequired();
+
+                entity.Property(e => e.PreviousBidAmount)
+                      .HasColumnName("previous_bid_amount");
+
+                entity.Property(e => e.DurationSeconds)
+                      .HasColumnName("duration_seconds")
+                      .IsRequired();
+
+                entity.Property(e => e.StartTime)
+                      .HasColumnName("start_time")
+                      .IsRequired();
+
+                entity.Property(e => e.ItemType)
+                      .HasColumnName("item_type")
+                      .IsRequired();
+
+                entity.Property(e => e.SellerNote)
+                      .HasColumnName("seller_note")
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<AuctionReturnEntry>(entity =>
+            {
+                entity.ToTable("auction_returns"); // Database table name
+
+                entity.HasKey(e => e.Id); // Primary key
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .IsRequired()
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.SellerGuid)
+                      .HasColumnName("seller_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.BuyerGuid)
+                      .HasColumnName("buyer_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.ItemGuid)
+                      .HasColumnName("item_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.ReturnDate)
+                      .HasColumnName("return_date")
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<AuctionRefundEntry>(entity =>
+            {
+                entity.ToTable("auction_refunds"); // Database table name
+
+                entity.HasKey(e => e.Id); // Primary key
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .IsRequired()
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.BidderGuid)
+                      .HasColumnName("bidder_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.RefundedAmount)
+                      .HasColumnName("refunded_amount")
+                      .IsRequired();
+
+                entity.Property(e => e.RefundDate)
+                      .HasColumnName("refund_date")
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<AuctionPaymentEntry>(entity =>
+            {
+                entity.ToTable("auction_payments"); // Database table name
+
+                entity.HasKey(e => e.Id); // Primary key
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .IsRequired()
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.SellerGuid)
+                      .HasColumnName("seller_guid")
+                      .IsRequired();
+
+                entity.Property(e => e.Amount)
+                      .HasColumnName("amount")
+                      .IsRequired();
+
+                entity.Property(e => e.PaymentDate)
+                      .HasColumnName("payment_date")
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<AuctionIpTracking>(entity =>
+            {
+                entity.ToTable("auction_ip_tracking"); // Table name
+
+                entity.HasKey(e => e.Id); // Primary Key
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .IsRequired()
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IpAddress)
+                      .HasColumnName("ip_address")
+                      .IsRequired();
+
+                entity.Property(e => e.ActiveAuctions)
+                      .HasColumnName("active_auctions")
+                      .IsRequired();
+
+                entity.Property(e => e.LastAuctionListed)
+                      .HasColumnName("last_auction_listed")
+                      .IsRequired();
             });
 
             OnModelCreatingPartial(modelBuilder);

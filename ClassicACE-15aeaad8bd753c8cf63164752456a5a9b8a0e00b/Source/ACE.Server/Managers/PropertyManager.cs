@@ -688,8 +688,9 @@ namespace ACE.Server.Managers
 
                 ("fall_damage_enabled", new Property<bool>(true, "Toggles whether fall damage is enabled")),
                 ("dekaru_dual_wield_speed_mod", new Property<bool>(true, "Toggles whether Dekaru's dual wield speed changes (other than for dagger) are enabled")),
-                ("dekaru_hc_keep_non_equippable_bonded_on_death", new Property<bool>(true, "Toggles whether bonded items are kept on a hardcore death despite being non-equippable"))
-                
+                ("dekaru_hc_keep_non_equippable_bonded_on_death", new Property<bool>(true, "Toggles whether bonded items are kept on a hardcore death despite being non-equippable")),
+                ("auction_system_enabled", new Property<bool>(true, "If FALSE, the auction system will be disabled."))
+
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<long>> DefaultLongProperties =
@@ -1085,7 +1086,8 @@ namespace ACE.Server.Managers
                 ("turbine_chat_webhook_audit", new Property<string>("", "Webhook to be used for ingame audit log.")),
                 ("proxycheck_api_key", new Property<string>("", "API key for proxycheck.io service for VPN detection")),
                 ("vpn_account_whitelist", new Property<string>("", "A comma separated list of account names for which VPN detection is bypassed")),
-                ("discord_login_token", new Property<string>("", "Login Token used for Discord chat integration"))
+                ("discord_login_token", new Property<string>("", "Login Token used for Discord chat integration")),
+                ("discord_server_id", new Property<string>("", "Discord server ID used for Discord chat integration"))
                 );
     }
 }
