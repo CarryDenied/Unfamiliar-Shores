@@ -1063,8 +1063,10 @@ namespace ACE.Server.Managers
                 
                 ("quest_mutation_tier_1_major_chance", new Property<double>(0.10, "The % chance a tier 1 quest item cantrip mutation will be a major cantrip (otherwise will be a minor cantrip).")),
                 ("quest_mutation_tier_2_major_chance", new Property<double>(0.25, "The % chance a tier 2 quest item cantrip mutation will be a major cantrip (otherwise will be a minor cantrip).")),
-                ("quest_mutation_tier_3_major_chance", new Property<double>(0.90, "The % chance a tier 3 quest item cantrip mutation will be a major cantrip (otherwise will be a minor cantrip)."))
-                
+                ("quest_mutation_tier_3_major_chance", new Property<double>(0.90, "The % chance a tier 3 quest item cantrip mutation will be a major cantrip (otherwise will be a minor cantrip).")),
+
+                ("treasure_map_chance", new Property<double>(0.002, "Probability of a creature dropping a treasure map. 1.0 means 100%"))
+
                 );
         
         public static readonly ReadOnlyDictionary<string, Property<string>> DefaultStringProperties =

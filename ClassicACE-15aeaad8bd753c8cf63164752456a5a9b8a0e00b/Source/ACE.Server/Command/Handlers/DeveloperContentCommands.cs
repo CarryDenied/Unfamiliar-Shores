@@ -3795,7 +3795,7 @@ namespace ACE.Server.Command.Handlers.Processors
                     {
                         var pos = new Position(new Vector2(x, y));
                         pos.AdjustMapCoords();
-                        pos.Translate(objCellId);
+                        pos.TranslateLandblockId(objCellId);
                         pos.FindZ();
 
                         using (StreamWriter sw = File.AppendText(vlocFile))

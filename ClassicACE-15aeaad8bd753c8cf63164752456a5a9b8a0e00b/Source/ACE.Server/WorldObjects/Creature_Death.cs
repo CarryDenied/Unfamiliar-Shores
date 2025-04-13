@@ -74,7 +74,7 @@ namespace ACE.Server.WorldObjects
         {
             var lastDamager = lastDamagerInfo?.TryGetAttacker();
 
-            if (lastDamagerInfo == null || lastDamagerInfo.Guid == Guid || lastDamager is Hotspot)
+            if (lastDamagerInfo == null || lastDamagerInfo.Guid == Guid || lastDamager is Hotspot || lastDamager is Food)   // !(lastDamager is Creature)?
                 return Strings.General[1];
 
             var deathMessage = Strings.GetDeathMessage(damageType, criticalHit);
@@ -807,7 +807,7 @@ namespace ACE.Server.WorldObjects
 
             corpse.EnterWorld();
 
-            if (player != null)
+            if (player != null && log.IsDebugEnabled)
             {
                 if (corpse.PhysicsObj == null || corpse.PhysicsObj.Position == null)
                     log.Debug($"[CORPSE] {Name}'s corpse (0x{corpse.Guid}) failed to spawn! Tried at {player.Location.ToLOCString()}");
@@ -849,6 +849,20 @@ namespace ACE.Server.WorldObjects
                         droppedItems.Add(wo);
 
                     DoCantripLogging(killer, wo);
+                }
+
+                var mapchance = PropertyManager.GetDouble("treasure_map_chance").Item;
+
+                if (IsMonster && mapchance > ThreadSafeRandom.Next(0.0f, 1.0f))
+                {
+                    var map = TreasureMap.TryCreateTreasureMap(this);
+                    if (map != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(map);
+                        else
+                            droppedItems.Add(map);
+                    }
                 }
             }
 
@@ -994,10 +1008,10 @@ namespace ACE.Server.WorldObjects
             var epicCantrips = wo.EpicCantrips;
             var legendaryCantrips = wo.LegendaryCantrips;
 
-            if (epicCantrips.Count > 0)
+            if (epicCantrips.Count > 0 && log.IsDebugEnabled)
                 log.Debug($"[LOOT][EPIC] {Name} ({Guid}) generated item with {epicCantrips.Count} epic{(epicCantrips.Count > 1 ? "s" : "")} - {wo.Name} ({wo.Guid}) - {GetSpellList(epicCantrips)} - killed by {killer?.Name} ({killer?.Guid})");
 
-            if (legendaryCantrips.Count > 0)
+            if (legendaryCantrips.Count > 0 && log.IsDebugEnabled)
                 log.Debug($"[LOOT][LEGENDARY] {Name} ({Guid}) generated item with {legendaryCantrips.Count} legendar{(legendaryCantrips.Count > 1 ? "ies" : "y")} - {wo.Name} ({wo.Guid}) - {GetSpellList(legendaryCantrips)} - killed by {killer?.Name} ({killer?.Guid})");
         }
 
