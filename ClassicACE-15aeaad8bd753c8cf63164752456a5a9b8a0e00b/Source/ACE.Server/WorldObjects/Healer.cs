@@ -312,7 +312,7 @@ namespace ACE.Server.WorldObjects
             var targetMod = target.GetHealingRatingMod();
 
             var ratingMod = Creature.AdditiveCombine(healerMod, targetMod);
-            Console.WriteLine($"HealerMod: {healerMod}, TargetMod: {targetMod}, Combined: {ratingMod}");
+            //Console.WriteLine($"HealerMod: {healerMod}, TargetMod: {targetMod}, Combined: {ratingMod}");
 
             healAmount *= ratingMod;
 

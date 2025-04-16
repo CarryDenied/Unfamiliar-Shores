@@ -1347,7 +1347,7 @@ namespace ACE.Server.WorldObjects
             {
                 return false;
             }
-            if (item.WeenieClassId == 90000001)
+            if (item.WeenieClassId == 36518)
             {
                 return false;
             }
@@ -1404,17 +1404,17 @@ namespace ACE.Server.WorldObjects
 
                 int totalRefund = refunds.Sum(r => r.RefundedAmount);
 
-                var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                var coinItem = WorldObjectFactory.CreateNewWorldObject(36518);
                 coinItem.StackSize = totalRefund;
 
                 if (!player.TryCreateInInventoryWithNetworking(coinItem))
                 {
                     AuctionHouse.StorePendingAuctionReturn(player.Guid.Full, coinItem, "REFUND", player.Guid.Full);
-                    player.SendMessage($"[AUCTION] Your refund of {totalRefund} Enlightened Coins could not be added to your inventory and has been stored. Use /auction retrieve.");
+                    player.SendMessage($"[AUCTION] Your refund of {totalRefund} Doubloons could not be added to your inventory and has been stored. Use /auction retrieve.");
                 }
                 else
                 {
-                    player.SendMessage($"[AUCTION] You have been refunded {totalRefund} Enlightened Coins from canceled auctions.");
+                    player.SendMessage($"[AUCTION] You have been refunded {totalRefund} Doubloons from canceled auctions.");
                 }
 
                 context.AuctionRefunds.RemoveRange(refunds);
@@ -1435,17 +1435,17 @@ namespace ACE.Server.WorldObjects
 
                 int totalPayment = pendingPayments.Sum(p => p.Amount);
 
-                var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                var coinItem = WorldObjectFactory.CreateNewWorldObject(36518);
                 coinItem.StackSize = totalPayment;
 
                 if (!player.TryCreateInInventoryWithNetworking(coinItem))
                 {
                     AuctionHouse.StorePendingAuctionReturn(player.Guid.Full, coinItem, "PAYMENT", player.Guid.Full);
-                    player.SendMessage($"[AUCTION] Your auction earnings of {totalPayment} Enlightened Coins could not be added to your inventory and have been stored. Use /auction retrieve.");
+                    player.SendMessage($"[AUCTION] Your auction earnings of {totalPayment} Doubloons could not be added to your inventory and have been stored. Use /auction retrieve.");
                 }
                 else
                 {
-                    player.SendMessage($"[AUCTION] You have received {totalPayment} Enlightened Coins from completed auctions.");
+                    player.SendMessage($"[AUCTION] You have received {totalPayment} Doubloons from completed auctions.");
                 }
 
                 context.AuctionPayments.RemoveRange(pendingPayments);

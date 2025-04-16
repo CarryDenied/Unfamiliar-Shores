@@ -415,7 +415,9 @@ namespace ACE.Server.WorldObjects
                 //    pvpPenalty = -100;
             }
 
-            return healBoostRating + equipment + enchantments + lumAugBonus + pvpPenalty;
+            int totalBoost = healBoostRating + equipment + enchantments + lumAugBonus + pvpPenalty;
+
+            return totalBoost;
         }
 
         public int GetHealingResistRating()

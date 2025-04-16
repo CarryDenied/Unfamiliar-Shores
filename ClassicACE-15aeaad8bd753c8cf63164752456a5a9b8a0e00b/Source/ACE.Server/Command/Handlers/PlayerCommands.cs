@@ -1979,7 +1979,7 @@ namespace ACE.Server.Command.Handlers
 
             // Reload the setting before proceeding
             bool isAuctionEnabled = PropertyManager.GetBool("auction_system_enabled").Item;
-            Console.WriteLine($"[DEBUG] Auction system enabled: {isAuctionEnabled}");
+            //Console.WriteLine($"[DEBUG] Auction system enabled: {isAuctionEnabled}");
 
             if (!isAuctionEnabled)
             {
@@ -2067,14 +2067,14 @@ namespace ACE.Server.Command.Handlers
 
                     // ✅ Ask for confirmation before proceeding
                     string itemName = selectedItem.NameWithMaterial;
-                    string message = $"Are you sure you want to list {itemName} for auction with a minimum bid of {minBid} and a buyout price of {buyoutPrice} Enlightened Coins?";
+                    string message = $"Are you sure you want to list {itemName} for auction with a minimum bid of {minBid} and a buyout price of {buyoutPrice} Doubloons?";
 
                     session.Player.ConfirmationManager.EnqueueSend(new Confirmation_Custom(session.Player.Guid, () =>
                     {
 
                         if (!session.Player.TryRemoveItemForAuction(selectedItem))
                         {
-                            session.Player.SendMessage($"[Auction Error] Failed to remove {selectedItem.NameWithMaterial} from inventory. Ensure it is not equipped, in trade, attuned, enlighten coins, or a container.");
+                            session.Player.SendMessage($"[Auction Error] Failed to remove {selectedItem.NameWithMaterial} from inventory. Ensure it is not equipped, in trade, attuned, Doubloons, or a container.");
                             return;
                         }
 
@@ -2111,16 +2111,6 @@ namespace ACE.Server.Command.Handlers
                     AuctionHouse.BuyoutItem(session.Player, buyoutId);
                     break;
 
-
-
-
-
-
-
-
-
-
-
                 case "retrieve":
                     AuctionHouse.RetrieveAuctionReturns(session.Player);
                     break;
@@ -2138,7 +2128,7 @@ namespace ACE.Server.Command.Handlers
                         session.Player.SendMessage("[AUCTION ERROR] Auction not found.");
                         return;
                     }
-                    session.Player.SendMessage($"[debug] Auction ID: {auction.AuctionId}, Seller GUID: {auction.SellerGuid}, Your GUID: {session.Player.Guid.Full}");
+                    //session.Player.SendMessage($"[debug] Auction ID: {auction.AuctionId}, Seller GUID: {auction.SellerGuid}, Your GUID: {session.Player.Guid.Full}");
 
                     // ✅ Fix logic to check if seller is canceling their own auction
                     if ((ulong)auction.SellerGuid == (ulong)session.Player.Guid.Full)

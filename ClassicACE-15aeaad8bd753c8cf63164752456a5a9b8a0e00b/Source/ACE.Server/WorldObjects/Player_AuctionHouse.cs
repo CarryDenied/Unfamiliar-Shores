@@ -301,7 +301,7 @@ namespace ACE.Server.WorldObjects
                     }
                     else
                     {
-                        Console.WriteLine($"[WARNING] {item.NameWithMaterial} NOT FOUND in inventory despite removal failing. Proceeding with listing.");
+                        //Console.WriteLine($"[WARNING] {item.NameWithMaterial} NOT FOUND in inventory despite removal failing. Proceeding with listing.");
                     }
                 }
 
@@ -331,7 +331,7 @@ namespace ACE.Server.WorldObjects
 
                 int quantity = item.GetProperty(PropertyInt.StackSize) ?? 1;
                 string stackMessage = quantity > 1 ? $"({quantity})" : "";
-                seller.SendMessage($"[AUCTION LISTED] You have listed {stackMessage}{item.NameWithMaterial} for auction with a minimum bid of {minBid} and a buyout price of {buyoutPrice} Enlightened Coins."); 
+                seller.SendMessage($"[AUCTION LISTED] You have listed {stackMessage}{item.NameWithMaterial} for auction with a minimum bid of {minBid} and a buyout price of {buyoutPrice} Doubloons."); 
             }
         }
 
@@ -455,26 +455,26 @@ namespace ACE.Server.WorldObjects
                     return;
                 }
 
-                // ✅ Check if the player has enough Enlightened Coins in inventory
-                int totalCoins = bidder.GetNumInventoryItemsOfWCID(90000001); // Replace 90000001 with the actual coin Weenie ID
+                // ✅ Check if the player has enough Doubloons in inventory
+                int totalCoins = bidder.GetNumInventoryItemsOfWCID(36518); // Replace 36518 with the actual coin Weenie ID
 
                 if (totalCoins < bidAmount)
                 {
-                    bidder.SendMessage("[AUCTION ERROR] You do not have enough Enlightened Coins in your inventory to place this bid.");
+                    bidder.SendMessage("[AUCTION ERROR] You do not have enough Doubloons in your inventory to place this bid.");
                     return;
                 }
 
                 // ✅ Refund previous bidder (give coins back into their inventory)
                 if (auction.CurrentBidder != null)
                 {
-                    var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                    var coinItem = WorldObjectFactory.CreateNewWorldObject(36518);
                     coinItem.StackSize = auction.HighestBid;
                     auction.CurrentBidder.TryCreateInInventoryWithNetworking(coinItem);
-                    auction.CurrentBidder.SendMessage($"[AUCTION WARN] You have been outbid on {auction.Item.NameWithMaterial}. Your {auction.HighestBid} Enlightened Coins have been returned to your inventory.");
+                    auction.CurrentBidder.SendMessage($"[AUCTION WARN] You have been outbid on {auction.Item.NameWithMaterial}. Your {auction.HighestBid} Doubloons have been returned to your inventory.");
                 }
 
                 // ✅ Remove coins from bidder's inventory
-                if (!bidder.TryConsumeFromInventoryWithNetworking(90000001, bidAmount))
+                if (!bidder.TryConsumeFromInventoryWithNetworking(36518, bidAmount))
                 {
                     bidder.SendMessage("[AUCTION ERROR] Failed to remove coins from your inventory.");
                     return;
@@ -500,8 +500,8 @@ namespace ACE.Server.WorldObjects
                     }
                 }
 
-                auction.Seller?.SendMessage($"[AUCTION ATTENTION] A new highest bid of {bidAmount} Enlightened Coins has been placed on {auction.Item.NameWithMaterial}.");
-                bidder.SendMessage($"[AUCTION BID] You have placed a bid of {bidAmount} Enlightened Coins on {auction.Item.NameWithMaterial}.");
+                auction.Seller?.SendMessage($"[AUCTION ATTENTION] A new highest bid of {bidAmount} Doubloons has been placed on {auction.Item.NameWithMaterial}.");
+                bidder.SendMessage($"[AUCTION BID] You have placed a bid of {bidAmount} Doubloons on {auction.Item.NameWithMaterial}.");
             }
         }
 
@@ -547,15 +547,15 @@ namespace ACE.Server.WorldObjects
                 }
 
                 // ✅ Check if buyer has enough coins in inventory
-                int totalCoins = buyer.GetNumInventoryItemsOfWCID(90000001); // Replace 90000001 with actual Enlightened Coin Weenie ID
+                int totalCoins = buyer.GetNumInventoryItemsOfWCID(36518); // Replace 36518 with actual Enlightened Coin Weenie ID
                 if (totalCoins < auction.BuyoutPrice)
                 {
-                    buyer.SendMessage("[AUCTION ERROR] You do not have enough Enlightened Coins in your inventory to buy this item.");
+                    buyer.SendMessage("[AUCTION ERROR] You do not have enough Doubloons in your inventory to buy this item.");
                     return;
                 }
 
                 // ✅ Remove coins from buyer
-                if (!buyer.TryConsumeFromInventoryWithNetworking(90000001, auction.BuyoutPrice))
+                if (!buyer.TryConsumeFromInventoryWithNetworking(36518, auction.BuyoutPrice))
                 {
                     buyer.SendMessage("[AUCTION ERROR] Failed to remove coins from your inventory.");
                     return;
@@ -574,9 +574,9 @@ namespace ACE.Server.WorldObjects
 
                 if (sellerOnline != null) // ✅ Seller is ONLINE
                 {
-                    var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                    var coinItem = WorldObjectFactory.CreateNewWorldObject(36518);
                     coinItem.StackSize = auction.BuyoutPrice;
-                    sellerOnline.SendMessage($"[AUCTION SOLD] Your item {auction.Item.NameWithMaterial} was sold for {auction.BuyoutPrice} Enlightened Coins.");
+                    sellerOnline.SendMessage($"[AUCTION SOLD] Your item {auction.Item.NameWithMaterial} was sold for {auction.BuyoutPrice} Doubloons.");
                     NotifySellerAuctionSoldBuyout(auction);
                 }
                 else // ✅ Seller is OFFLINE - Store pending payment in DB
@@ -594,7 +594,7 @@ namespace ACE.Server.WorldObjects
                 }
                 else
                 {
-                    buyer.SendMessage($"[AUCTION WON] You have purchased {auction.Item.NameWithMaterial} for {auction.BuyoutPrice} Enlightened Coins.");
+                    buyer.SendMessage($"[AUCTION WON] You have purchased {auction.Item.NameWithMaterial} for {auction.BuyoutPrice} Doubloons.");
                     NotifyBidderAuctionSoldBid(auction);
                 }
 
@@ -628,7 +628,7 @@ namespace ACE.Server.WorldObjects
                             if (auction.HighestBid > 0) // **Item was sold**
                             {
                                 // ✅ Deliver payment to seller as coin stack
-                                var coinItem = WorldObjectFactory.CreateNewWorldObject(90000001); // Enlightened Coin
+                                var coinItem = WorldObjectFactory.CreateNewWorldObject(36518); // Enlightened Coin
                                 coinItem.StackSize = auction.HighestBid;
 
                                 if (seller != null)
@@ -640,7 +640,7 @@ namespace ACE.Server.WorldObjects
                                     }
                                     else
                                     {
-                                        seller.SendMessage($"[AUCTION SOLD] Your auction for {auction.Item.NameWithMaterial} was sold for {auction.HighestBid} Enlightened Coin(s).");
+                                        seller.SendMessage($"[AUCTION SOLD] Your auction for {auction.Item.NameWithMaterial} was sold for {auction.HighestBid} Doubloons.");
                                     }
                                     NotifySellerAuctionSoldBid(auction);
                                 }
@@ -748,7 +748,7 @@ namespace ACE.Server.WorldObjects
         {
             using (var context = new ShardDbContext())
             {
-                // Console.WriteLine($"[AUCTION] Storing {amount} Enlightened Coins payment for offline seller (GUID: {sellerGuid})...");
+                // Console.WriteLine($"[AUCTION] Storing {amount} Doubloons payment for offline seller (GUID: {sellerGuid})...");
 
                 var paymentEntry = new AuctionPaymentEntry
                 {
@@ -864,9 +864,33 @@ namespace ACE.Server.WorldObjects
                     else
                     {
                         seller.SendMessage($"[AUCTION CANCEL] Your auction for {auction.Item.NameWithMaterial} has been canceled and returned to you.");
-                        NotifyPreviousBidderAuctionCanceled(auction);
                     }
 
+                    // ✅ Refund the current bidder, if exists (using actual currency)
+                    if (auction.CurrentBidder != null)
+                    {
+                        // Create a new WorldObject for the refunded coins
+                        var refundCoins = WorldObjectFactory.CreateNewWorldObject(36518);  // Assuming 36518 is the ID for the currency object (like Doubloons)
+                        refundCoins.StackSize = auction.HighestBid;
+
+                        // Try to create the refund coins in the bidder's inventory
+                        if (!auction.CurrentBidder.TryCreateInInventoryWithNetworking(refundCoins))
+                        {
+                            // If inventory is full, store the refund as pending
+                            StorePendingAuctionReturn(auction.CurrentBidder.Guid.Full, refundCoins, "BUYER", auction.CurrentBidder.Guid.Full);
+                            auction.CurrentBidder.SendMessage($"[AUCTION] Your bid of {auction.HighestBid} Doubloons on {auction.Item.NameWithMaterial} has been canceled. Coins have been stored. Please use /auction retrieve.");
+                        }
+                        else
+                        {
+                            // Notify the bidder that the refund has been processed successfully
+                            auction.CurrentBidder.SendMessage($"[AUCTION] Your bid of {auction.HighestBid} Doubloons on {auction.Item.NameWithMaterial} has been canceled and refunded.");
+                        }
+
+                        // Notify the bidder about the cancellation
+                        NotifyBidderBidCanceled(auction, auction.CurrentBidder);
+                    }
+
+                    // Clean up the auction from the database and active list
                     context.AuctionEntries.Remove(auctionEntry);
                     context.SaveChanges();
                 }
@@ -893,17 +917,17 @@ namespace ACE.Server.WorldObjects
                 }
 
                 // ✅ Refund the bidder
-                var refundCoins = WorldObjectFactory.CreateNewWorldObject(90000001);
+                var refundCoins = WorldObjectFactory.CreateNewWorldObject(36518);
                 refundCoins.StackSize = auction.HighestBid;
 
                 if (!bidder.TryCreateInInventoryWithNetworking(refundCoins))
                 {
                     StorePendingAuctionReturn(bidder.Guid.Full, refundCoins, "BUYER", bidder.Guid.Full);
-                    bidder.SendMessage($"[AUCTION] Your bid was canceled. {auction.HighestBid} coins have been stored since your inventory is full. Use /auction retrieve.");
+                    bidder.SendMessage($"[AUCTION] Your bid was canceled. {auction.HighestBid} Doubloons have been stored since your inventory is full. Use /auction retrieve.");
                 }
                 else
                 {
-                    bidder.SendMessage($"[AUCTION] Your bid of {auction.HighestBid} Enlightened Coins on {auction.Item.NameWithMaterial} has been canceled and refunded.");
+                    bidder.SendMessage($"[AUCTION] Your bid of {auction.HighestBid} Doubloons on {auction.Item.NameWithMaterial} has been canceled and refunded.");
                 }
 
                 // ✅ Load previous bidder details
@@ -918,11 +942,11 @@ namespace ACE.Server.WorldObjects
                 if (validPreviousBidder)
                 {
                     // ✅ Try to deduct coins from previous bidder’s inventory
-                    bool hasCoins = previousBidder.GetNumInventoryItemsOfWCID(90000001) >= auction.PreviousBidAmount;
+                    bool hasCoins = previousBidder.GetNumInventoryItemsOfWCID(36518) >= auction.PreviousBidAmount;
 
-                    if (hasCoins && previousBidder.TryConsumeFromInventoryWithNetworking(90000001, auction.PreviousBidAmount))
+                    if (hasCoins && previousBidder.TryConsumeFromInventoryWithNetworking(36518, auction.PreviousBidAmount))
                     {
-                        previousBidder.SendMessage($"[AUCTION INFO] Your previous bid of {auction.PreviousBidAmount} Enlightened Coins on {auction.Item.NameWithMaterial} has been reinstated.");
+                        previousBidder.SendMessage($"[AUCTION INFO] Your previous bid of {auction.PreviousBidAmount} Doubloons on {auction.Item.NameWithMaterial} has been reinstated.");
                         NotifyBidderBidCanceled(auction, previousBidder);
 
                         auction.CurrentBidder = previousBidder;
@@ -965,7 +989,7 @@ namespace ACE.Server.WorldObjects
                 // Notify the seller
                 if (auction.CurrentBidder != null)
                 {
-                    auction.Seller?.SendMessage($"[AUCTION UPDATE] {auction.CurrentBidder.Name} is now the highest bidder on {auction.Item.NameWithMaterial} at {auction.HighestBid} Enlightened Coins after a bid cancellation.");
+                    auction.Seller?.SendMessage($"[AUCTION UPDATE] {auction.CurrentBidder.Name} is now the highest bidder on {auction.Item.NameWithMaterial} at {auction.HighestBid} Doubloons after a bid cancellation.");
                 }
                 else
                 {
@@ -991,7 +1015,7 @@ namespace ACE.Server.WorldObjects
                     // Pull directly from seller note
                     string sellerNote = !string.IsNullOrWhiteSpace(a.SellerNote) ? a.SellerNote : a.Item.NameWithMaterial;
 
-                    return $"[ID] {a.AuctionId}: listed by {a.SellerName}, [{sellerNote}] [Min Bid] {a.MinBid} EC | [Buyout] {a.BuyoutPrice} EC | [Current Bid] {(a.HighestBid > 0 ? a.HighestBid + " EC" : "No bids")} | Ends in {formattedTime}";
+                    return $"[ID] {a.AuctionId}: listed by {a.SellerName}, [{sellerNote}] [Min Bid] {a.MinBid} Doubloons | [Buyout] {a.BuyoutPrice} Doubloons | [Current Bid] {(a.HighestBid > 0 ? a.HighestBid + " Doubloons" : "No bids")} | Ends in {formattedTime}";
                 }));
             }
         }
@@ -1010,7 +1034,10 @@ namespace ACE.Server.WorldObjects
                     double timeLeft = a.DurationSeconds - (DateTime.UtcNow - a.StartTime).TotalSeconds;
                     string formattedTime = TimeSpan.FromSeconds(Math.Max(0, timeLeft)).ToString(@"hh\:mm\:ss");
 
-                    return $"[ID] {a.AuctionId} listed by {a.SellerName} : [{a.ItemType}] [{a.Item.NameWithMaterial}] [Min Bid]: {a.MinBid} Enlightened Coins | [Buyout]: {a.BuyoutPrice} Enlightened Coins | [Current Bid]: {a.HighestBid} Enlightened Coins | Ends in: {formattedTime}";
+                    // Pull the SellerNote or use the item name if it's empty
+                    string sellerNote = !string.IsNullOrWhiteSpace(a.SellerNote) ? a.SellerNote : a.Item.NameWithMaterial;
+
+                    return $"[ID] {a.AuctionId} listed by {a.SellerName} : [{a.ItemType}] [{sellerNote}] [Min Bid]: {a.MinBid} Doubloons | [Buyout]: {a.BuyoutPrice} Doubloons | [Current Bid]: {a.HighestBid} Doubloons | Ends in: {formattedTime}";
                 }));
             }
         }
@@ -1030,9 +1057,9 @@ namespace ACE.Server.WorldObjects
 
                     bool validPreviousBidder = previousBidder != null &&
                                                 auction.PreviousBidAmount > 0 &&
-                                                previousBidder.GetNumInventoryItemsOfWCID(90000001) >= auction.PreviousBidAmount;
+                                                previousBidder.GetNumInventoryItemsOfWCID(36518) >= auction.PreviousBidAmount;
 
-                    if (validPreviousBidder && previousBidder.TryConsumeFromInventoryWithNetworking(90000001, auction.PreviousBidAmount))
+                    if (validPreviousBidder && previousBidder.TryConsumeFromInventoryWithNetworking(36518, auction.PreviousBidAmount))
                     {
                         // ✅ Update auction
                         auction.CurrentBidder = previousBidder;
@@ -1040,10 +1067,10 @@ namespace ACE.Server.WorldObjects
                         auction.LastBidderGuid = null;
                         auction.PreviousBidAmount = 0;
 
-                        previousBidder.SendMessage($"[AUCTION NOTICE] Your previous bid of {auction.HighestBid} Enlightened Coins on {auction.Item.NameWithMaterial} has been reinstated after top bidder deletion.");
+                        previousBidder.SendMessage($"[AUCTION NOTICE] Your previous bid of {auction.HighestBid} Doubloons on {auction.Item.NameWithMaterial} has been reinstated after top bidder deletion.");
                         NotifyBidderBidCanceled(auction, previousBidder);
 
-                        auction.Seller?.SendMessage($"[AUCTION UPDATE] {previousBidder.Name} is now the highest bidder on {auction.Item.NameWithMaterial} at {auction.HighestBid} Enlightened Coins due to a bidder deletion.");
+                        auction.Seller?.SendMessage($"[AUCTION UPDATE] {previousBidder.Name} is now the highest bidder on {auction.Item.NameWithMaterial} at {auction.HighestBid} Doubloons due to a bidder deletion.");
                     }
                     else
                     {
@@ -1075,17 +1102,17 @@ namespace ACE.Server.WorldObjects
                 {
                     if (auction.CurrentBidder != null && auction.HighestBid > 0)
                     {
-                        var refundItem = WorldObjectFactory.CreateNewWorldObject(90000001);
+                        var refundItem = WorldObjectFactory.CreateNewWorldObject(36518);
                         refundItem.StackSize = auction.HighestBid;
 
                         if (!auction.CurrentBidder.TryCreateInInventoryWithNetworking(refundItem))
                         {
                             StorePendingAuctionReturn(auction.CurrentBidder.Guid.Full, refundItem, "BUYER", auction.CurrentBidder.Guid.Full);
-                            auction.CurrentBidder.SendMessage($"[AUCTION REFUND] Your bid of {auction.HighestBid} Enlightened Coins on {auction.Item.NameWithMaterial} has been refunded and stored due to seller deletion.");
+                            auction.CurrentBidder.SendMessage($"[AUCTION REFUND] Your bid of {auction.HighestBid} Doubloons on {auction.Item.NameWithMaterial} has been refunded and stored due to seller deletion.");
                         }
                         else
                         {
-                            auction.CurrentBidder.SendMessage($"[AUCTION REFUND] Your bid of {auction.HighestBid} Enlightened Coins on {auction.Item.NameWithMaterial} has been refunded due to seller deletion.");
+                            auction.CurrentBidder.SendMessage($"[AUCTION REFUND] Your bid of {auction.HighestBid} Doubloons on {auction.Item.NameWithMaterial} has been refunded due to seller deletion.");
                         }
                     }
 
@@ -1111,7 +1138,7 @@ namespace ACE.Server.WorldObjects
                 // Log the Discord User ID
                // Console.WriteLine($"[AUCTION LOG] Seller Discord User ID: {auction.Seller.DiscordUserId}");
 
-                string message = $"Your auction for {auction.Item.NameWithMaterial} has been sold for {auction.BuyoutPrice} Enlightened Coins!";
+                string message = $"Your auction for {auction.Item.NameWithMaterial} has been sold for {auction.BuyoutPrice} Doubloons!";
                 DiscordChatBridge.SendDiscordDM(auction.Seller.Name, message, (long)auction.Seller.DiscordUserId);  // Use the seller's Discord user ID for notification
             }
         }
@@ -1123,7 +1150,7 @@ namespace ACE.Server.WorldObjects
                 // Log the Discord User ID of the winner
                // Console.WriteLine($"[AUCTION LOG] Winner Discord User ID: {auction.CurrentBidder.DiscordUserId}");
 
-                string message = $"You have won {auction.Item.NameWithMaterial} for {auction.HighestBid} Enlightened Coins!";
+                string message = $"You have won {auction.Item.NameWithMaterial} for {auction.HighestBid} Doubloons!";
                 DiscordChatBridge.SendDiscordDM(auction.CurrentBidder.Name, message, (long)auction.CurrentBidder.DiscordUserId);  // Notify the winner
             }
         }
@@ -1135,7 +1162,7 @@ namespace ACE.Server.WorldObjects
                 // Log the Discord User ID
                // Console.WriteLine($"[AUCTION LOG] Seller Discord User ID: {auction.Seller.DiscordUserId}");
 
-                string message = $"Your auction for {auction.Item.NameWithMaterial} has been sold for {auction.HighestBid} Enlightened Coins!";
+                string message = $"Your auction for {auction.Item.NameWithMaterial} has been sold for {auction.HighestBid} Doubloons!";
                 DiscordChatBridge.SendDiscordDM(auction.Seller.Name, message, (long)auction.Seller.DiscordUserId);  // Use the seller's Discord user ID for notification
             }
         }
@@ -1165,7 +1192,7 @@ namespace ACE.Server.WorldObjects
                     // Console.WriteLine($"[AUCTION LOG] Previous Bidder Discord User ID: {previousBidder.DiscordUserId}");
                     // Console.WriteLine($"[AUCTION LOG] Previous Bidder Name: {previousBidder.Name}");
 
-                    string message = $"You have been outbid on {auction.Item.NameWithMaterial}. Current bid: {auction.HighestBid} Enlightened Coins.";
+                    string message = $"You have been outbid on {auction.Item.NameWithMaterial}. Current bid: {auction.HighestBid} Doubloons.";
                     DiscordChatBridge.SendDiscordDM(previousBidder.Name, message, (long)previousBidder.DiscordUserId);  // Notify the previous bidder
                 }
             }
@@ -1182,7 +1209,7 @@ namespace ACE.Server.WorldObjects
                     // Log the previous bidder's Discord User ID
                     //Console.WriteLine($"[AUCTION LOG] Previous Bidder Discord User ID: {previousBidder.DiscordUserId}");
 
-                    string messageToPreviousBidder = $"You have been reinstated as the highest bidder on {auction.Item.NameWithMaterial} with a bid of {auction.PreviousBidAmount} Enlightened Coins.";
+                    string messageToPreviousBidder = $"You have been reinstated as the highest bidder on {auction.Item.NameWithMaterial} with a bid of {auction.PreviousBidAmount} Doubloons.";
                     DiscordChatBridge.SendDiscordDM(previousBidder.Name, messageToPreviousBidder, (long)previousBidder.DiscordUserId);
                 }
             }
@@ -1195,7 +1222,7 @@ namespace ACE.Server.WorldObjects
                 // Log the current bidder's Discord User ID
                 //Console.WriteLine($"[AUCTION LOG] Current Bidder Discord User ID: {auction.CurrentBidder.DiscordUserId}");
 
-                string message = $"The auction for {auction.Item.NameWithMaterial} has been canceled by the seller. Your bid of {auction.HighestBid} Enlightened Coins has been refunded.";
+                string message = $"The auction for {auction.Item.NameWithMaterial} has been canceled by the seller. Your bid of {auction.HighestBid} Doubloons has been refunded.";
                 DiscordChatBridge.SendDiscordDM(auction.CurrentBidder.Name, message, (long)auction.CurrentBidder.DiscordUserId);
             }
 
@@ -1208,7 +1235,7 @@ namespace ACE.Server.WorldObjects
                     // Log the previous bidder's Discord User ID
                    // Console.WriteLine($"[AUCTION LOG] Previous Bidder Discord User ID: {previousBidder.DiscordUserId}");
 
-                    string messageToPreviousBidder = $"The auction for {auction.Item.NameWithMaterial} has been canceled. You were previously the highest bidder with {auction.PreviousBidAmount} Enlightened Coins.";
+                    string messageToPreviousBidder = $"The auction for {auction.Item.NameWithMaterial} has been canceled. You were previously the highest bidder with {auction.PreviousBidAmount} Doubloons.";
                     DiscordChatBridge.SendDiscordDM(previousBidder.Name, messageToPreviousBidder, (long)previousBidder.DiscordUserId);
                 }
             }
