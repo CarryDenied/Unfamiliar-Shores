@@ -609,11 +609,11 @@ namespace ACE.Server.WorldObjects
         /// </summary>
         public uint GetEffectiveDefenseSkill(CombatType combatType, bool isPvP)
         {
-            var defenseSkill = combatType == CombatType.Missile ? Skill.MissileDefense : Skill.MeleeDefense;
-            var defenseMod = defenseSkill == Skill.MissileDefense ? GetWeaponMissileDefenseModifier(this) : GetWeaponMeleeDefenseModifier(this);
+            var defenseSkillType = combatType == CombatType.Missile ? Skill.MissileDefense : Skill.MeleeDefense;
+            var defenseMod = defenseSkillType == Skill.MissileDefense ? GetWeaponMissileDefenseModifier(this) : GetWeaponMeleeDefenseModifier(this);
             var burdenMod = GetBurdenMod();
 
-            var imbuedEffectType = defenseSkill == Skill.MissileDefense ? ImbuedEffectType.MissileDefense : ImbuedEffectType.MeleeDefense;
+            var imbuedEffectType = defenseSkillType == Skill.MissileDefense ? ImbuedEffectType.MissileDefense : ImbuedEffectType.MeleeDefense;
             var defenseImbues = GetDefenseImbues(imbuedEffectType);
             if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
             {
@@ -623,6 +623,10 @@ namespace ACE.Server.WorldObjects
                     defenseImbues *= (int)PropertyManager.GetLong("dekaru_imbue_melee_defense_per_imbue").Item;
             }
 
+            // Imbues cannot benefit more than 10% of base skill
+            var defenseSkill = GetCreatureSkill(defenseSkillType);
+            defenseImbues = (int)Math.Min(defenseImbues, defenseSkill.Base / 10);
+
             var stanceMod = this is Player player ? player.GetDefenseStanceMod() : 1.0f;
 
             //if (this is Player)
@@ -630,9 +634,9 @@ namespace ACE.Server.WorldObjects
 
             uint effectiveDefense;
             if (!isPvP && ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM && this is Player)
-                effectiveDefense = (uint)Math.Round(GetCreatureSkill(defenseSkill).Current * 1.25f * defenseMod * burdenMod * stanceMod + defenseImbues);
+                effectiveDefense = (uint)Math.Round(defenseSkill.Current * 1.25f * defenseMod * burdenMod * stanceMod + defenseImbues);
             else
-                effectiveDefense = (uint)Math.Round(GetCreatureSkill(defenseSkill).Current * defenseMod * burdenMod * stanceMod + defenseImbues);
+                effectiveDefense = (uint)Math.Round(defenseSkill.Current * defenseMod * burdenMod * stanceMod + defenseImbues);
 
             if (IsExhausted) effectiveDefense = 0;
 
