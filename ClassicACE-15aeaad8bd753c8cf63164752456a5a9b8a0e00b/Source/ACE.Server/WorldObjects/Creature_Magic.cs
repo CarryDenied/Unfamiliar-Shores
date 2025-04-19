@@ -215,6 +215,12 @@ namespace ACE.Server.WorldObjects
 
         public bool ActivateItemSpells(WorldObject item)
         {
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+            {
+                if (item is LeyLineAmulet leyLineAmulet)
+                    leyLineAmulet.OnActivate(this as Player);
+            }
+
             var hasActiveSpell = false;
 
             if (item.HasProc)
