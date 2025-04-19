@@ -462,7 +462,7 @@ namespace ACE.Server.WorldObjects
             {
                 var leyLineAmulet = worldObject as LeyLineAmulet;
                 if (leyLineAmulet != null)
-                    leyLineAmulet.OnDequip(this as Player);
+                    this.DeactivateItemSpells(leyLineAmulet);
             }
 
             // If item has any spells, remove them from the registry on unequip
