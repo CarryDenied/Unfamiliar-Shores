@@ -213,9 +213,13 @@ namespace ACE.Entity.Enum.Properties
         SmartSalvageAvoidInscripted      = 9019,
         [ServerOnly]
         SmartSalvageIsWhitelist          = 9020,
+        [ServerOnly]
         IsLightWeapon                    = 9021,
+        [ServerOnly]
         Exploration1LandblockReached     = 9022,
+        [ServerOnly]
         Exploration2LandblockReached     = 9023,
+        [ServerOnly]
         Exploration3LandblockReached     = 9024,
 
         /* Elite implementation */

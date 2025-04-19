@@ -633,6 +633,10 @@ namespace ACE.Entity.Enum.Properties
         [ServerOnly]
         SlayerAdded                             = 9023,
 
+        //Elite Implementation
+        [ServerOnly]
+        MirrorMobCount                           = 9079,
+
         // CustomDM
         [ServerOnly]
         TacticAndTechniqueId                     = 10000,
@@ -687,11 +691,8 @@ namespace ACE.Entity.Enum.Properties
         [ServerOnly]
         EnrageSound                              = 10028,
         [ServerOnly]
-        EnrageVisualEffect                       = 10029,
+        EnrageVisualEffect                       = 10029
 
-        //Elite Implementation
-        [ServerOnly]
-        MirrorMobCount                           = 9079,
     }
 
     public static class PropertyIntExtensions

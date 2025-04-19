@@ -755,7 +755,7 @@ namespace ACE.Server.WorldObjects
                 if (IsHardcore)
                 {
                     dropAllWielded = true;
-                    dropAllTradeNotes = true;
+                    dropAllTradeNotes = PropertyManager.GetBool("hc_corpse_drop_all_tradenotes").Item;
 
                     var topDamager = DamageHistory.GetTopDamager(false);
                     if (topDamager != null && topDamager.IsPlayer && topDamager.TryGetAttacker() is Player topDamagerPlayer)
@@ -787,7 +787,7 @@ namespace ACE.Server.WorldObjects
                     // handle items with BondedStatus.Destroy
                     destroyedItems = HandleDestroyBonded();
 
-                    var inventory = Inventory.Values.Where(i => (i.GetProperty(PropertyInt.Bonded) ?? 0) == 0 || (IsHardcore && i.ItemType == ItemType.PromissoryNote)).OrderByDescending(i => i.PlacementPosition).ToList(); // Filter bonded items
+                    var inventory = Inventory.Values.Where(i => (i.GetProperty(PropertyInt.Bonded) ?? 0) == 0 || (dropAllTradeNotes && i.ItemType == ItemType.PromissoryNote)).OrderByDescending(i => i.PlacementPosition).ToList(); // Filter bonded items
                     var wieldedItems = EquippedObjects.Values.Where(i => (i.GetProperty(PropertyInt.Bonded) ?? 0) == 0).ToList(); // Filter bonded items
 
                     var allItems = new List<WorldObject>();
