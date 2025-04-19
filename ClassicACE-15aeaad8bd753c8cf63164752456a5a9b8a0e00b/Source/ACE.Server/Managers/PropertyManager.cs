@@ -541,6 +541,8 @@ namespace ACE.Server.Managers
 
                 PropertyManager.ModifyLong("fellowship_even_share_level", 80);
 
+                PropertyManager.ModifyLong("max_level", 60);
+
                 PropertyManager.ModifyBool("show_dat_warning", true);
                 PropertyManager.ModifyString("dat_warning_msg", "The location you are attempting to enter is not present in your data files.");
 
@@ -606,6 +608,7 @@ namespace ACE.Server.Managers
                 ("container_opener_name", new Property<bool>(false, "If enabled, when a player tries to open a container that is already in use by someone else, replaces 'someone else' in the message with the actual name of the player")),
                 ("corpse_decay_tick_logging", new Property<bool>(false, "If ENABLED then player corpse ticks will be logged")),
                 ("corpse_destroy_pyreals", new Property<bool>(true, "If FALSE then pyreals will not be completely destroyed on player death")),
+                ("hc_corpse_drop_all_tradenotes", new Property<bool>(false, "If TRUE then all trade notes are dropped on HC player death")),
                 ("craft_exact_msg", new Property<bool>(false, "If TRUE, and player has crafting chance of success dialog enabled, shows them an additional message in their chat window with exact %")),
                 ("creature_name_check", new Property<bool>(true, "if enabled, creature names in world database restricts player names during character creation")),
                 ("creatures_drop_createlist_wield", new Property<bool>(false, "If FALSE then Wielded items in CreateList will not drop. Retail defaulted to TRUE but there are currently data errors")),
