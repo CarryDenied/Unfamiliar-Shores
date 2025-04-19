@@ -219,7 +219,7 @@ namespace ACE.Server.Factories.Tables
                 if (rng < curChance && curChance >= treasureDeath.LootQualityMod)
                     return i + 1;
             }
-            log.Error($"QualityTables.Roll({treasureDeath.Tier}, {treasureDeath.LootQualityMod}) - this shouldn't happen");
+            log.Error($"QualityTables.Roll({treasureDeath.Tier}, {treasureDeath.LootQualityMod}) - this shouldn't happen. Did you set loot quality mod > 1?");
             return 0;
         }
 
@@ -260,7 +260,7 @@ namespace ACE.Server.Factories.Tables
                     return (float)(dy * (interval + i));
                 }
             }
-            log.Error($"QualityTables.RollInterval({treasureDeath.Tier}, {treasureDeath.LootQualityMod}) - this shouldn't happen");
+            log.Error($"QualityTables.RollInterval({treasureDeath.Tier}, {treasureDeath.LootQualityMod}) - this shouldn't happen. Did you set loot quality mod > 1?");
             return 0.0f;
         }
     }

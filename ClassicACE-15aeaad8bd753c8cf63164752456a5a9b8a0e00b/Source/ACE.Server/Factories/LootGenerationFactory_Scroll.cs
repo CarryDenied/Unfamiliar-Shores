@@ -31,21 +31,24 @@ namespace ACE.Server.Factories
 
             // todo: switch to SpellLevelProgression
             var spellId = SpellId.Undef;
+            ACE.Entity.Models.Weenie weenie;
             do
             {
                 var spellIdx = ThreadSafeRandom.Next(0, ScrollSpells.Table.Length - 1);
 
                 spellId = ScrollSpells.Table[spellIdx][spellLevel - 1];
+
+                // Pulled this up to tidy up cases where a spell is castable but not a valid scroll
+                // e.g. db issues, or available by ley line, but not otherwise.
+                weenie = DatabaseManager.World.GetScrollWeenie((uint)spellId);
+
+                if (weenie == null)
+                {
+                    log.DebugFormat("CreateRandomScroll for tier {0} and spellID of {1} returned null from the database.", profile.Tier, spellId);
+                    spellId = SpellId.Undef;
+                }
             }
             while (spellId == SpellId.Undef);   // simple way of handling spells that start at level 3 (blasts, volleys)
-
-            var weenie = DatabaseManager.World.GetScrollWeenie((uint)spellId);
-
-            if (weenie == null)
-            {
-                log.DebugFormat("CreateRandomScroll for tier {0} and spellID of {1} returned null from the database.", profile.Tier, spellId);
-                return null;
-            }
 
             return WorldObjectFactory.CreateNewWorldObject(weenie.WeenieClassId);
         }

@@ -1927,7 +1927,7 @@ namespace ACE.Server.Command.Handlers
 
         [CommandHandler("linkdiscord", AccessLevel.Player, CommandHandlerFlag.None, "links the discord user Id for this character.", "")]
 
-        public static void HandleDsicordAccountId(Session session, params string[] parameters)
+        public static void HandleDiscordAccountId(Session session, params string[] parameters)
         {
             // Check if the parameter is missing or empty
             if (parameters.Length == 0 || string.IsNullOrEmpty(parameters[0]))
