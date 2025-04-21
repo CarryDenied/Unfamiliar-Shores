@@ -456,18 +456,18 @@ namespace ACE.Server.Factories
                         }
                         else
                         {
-                            player.TryAddToInventory(CreateIOU(item.WeenieId));
+                            player.TryAddToInventory(CreateIOU(item.WeenieId), 0, false, false); /*ignore burden*/
                         }
 
                         if (loot != null)
                         {
                             bool added = false;
                             if (container != null && (loot.WeenieType == WeenieType.SpellComponent || (loot.WeenieType == WeenieType.CraftTool && loot.WeenieClassId != (uint)Enum.WeenieClassName.flask))) // try to stash spell components and craft tools on a secondary pack
-                                if (container.TryAddToInventory(loot))
-                                    added = true;
+                                if (container.TryAddToInventory(loot, 0, false, false) /*ignore burden*/)
+                            added = true;
 
                             if (!added)
-                                if (player.TryAddToInventory(loot))
+                                if (player.TryAddToInventory(loot, 0, false, false) /*ignore burden*/)
                                     added = true;
 
                             if (added)
@@ -481,11 +481,11 @@ namespace ACE.Server.Factories
                                 var dualloot = WorldObjectFactory.CreateNewWorldObject(item.WeenieId);
                                 if (dualloot != null)
                                 {
-                                    player.TryAddToInventory(dualloot);
+                                    player.TryAddToInventory(dualloot, 0, false, false) /*ignore burden*/;
                                 }
                                 else
                                 {
-                                    player.TryAddToInventory(CreateIOU(item.WeenieId));
+                                    player.TryAddToInventory(CreateIOU(item.WeenieId), 0, false, false) /*ignore burden*/;
                                 }
                             }
                         }
@@ -517,7 +517,7 @@ namespace ACE.Server.Factories
                             }
                             else
                             {
-                                player.TryAddToInventory(CreateIOU(item.WeenieId));
+                                player.TryAddToInventory(CreateIOU(item.WeenieId), 0, false, false) /*ignore burden*/;
                             }
 
                             if (loot != null && player.TryAddToInventory(loot))
@@ -530,11 +530,11 @@ namespace ACE.Server.Factories
                                     var dualloot = WorldObjectFactory.CreateNewWorldObject(item.WeenieId);
                                     if (dualloot != null)
                                     {
-                                        player.TryAddToInventory(dualloot);
+                                        player.TryAddToInventory(dualloot, 0, false, false) /*ignore burden*/;
                                     }
                                     else
                                     {
-                                        player.TryAddToInventory(CreateIOU(item.WeenieId));
+                                        player.TryAddToInventory(CreateIOU(item.WeenieId), 0, false, false) /*ignore burden*/;
                                     }
                                 }
                             }

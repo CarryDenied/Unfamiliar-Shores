@@ -1284,13 +1284,16 @@ namespace ACE.Server.WorldObjects
             var inventory = GetAllPossessions();
             var inventoryToDelete = new List<WorldObject>();
 
+            bool ignoreBurden = true;
+            int placementPlaceholder = 0;
+
             var keepNonEquippable = PropertyManager.GetBool("dekaru_hc_keep_non_equippable_bonded_on_death").Item;
             foreach (var item in inventory)
             {
                 if (keepHousing && item.WeenieType == WeenieType.Deed) // Keep houses
                 {
                     if (item.CurrentWieldedLocation != null || item.Container != this)
-                        HandleActionPutItemInContainer(item.Guid.Full, Guid.Full);
+                        HandleActionPutItemInContainer(item.Guid.Full, Guid.Full, placementPlaceholder, ignoreBurden);
                     continue;
                 }
 
@@ -1305,7 +1308,7 @@ namespace ACE.Server.WorldObjects
                     && !BondedItemBlacklist.Contains(item.WeenieClassId))
                 {
                     if(item.CurrentWieldedLocation != null || item.Container != this && item.Container.Bonded != BondedStatus.Bonded)
-                        HandleActionPutItemInContainer(item.Guid.Full, Guid.Full);
+                        HandleActionPutItemInContainer(item.Guid.Full, Guid.Full, placementPlaceholder, ignoreBurden);
                     continue;
                 }
 
