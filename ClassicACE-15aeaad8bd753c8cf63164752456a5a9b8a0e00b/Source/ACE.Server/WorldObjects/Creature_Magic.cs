@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using ACE.Common;
 using ACE.Entity.Enum;
+using ACE.Entity.Models;
 using ACE.Server.Entity;
 using ACE.Server.Managers;
 using ACE.Server.Network.GameEvent.Events;
@@ -211,21 +213,132 @@ namespace ACE.Server.WorldObjects
             }
         }
 
+        public bool ActivateItemSpells(WorldObject item)
+        {
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+            {
+                if (item is LeyLineAmulet leyLineAmulet)
+                    leyLineAmulet.OnActivate(this as Player);
+            }
+
+            var hasActiveSpell = false;
+
+            if (item.HasProc)
+                hasActiveSpell = true;
+
+            foreach (var spell in item.Biota.GetKnownSpellsIds(BiotaDatabaseLock))
+            {
+                var success = CreateItemSpell(item, (uint)spell);
+
+                if (success)
+                    hasActiveSpell = true;
+            }
+
+            if (hasActiveSpell)
+            {
+                item.OnSpellsActivated();
+
+                if(this is Player)
+                    item.ItemCurMana--;
+            }
+
+            return hasActiveSpell;
+        }
+
+        public void DeactivateItemSpells(WorldObject item, bool silent = false)
+        {
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+            {
+                if (item is LeyLineAmulet leyLineAmulet)
+                    leyLineAmulet.OnDeactivate(this as Player);
+            }
+
+            if (item.Biota.PropertiesSpellBook != null)
+            {
+                foreach (var spell in item.Biota.PropertiesSpellBook)
+                    RemoveItemSpell(item, (uint)spell.Key, silent);
+
+                item.OnSpellsDeactivated();
+            }
+        }
+
+        public void EquipItemFromSet(WorldObject item)
+        {
+            if (!item.HasItemSet) return;
+
+            var setItems = EquippedObjects.Values.Where(i => i.HasItemSet && i.EquipmentSetId == item.EquipmentSetId).ToList();
+
+            var spells = GetSpellSet(setItems);
+
+            // get the spells from before / without this item
+            setItems.Remove(item);
+            var prevSpells = GetSpellSet(setItems);
+
+            EquipDequipItemFromSet(item, spells, prevSpells);
+        }
+
+        public void EquipDequipItemFromSet(WorldObject item, List<Spell> spells, List<Spell> prevSpells, WorldObject surrogateItem = null)
+        {
+            // compare these 2 spell sets -
+            // see which spells are being added, and which are being removed
+            var addSpells = spells.Except(prevSpells);
+            var removeSpells = prevSpells.Except(spells);
+
+            // set spells are not affected by mana
+            // if it's equipped, it's active.
+
+            foreach (var spell in removeSpells)
+                EnchantmentManager.Dispel(EnchantmentManager.GetEnchantment(spell.Id, item.EquipmentSetId.Value));
+
+            var addItem = surrogateItem ?? item;
+
+            foreach (var spell in addSpells)
+                CreateItemSpell(addItem, spell.Id);
+        }
+
+        public void DequipItemFromSet(WorldObject item)
+        {
+            if (!item.HasItemSet) return;
+
+            var setItems = EquippedObjects.Values.Where(i => i.HasItemSet && i.EquipmentSetId == item.EquipmentSetId).ToList();
+
+            // for better bookkeeping, and to avoid a rarish error with AuditItemSpells detecting -1 duration item enchantments where
+            // the CasterGuid is no longer in the player's possession
+            var surrogateItem = setItems.LastOrDefault();
+
+            var spells = GetSpellSet(setItems);
+
+            // get the spells from before / with this item
+            setItems.Add(item);
+            var prevSpells = GetSpellSet(setItems);
+
+            if (surrogateItem == null)
+            {
+                var addSpells = spells.Except(prevSpells);
+
+                if (addSpells.Count() != 0)
+                    log.Error($"{Name}.DequipItemFromSet({item.Name}) -- last item in set dequipped, but addSpells still contains {string.Join(", ", addSpells.Select(i => i.Name))} -- this shouldn't happen!");
+            }
+
+            EquipDequipItemFromSet(item, spells, prevSpells, surrogateItem);
+        }
+
         /// <summary>
         /// Returns the creature's effective magic defense skill
         /// with item.WeaponMagicDefense and imbues factored in
         /// </summary>
         public uint GetEffectiveMagicDefense()
         {
-            var current = GetCreatureSkill(Skill.MagicDefense).Current;
+            var skill = GetCreatureSkill(Skill.MagicDefense);
             var weaponDefenseMod = GetWeaponMagicDefenseModifier(this);
             var defenseImbues = (uint)GetDefenseImbues(ImbuedEffectType.MagicDefense);
             if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
             {
                 defenseImbues *= (uint)PropertyManager.GetLong("dekaru_imbue_magic_defense_per_imbue").Item;
+				defenseImbues = Math.Min(defenseImbues, skill.Base / 10);
             }
 
-            var effectiveMagicDefense = (uint)Math.Round((current * weaponDefenseMod) + defenseImbues);
+            var effectiveMagicDefense = (uint)Math.Round((skill.Current * weaponDefenseMod) + defenseImbues);
 
             //Console.WriteLine($"EffectiveMagicDefense: {effectiveMagicDefense}");
 

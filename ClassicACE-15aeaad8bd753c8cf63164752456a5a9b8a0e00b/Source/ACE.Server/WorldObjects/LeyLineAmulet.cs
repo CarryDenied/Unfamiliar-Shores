@@ -496,6 +496,7 @@ namespace ACE.Server.WorldObjects
                 LeyLineLastDecayTime = (int)Time.GetUnixTime();
 
                 SetupNewAlignment(pseudoRandom, (LeyLineEffect)newLeyLineAlignEffectId);
+                LongDesc = LongDesc + $"\n\n(Attuned near {manaField.Location.GetMapCoordStr()})";
 
                 Structure = 10;
                 MaxStructure = (ushort)(MaxLeyLineAmuletStructure + 1); // + 1 so we keep the green bar when full
@@ -505,7 +506,7 @@ namespace ACE.Server.WorldObjects
                 playerWielder.Session.Network.EnqueueSend(new GameMessageSystemChat($"Your amulet is now aligned to this ley line!", ChatMessageType.Magic));
                 playerWielder.EnqueueBroadcast(new GameMessageScript(playerWielder.Guid, PlayScript.PortalStorm));
 
-                OnEquip(playerWielder, true);
+                playerWielder.ActivateItemSpells(this);
             }
             else if(LeyLineSeed == seed && Structure < MaxLeyLineAmuletStructure)
             {
@@ -566,7 +567,7 @@ namespace ACE.Server.WorldObjects
             else
             {
                 if (isWielded)
-                    OnDequip(player, true);
+                    player.DeactivateItemSpells(this);
                 ResetAmulet();
 
                 if (player != null)
@@ -613,7 +614,7 @@ namespace ACE.Server.WorldObjects
             LongDesc = $"{basicDescription}\n\nCurrent Effect: Unaligned";
         }
 
-        public void OnEquip(Player player, bool forceAddSpellsToWielder = false)
+        public void OnActivate(Player player)
         {
             if (player == null)
                 return;
@@ -642,12 +643,9 @@ namespace ACE.Server.WorldObjects
                         break;
                 }
             }
-
-            if (forceAddSpellsToWielder)
-                player.TryActivateSpells(this);
         }
 
-        public void OnDequip(Player player, bool forceRemoveSpellsFromWielder = false)
+        public void OnDeactivate(Player player)
         {
             if (player == null)
                 return;
@@ -663,14 +661,6 @@ namespace ACE.Server.WorldObjects
                         var spell = new Server.Entity.Spell(spellId);
                         player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You forget the {spell.Name} spell.", ChatMessageType.Broadcast));
                     }
-                }
-            }
-
-            if (forceRemoveSpellsFromWielder && Biota.PropertiesSpellBook != null)
-            {
-                foreach (var spell in Biota.PropertiesSpellBook)
-                {
-                    player.RemoveItemSpell(this, (uint)spell.Key, true);
                 }
             }
         }

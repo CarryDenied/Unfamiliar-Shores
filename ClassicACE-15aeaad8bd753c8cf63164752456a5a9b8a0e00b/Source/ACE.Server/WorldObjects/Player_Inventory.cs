@@ -334,7 +334,7 @@ namespace ACE.Server.WorldObjects
             {
                 var leyLineAmulet = item as LeyLineAmulet;
                 if (leyLineAmulet != null)
-                    leyLineAmulet.OnEquip(this);
+                    ActivateItemSpells(leyLineAmulet);
             }
 
             // check activation requirements
