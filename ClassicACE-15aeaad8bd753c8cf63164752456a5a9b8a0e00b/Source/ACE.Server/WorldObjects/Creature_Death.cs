@@ -214,6 +214,12 @@ namespace ACE.Server.WorldObjects
                 else
                     totalXP = (XpOverride ?? 0) * damagePercent;
 
+                if (IsElite)
+                {
+                    int baseTier = (int)(Tier + 0.5d); // add half and cast to avoid round's bias for even numbers (also faster)
+                    totalXP *= PropertyManager.GetDouble($"xp_modifier_elite_kill_t{baseTier}", 1).Item;
+                }
+
                 var msg = "";
                 if (totalHardcoreDeathExtraXp > 0)
                 {
