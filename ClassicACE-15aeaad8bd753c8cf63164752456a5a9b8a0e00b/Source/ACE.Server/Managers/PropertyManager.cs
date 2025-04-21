@@ -779,6 +779,13 @@ namespace ACE.Server.Managers
                 ("xp_modifier_reward_tier4", new Property<double>(1.0, "Scales the amount of xp received by players for completing tier 4 quests or unspecified level quests while being between level 56 and 76.")),
                 ("xp_modifier_reward_tier5", new Property<double>(1.0, "Scales the amount of xp received by players for completing tier 5 quests or unspecified level quests while being between level 76 and 96.")),
                 ("xp_modifier_reward_tier6", new Property<double>(1.0, "Scales the amount of xp received by players for completing tier 6 quests or unspecified level quests while being over level 96.")),
+                ("xp_modifier_elite_kill_t0", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 0 elites.")),
+                ("xp_modifier_elite_kill_t1", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 1 or unspecified tier elites.")),
+                ("xp_modifier_elite_kill_t2", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 2 elites.")),
+                ("xp_modifier_elite_kill_t3", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 3 elites.")),
+                ("xp_modifier_elite_kill_t4", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 4 elites.")),
+                ("xp_modifier_elite_kill_t5", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 5 elites.")),
+                ("xp_modifier_elite_kill_t6", new Property<double>(1.0, "Scales the amount of xp received by players for killing tier 6 or higher elites.")),
                 ("salvage_amount_multiplier", new Property<double>(1.0, "Scales the amount of salvage a player gets from items.")),
 
 
