@@ -804,7 +804,8 @@ namespace ACE.Server.WorldObjects
         }
 
         private bool HandleActionPutItemInContainer_Verify(uint itemGuid, uint containerGuid, int placement,
-            out Container itemRootOwner, out WorldObject item, out Container containerRootOwner, out Container container, out bool itemWasEquipped)
+            out Container itemRootOwner, out WorldObject item, out Container containerRootOwner, out Container container, out bool itemWasEquipped,
+            bool ignoreBurden = false)
         {
             itemRootOwner = null;
             item = null;
@@ -827,7 +828,7 @@ namespace ACE.Server.WorldObjects
                     Session.Network.EnqueueSend(new GameEventInventoryServerSaveFailed(Session, itemGuid));
                 }
                 else
-                    NextPickup = () => { HandleActionPutItemInContainer(itemGuid, containerGuid, placement); };
+                    NextPickup = () => { HandleActionPutItemInContainer(itemGuid, containerGuid, placement, ignoreBurden); };
 
                 return false;
             }
@@ -852,7 +853,7 @@ namespace ACE.Server.WorldObjects
                 return false;
             }
 
-            if (itemRootOwner != this && containerRootOwner == this && !HasEnoughBurdenToAddToInventory(item))
+            if (itemRootOwner != this && containerRootOwner == this && !ignoreBurden && !HasEnoughBurdenToAddToInventory(item))
             {
                 Session.Network.EnqueueSend(new GameEventCommunicationTransientString(Session, "You are too encumbered to carry that!"));
                 Session.Network.EnqueueSend(new GameEventInventoryServerSaveFailed(Session, itemGuid));
@@ -996,12 +997,12 @@ namespace ACE.Server.WorldObjects
         /// - Put an item into a container on the landblock
         /// - Move an item between containers on a landblock
         /// </summary>
-        public void HandleActionPutItemInContainer(uint itemGuid, uint containerGuid, int placement = 0)
+        public void HandleActionPutItemInContainer(uint itemGuid, uint containerGuid, int placement = 0, bool ignoreBurden = false)
         {
             //Console.WriteLine($"{Name}.HandleActionPutItemInContainer({itemGuid:X8}, {containerGuid:X8}, {placement})");
 
             if (!HandleActionPutItemInContainer_Verify(itemGuid, containerGuid, placement,
-                out Container itemRootOwner, out WorldObject item, out Container containerRootOwner, out Container container, out bool itemWasEquipped))
+                out Container itemRootOwner, out WorldObject item, out Container containerRootOwner, out Container container, out bool itemWasEquipped, ignoreBurden))
             {
                 return;
             }
@@ -1025,7 +1026,7 @@ namespace ACE.Server.WorldObjects
                 if (itemRootOwner == this)
                     moveToTarget = containerRootOwner ?? container; // Movement is from player
                 else
-                    moveToTarget = itemRootOwner ?? item; // Movement is too player
+                    moveToTarget = itemRootOwner ?? item; // Movement is to player
 
                 CreateMoveToChain(moveToTarget, (success) =>
                 {
@@ -1095,7 +1096,7 @@ namespace ACE.Server.WorldObjects
                             return;
                         }
 
-                        if (DoHandleActionPutItemInContainer(item, itemRootOwner, itemWasEquipped, container, containerRootOwner, placement))
+                        if (DoHandleActionPutItemInContainer(item, itemRootOwner, itemWasEquipped, container, containerRootOwner, placement, ignoreBurden))
                         {
                             Session.Network.EnqueueSend(new GameMessagePrivateUpdatePropertyInt(this, PropertyInt.EncumbranceVal, EncumbranceVal ?? 0));
 
@@ -1308,7 +1309,7 @@ namespace ACE.Server.WorldObjects
             return true;
         }
 
-        private bool DoHandleActionPutItemInContainer(WorldObject item, Container itemRootOwner, bool itemWasEquipped, Container container, Container containerRootOwner, int placement)
+        private bool DoHandleActionPutItemInContainer(WorldObject item, Container itemRootOwner, bool itemWasEquipped, Container container, Container containerRootOwner, int placement, bool ignoreBurden = false)
         {
             //Console.WriteLine($"DoHandleActionPutItemInContainer({item.Name}, {container.Name}, {itemWasEquipped}, {placement})");
 
@@ -1367,6 +1368,10 @@ namespace ACE.Server.WorldObjects
             }
 
             var burdenCheck = itemRootOwner != this && containerRootOwner == this;
+            if (ignoreBurden)
+            {
+                burdenCheck = false;
+            }
 
             if (!container.TryAddToInventory(item, placement, true, burdenCheck))
             {
