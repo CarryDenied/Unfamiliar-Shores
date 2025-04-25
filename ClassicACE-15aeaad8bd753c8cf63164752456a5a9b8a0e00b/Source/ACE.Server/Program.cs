@@ -17,6 +17,7 @@ using ACE.Server.Network.Managers;
 using ACE.Server.Physics;
 using ACE.Server.Mods;
 using ACE.Server.Network;
+using ACE.Server.WorldObjects;
 
 namespace ACE.Server
 {
@@ -270,6 +271,10 @@ namespace ACE.Server
 
             log.Info("Initializing GuidManager...");
             GuidManager.Initialize();
+
+            log.Info("Initializing AuctionHouse...");
+            AuctionHouse.LoadAuctionsFromDB();
+            AuctionHouse.LoadPendingReturnsFromDB();
 
             if (ConfigManager.Config.Server.ServerPerformanceMonitorAutoStart)
             {
