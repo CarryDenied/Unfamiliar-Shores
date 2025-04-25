@@ -843,7 +843,7 @@ namespace ACE.Server.WorldObjects
         {
             var droppedItems = new List<WorldObject>();
 
-            if (IsMonster && ThreadSafeRandom.NextDouble() < 0.005f) // 0.5% overall drop chance
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.NextDouble() < 0.005f) // 0.5% overall drop chance
             {
                 int quantity = ThreadSafeRandom.Next(0, 6); // Random quantity from 0 to 5
 
