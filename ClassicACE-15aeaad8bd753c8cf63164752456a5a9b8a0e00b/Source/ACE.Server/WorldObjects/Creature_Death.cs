@@ -843,6 +843,29 @@ namespace ACE.Server.WorldObjects
         {
             var droppedItems = new List<WorldObject>();
 
+            if (IsMonster && ThreadSafeRandom.NextDouble() < 0.05f) // 5% overall drop chance
+            {
+                int quantity = ThreadSafeRandom.Next(0, 6); // Random quantity from 0 to 5
+
+                for (int i = 0; i < quantity; i++)
+                {
+                    var doubloon = WorldObjectFactory.CreateNewWorldObject(36518);
+
+                    if (doubloon != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(doubloon);
+                        else
+                            droppedItems.Add(doubloon);
+                    }
+                    else
+                    {
+                        // Optional: debug
+                        // Console.WriteLine("[DEBUG] Failed to create doubloon.");
+                    }
+                }
+            }
+
             // create death treasure from loot generation factory
             if (DeathTreasure != null)
             {
