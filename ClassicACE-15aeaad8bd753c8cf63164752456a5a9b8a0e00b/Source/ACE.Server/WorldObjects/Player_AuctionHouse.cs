@@ -576,6 +576,14 @@ namespace ACE.Server.WorldObjects
                 {
                     var coinItem = WorldObjectFactory.CreateNewWorldObject(36518);
                     coinItem.StackSize = auction.BuyoutPrice;
+
+                    // Ensure the coin item is successfully added to seller's inventory
+                    if (!sellerOnline.TryCreateInInventoryWithNetworking(coinItem))
+                    {
+                        sellerOnline.SendMessage("[AUCTION ERROR] Unable to add your coins to inventory.");
+                        return;
+                    }
+
                     sellerOnline.SendMessage($"[AUCTION SOLD] Your item {auction.Item.NameWithMaterial} was sold for {auction.BuyoutPrice} Doubloons.");
                     NotifySellerAuctionSoldBuyout(auction);
                 }
