@@ -268,7 +268,7 @@ namespace ACE.Server.WorldObjects
                     extraXp = 0;
                 else if (extraXp > 10000 && killerLevel < (killer.MaxReachedLevel ?? 1))
                 {
-                    var xpWithRelive = extraXp + (long)(extraXp * (float)PropertyManager.GetDouble("relive_bonus_xp").Item);
+                    var xpWithRelive = extraXp + (long)(extraXp * (float)PropertyManager.GetDouble("relive_bonus_xp_pvp").Item);
                     if (xpWithRelive > 10000 && xpWithRelive > extraXp)
                     {
                         extraXp = extraXp * (extraXp / xpWithRelive); // Reduce to what it would have been without relive
