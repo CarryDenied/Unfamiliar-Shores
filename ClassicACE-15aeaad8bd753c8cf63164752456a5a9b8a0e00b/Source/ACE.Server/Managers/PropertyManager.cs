@@ -1066,7 +1066,9 @@ namespace ACE.Server.Managers
                 ("hot_dungeon_bonus_xp", new Property<double>(1.0, "Extra xp earned for kills when inside hot dungeons. 1.0 means 100% more xp.")),
                 ("exploration_bonus_xp_markers", new Property<double>(1.0, "Extra xp earned while completing exploration assignment's marker objectives. 1.0 means 100% more xp.")),
                 ("exploration_bonus_xp_kills", new Property<double>(1.0, "Extra xp earned while completing exploration assignment's kill objectives. 1.0 means 100% more xp.")),
-                ("relive_bonus_xp", new Property<double>(1.0, "Extra xp earned while reliving levels after a death that resulted in lost levels. 1.0 means 100% more xp.")),
+                ("relive_bonus_xp", new Property<double>(0.50, "Extra xp earned while reliving levels after a death that resulted in lost levels. 1.0 means 100% more xp.")),
+                ("relive_bonus_xp_pvp", new Property<double>(0.25, "Extra pvp xp earned while reliving levels after a death that resulted in lost levels. 1.0 means 100% more xp.")),
+
 
                 ("elite_mob_spawn_rate", new Property<double>(0.005, "Probability of a creature spawning as an elite mob. 1.0 means 100%")),
                 ("elite_mob_loot_quality", new Property<double>(0.5, "Loot quality mod of elite mob (For reference, normal is 1.0, chests are 1.2, Awareness chests are 1.4")),
