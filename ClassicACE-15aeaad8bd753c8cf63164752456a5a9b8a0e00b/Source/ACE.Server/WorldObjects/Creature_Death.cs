@@ -845,11 +845,11 @@ namespace ACE.Server.WorldObjects
 
             if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.5% overall drop chance
             {
-                int quantity = ThreadSafeRandom.Next(0, 2); // Random quantity from 0 to 2
+                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2
 
                 for (int i = 0; i < quantity; i++)
                 {
-                    var doubloon = WorldObjectFactory.CreateNewWorldObject(36518);
+                    var doubloon = WorldObjectFactory.CreateNewWorldObject(116057);
 
                     if (doubloon != null)
                     {
