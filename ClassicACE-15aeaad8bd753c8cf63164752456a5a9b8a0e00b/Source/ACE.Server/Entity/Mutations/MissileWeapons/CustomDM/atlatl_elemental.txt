@@ -54,16 +54,16 @@ Tier chances: 0, 0, 0, 0, 0, 1
 
     - Chance 6%:
         ElementalDamageBonus = 7
-        WieldDifficulty = 360
+        WieldDifficulty = 350
 
     - Chance 4%:
         ElementalDamageBonus = 8
-        WieldDifficulty = 360
+        WieldDifficulty = 350
 
     - Chance 3%:
         ElementalDamageBonus = 9
-        WieldDifficulty = 360
+        WieldDifficulty = 350
 
     - Chance 2%:
         ElementalDamageBonus = 10
-        WieldDifficulty = 360
+        WieldDifficulty = 350

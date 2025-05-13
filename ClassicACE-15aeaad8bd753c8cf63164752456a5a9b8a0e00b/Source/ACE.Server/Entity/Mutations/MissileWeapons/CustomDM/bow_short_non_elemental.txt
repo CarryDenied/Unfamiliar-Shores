@@ -52,25 +52,25 @@ Tier chances: 0, 1, 0, 0, 0, 0
         DamageMod = 1.73
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 7.6%:
         DamageMod = 1.75
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 3.3%:
         DamageMod = 1.77
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 2.1%:
         DamageMod = 1.8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 Bow Mutation #3:
 
@@ -80,49 +80,49 @@ Tier chances: 0, 0, 1, 0, 0, 0
         DamageMod = 1.73
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 20%:
         DamageMod = 1.75
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 15%:
         DamageMod = 1.77
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 5%:
         DamageMod = 1.8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 10%:
         DamageMod = 1.83
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 20%:
         DamageMod = 1.85
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 15%:
         DamageMod = 1.87
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 5%:
         DamageMod = 1.9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
 Bow Mutation #4:
 
@@ -132,49 +132,49 @@ Tier chances: 0, 0, 0, 1, 0, 0
         DamageMod = 1.83
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 20%:
         DamageMod = 1.85
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 15%:
         DamageMod = 1.87
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 5%:
         DamageMod = 1.9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 10%:
         DamageMod = 1.93
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 20%:
         DamageMod = 1.95
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 15%:
         DamageMod = 1.97
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 5%:
         DamageMod = 2.0
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
 Bow Mutation #5:
 
@@ -184,22 +184,22 @@ Tier chances: 0, 0, 0, 0, 1, 1
         DamageMod = 1.93
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 35%:
         DamageMod = 1.95
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 35%:
         DamageMod = 1.97
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 15%:
         DamageMod = 2.0
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285

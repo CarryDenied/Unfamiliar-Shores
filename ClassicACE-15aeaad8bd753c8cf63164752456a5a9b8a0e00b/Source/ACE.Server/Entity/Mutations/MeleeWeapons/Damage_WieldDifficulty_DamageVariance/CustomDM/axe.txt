@@ -33,13 +33,13 @@ Tier Chances: 1, 0, 0, 0, 0, 0
         Damage += 7
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 4.9%:
         Damage += 8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
 Axe Mutation #2:
 
@@ -49,61 +49,61 @@ Tier Chances: 0, 1, 0, 0, 0, 0
         Damage += 7
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 18%:
         Damage += 8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 8.7%:
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 5.6%:
         Damage += 10
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 3.9%:
         Damage += 11
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 3.4%:
         Damage += 12
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 2%:
         Damage += 13
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.1%:
         Damage += 16
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 0.8%:
         Damage += 15
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 0.5%:
         Damage += 16
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 Axe Mutation #3:
 
@@ -113,49 +113,49 @@ Tier Chances: 0, 0, 1, 0, 0, 0
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.7%:
         Damage += 10
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 3.3%:
         Damage += 11
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 4.3%:
         Damage += 12
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 5%:
         Damage += 13
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 7.8%:
         Damage += 14
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 11%:
         Damage += 15
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 17%:
         Damage += 16
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 26%:
         Damage += 17
@@ -213,25 +213,25 @@ Tier Chances: 0, 0, 0, 1, 0, 0
         Damage += 21
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 14%:
         Damage += 22
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 6.5%:
         Damage += 23
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 4.3%:
         Damage += 24
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
 Axe Mutation #5:
 
@@ -241,25 +241,25 @@ Tier Chances: 0, 0, 0, 0, 1, 0
         Damage += 21
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 13.1%:
         Damage += 22
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 6.6%:
         Damage += 23
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 3.2%:
         Damage += 24
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 27%:
         Damage += 25
@@ -317,49 +317,49 @@ Tier Chances: 0, 0, 0, 0, 0, 1
         Damage += 29
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 370
+        WieldDifficulty = 380
 
     - Chance: 8.8%:
         Damage += 30
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 370
+        WieldDifficulty = 380
 
     - Chance: 4.4%:
         Damage += 31
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 370
+        WieldDifficulty = 380
 
     - Chance: 2.5%:
         Damage += 32
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 370
+        WieldDifficulty = 380
 
     - Chance: 17%:
         Damage += 33
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 400
+        WieldDifficulty = 380
 
     - Chance: 8.8%:
         Damage += 34
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 400
+        WieldDifficulty = 380
 
     - Chance: 4.3%:
         Damage += 35
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 400
+        WieldDifficulty = 380
 
     - Chance: 2.4%:
         Damage += 36
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 400
+        WieldDifficulty = 380
 
 Axe Mutation #7:
 
