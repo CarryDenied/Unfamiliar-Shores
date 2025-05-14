@@ -49,8 +49,19 @@ namespace ACE.Server.WorldObjects
 
                         if(!(target is Player) && !damageEvent.Evaded && (worldObject.WeenieType == WeenieType.Missile || worldObject.WeenieType == WeenieType.Ammunition) && Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
                         {
+                            var techniqueTrinket = sourcePlayer.GetEquippedTrinket();
+                            var isFletchersAvarice = techniqueTrinket != null && techniqueTrinket.TacticAndTechniqueId == (int)TacticAndTechniqueType.FletchersAvarice;
+                            var avariceRetainBuff = 0.00;
+                            if (isFletchersAvarice)
+                            {
+                                avariceRetainBuff += 0.25;
+                            }
+                            Console.WriteLine($"Technique equipped {techniqueTrinket.Name} is Fletcher\'s Avarice? {isFletchersAvarice}");
+                            Console.WriteLine($"Fletcher\'s Avarice retain bonus is {avariceRetainBuff}");
                             var rng = ThreadSafeRandom.NextInterval(0);
-                            if (rng < 0.25) // 25% chance the ammo will be preserved
+                            Console.WriteLine($"Projectile {worldObject.Name} ({worldObject.Guid}) hit {targetCreature.Name} ({targetCreature.Guid}) and rolled {rng} for ammo preservation.");
+                            //log4net.LogManager.GetLogger("Projectile").Debug($"Projectile {worldObject.Name} ({worldObject.Guid}) hit {targetCreature.Name} ({targetCreature.Guid}) and rolled {rng} for ammo preservation.");  
+                            if (rng < (0.25 + avariceRetainBuff)) // 25% chance the ammo will be preserved + Fletcher's Avarice bonus
                             {
                                 int currentAmount;
                                 if (targetCreature.ammoHitWith.TryGetValue(worldObject.WeenieClassId, out currentAmount))

@@ -12,5 +12,6 @@ namespace ACE.Entity.Enum
         PowerShot,
         Misdirect,
         MasteryAxe,
+        FletchersAvarice,
     }
 }
