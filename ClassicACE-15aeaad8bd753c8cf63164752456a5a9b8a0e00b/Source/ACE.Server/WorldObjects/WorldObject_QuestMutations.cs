@@ -44,6 +44,11 @@ namespace ACE.Server.WorldObjects
             None = 0,
             AttributeCantrip = 1,
             SkillCantrip = 2,
+            Rating = 3,
+            Ratingj = 6
+
+
+
         }
 
         public string MutateQuestItem()
@@ -60,7 +65,7 @@ namespace ACE.Server.WorldObjects
                 this.ItemType != ItemType.Jewelry) ||
                (this.Workmanship.HasValue &&
                 this.Workmanship.Value > 0) ||
-                this is Ammunition 
+                this is Ammunition
             )
             {
                 return "";
@@ -83,7 +88,7 @@ namespace ACE.Server.WorldObjects
             //TODO should make the chances configurable?
             roll = ThreadSafeRandom.Next(0f, 1f);
             int mutationCount = 0;
-            if(roll < 0.10)
+            if (roll < 0.10)
             {
                 mutationCount = 3;
             }
@@ -96,7 +101,7 @@ namespace ACE.Server.WorldObjects
                 mutationCount = 1;
             }
 
-            if(mutationCount < 1)
+            if (mutationCount < 1)
             {
                 //TODO - do we return any message?
                 return "";
@@ -108,17 +113,18 @@ namespace ACE.Server.WorldObjects
             //  SkillCantrip = 3         
             //  ItemCantrip / EquipmentSet = 4
             //  Rend / Rating = 5
+            // Jewelry Rating = 6
             List<int> mutationTypes = new List<int>();
 
-            for(int i = 0; i < mutationCount; i++)
+            for (int i = 0; i < mutationCount; i++)
             {
-                int mutationType = ThreadSafeRandom.Next(1, 5);
+                int mutationType = ThreadSafeRandom.Next(1, 6);
 
                 //For Slayers, Rends, Sets and Steel Tinks, don't allow those to be added more than once, reroll if already added
                 int rerollAttempts = 0; //just a fail-safe to avoid an infinite loop, even tho it shouldn't be possible
-                while ((mutationType == 1 || mutationType == 5) && mutationTypes.Contains(mutationType) && rerollAttempts < 20)
+                while ((mutationType == 1 || mutationType == 6) && mutationTypes.Contains(mutationType) && rerollAttempts < 20)
                 {
-                    mutationType = ThreadSafeRandom.Next(1, 5);
+                    mutationType = ThreadSafeRandom.Next(1, 6);
                     rerollAttempts++;
                 }
 
@@ -147,7 +153,9 @@ namespace ACE.Server.WorldObjects
                         case 5: //Rend
                             resultMessage.Append(QuestItem_ApplyRendMutation(mutationTier) + "\n");
                             break;
+
                     }
+
                 }
                 else if (this.ItemType == ItemType.Armor || this.ItemType == ItemType.Clothing)
                 {
@@ -180,7 +188,14 @@ namespace ACE.Server.WorldObjects
                         case 2: //SkillCantrip
                             resultMessage.Append(QuestItem_ApplySkillCantripMutation(mutationTier) + "\n");
                             break;
+                        case 3: //Rating
+                            resultMessage.Append(QuestItem_ApplyRatingMutation(mutationTier) + "\n");
+                            break;
+                        case 6: //Jewelry
+                            resultMessage.Append(QuestJewlery_ApplyRatingMutation(mutationTier) + "\n");
+                            break;
                     }
+
                 }
             }
             return resultMessage.ToString();
@@ -193,7 +208,7 @@ namespace ACE.Server.WorldObjects
             if (mutationTierOverride != null)
                 return mutationTierOverride.Value;
 
-            List<(WieldRequirement, int?)> reqs = new List<(WieldRequirement, int?)>() { (WieldRequirements, WieldDifficulty), (WieldRequirements2, WieldDifficulty2), (WieldRequirements3, WieldDifficulty3), (WieldRequirements4, WieldDifficulty4)}.Where(x => (uint)x.Item1 != 0).ToList();
+            List<(WieldRequirement, int?)> reqs = new List<(WieldRequirement, int?)>() { (WieldRequirements, WieldDifficulty), (WieldRequirements2, WieldDifficulty2), (WieldRequirements3, WieldDifficulty3), (WieldRequirements4, WieldDifficulty4) }.Where(x => (uint)x.Item1 != 0).ToList();
 
             var levelReq = reqs.Find(x => x.Item1 == WieldRequirement.Level);
             var attrReq = reqs.Find(x => x.Item1 == WieldRequirement.Attrib);
@@ -292,7 +307,7 @@ namespace ACE.Server.WorldObjects
             switch (selectSlayerType)
             {
                 case 1:
-                    this.SlayerCreatureType = ACE.Entity.Enum.CreatureType.Banderling;                    
+                    this.SlayerCreatureType = ACE.Entity.Enum.CreatureType.Banderling;
                     break;
 
                 case 2:
@@ -368,7 +383,7 @@ namespace ACE.Server.WorldObjects
                     break;
 
                 case 20:
-                    this.SlayerCreatureType = ACE.Entity.Enum.CreatureType.Zefir;                    
+                    this.SlayerCreatureType = ACE.Entity.Enum.CreatureType.Zefir;
                     break;
             }
 
@@ -737,7 +752,7 @@ namespace ACE.Server.WorldObjects
                         this.Biota.GetOrAddKnownSpell((int)SpellId.CANTRIPMISSILEWEAPONSAPTITUDE2, this.BiotaDatabaseLock, out _);
                         resultMsg = "Added Major Bow Aptitude to the quest item!";
                     }
-                    break;                
+                    break;
             }
 
             SetMagicItemCommonProperties(mutationTier);
@@ -1023,5 +1038,66 @@ namespace ACE.Server.WorldObjects
 
             return resultMsg;
         }
-    }      
+
+        private string QuestJewlery_ApplyRatingMutation(uint mutationTier)
+        {
+            string resultMsg = "";
+
+            var selectRating = ThreadSafeRandom.Next(1, 6);
+            var ratingAmount = ThreadSafeRandom.Next(1, (int)mutationTier);
+
+            switch (selectRating)
+            {
+                case 1:
+
+                    if (this.GearMaxHealth == null)
+                        this.GearMaxHealth = 0;
+
+                    this.SetProperty(PropertyInt.GearMaxHealth, (int)this.GearMaxHealth + ratingAmount);
+                    resultMsg = $"Added {ratingAmount} Vitality to the quest item!";
+                    break;
+
+                case 2:
+
+                    if (this.GearHealingBoost == null)
+                        this.GearHealingBoost = 0;
+
+                    this.SetProperty(PropertyInt.GearHealingBoost, (int)this.GearHealingBoost + ratingAmount);
+                    resultMsg = $"Added {ratingAmount} Heal Boost Rating to the quest item!";
+                    break;
+
+                case 3:
+
+                    if (this.GearPKDamageRating == null)
+                        this.GearPKDamageRating = 0;
+
+                    this.SetProperty(PropertyInt.GearPKDamageRating, (int)this.GearPKDamageRating + ratingAmount);
+                    resultMsg = $"Added {ratingAmount} PK Damage Rating to the quest item!";
+                    break;
+
+                case 4:
+
+                    if (this.GearPKDamageResistRating == null)
+                        this.GearPKDamageResistRating = 0;
+
+                    this.SetProperty(PropertyInt.GearPKDamageResistRating, (int)this.GearPKDamageResistRating + ratingAmount);
+                    resultMsg = $"Added {ratingAmount} PK Damage Resist Rating to the quest item!";
+                    break;
+                case 5:
+
+                    if (this.LifeResistRating == null)
+                        this.LifeResistRating = 0;
+
+                    this.SetProperty(PropertyInt.LifeResistRating, (int)this.LifeResistRating + ratingAmount);
+                    resultMsg = $"Added {ratingAmount} Life Resist Rating to the quest item!";
+                    break;
+            }
+
+            return resultMsg;
+        }
+
+    }
+
 }
+
+

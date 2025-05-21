@@ -56,47 +56,47 @@ namespace ACE.Server.Entity
                         24177, // Jaleh's Silk Shirt
                         24178, // Jaleh's Slippers
                         24180, // Jaleh's Turban
-                        24615, // Fine Olthoi Bracers
-                        24616, // Good Olthoi Bracers
-                        24617, // Fine Olthoi Breastplate
-                        24618, // Good Olthoi Breastplate
-                        24619, // Fine Olthoi Gauntlets
-                        24620, // Good Olthoi Gauntlets
-                        24621, // Fine Olthoi Girth
-                        24622, // Good Olthoi Girth
-                        24623, // Fine Olthoi Greaves
-                        24624, // Good Olthoi Greaves
-                        24625, // Fine Olthoi Brood Queen Helm
-                        24626, // Good Olthoi Brood Queen Helm
-                        24627, // Fine Olthoi Pauldrons
-                        24628, // Good Olthoi Pauldrons
-                        24629, // Fine Olthoi Sollerets
-                        24630, // Good Olthoi Sollerets
-                        24631, // Fine Olthoi Tassets
-                        24632, // Good Olthoi Tassets
-                        24889, // Greater Olthoi Bracers
-                        24890, // Lesser Olthoi Bracers
-                        24891, // Greater Olthoi Breastplate
-                        24892, // Lesser Olthoi Breastplate
-                        24893, // Greater Olthoi Gauntlets
-                        24894, // Lesser Olthoi Gauntlets
-                        24895, // Greater Olthoi Girth
-                        24896, // Lesser Olthoi Girth
-                        24897, // Greater Olthoi Greaves
-                        24898, // Lesser Olthoi Greaves
-                        24899, // Greater Olthoi Brood Queen Helm
-                        24900, // Lesser Olthoi Brood Queen Helm
-                        24901, // Greater Olthoi Pauldrons
-                        24902, // Lesser Olthoi Pauldrons
-                        24903, // Greater Olthoi Sollerets
-                        24904, // Lesser Olthoi Sollerets
-                        24905, // Greater Olthoi Tassets
-                        24906, // Lesser Olthoi Tassets
-                        25547, // Greater Olthoi Shield
-                        25548, // Fine Olthoi Shield
-                        25549, // Lesser Olthoi Shield
-                        25550, // Good Olthoi Shield
-                        25702, // Bandit Mask
+                        //24615, // Fine Olthoi Bracers
+                        //24616, // Good Olthoi Bracers
+                        //24617, // Fine Olthoi Breastplate
+                        //24618, // Good Olthoi Breastplate
+                        //24619, // Fine Olthoi Gauntlets
+                        //24620, // Good Olthoi Gauntlets
+                       // 24621, // Fine Olthoi Girth
+                        //24622, // Good Olthoi Girth
+                        //24623, // Fine Olthoi Greaves
+                        //24624, // Good Olthoi Greaves
+                       // 24625, // Fine Olthoi Brood Queen Helm
+                       // 24626, // Good Olthoi Brood Queen Helm
+                        //24627, // Fine Olthoi Pauldrons
+                        //24628, // Good Olthoi Pauldrons
+                       // 24629, // Fine Olthoi Sollerets
+                        //24630, // Good Olthoi Sollerets
+                       // 24631, // Fine Olthoi Tassets
+                       // 24632, // Good Olthoi Tassets
+                        //24889, // Greater Olthoi Bracers
+                        //24890, // Lesser Olthoi Bracers
+                        //24891, // Greater Olthoi Breastplate
+                       // 24892, // Lesser Olthoi Breastplate
+                       // 24893, // Greater Olthoi Gauntlets
+                       // 24894, // Lesser Olthoi Gauntlets
+                       // 24895, // Greater Olthoi Girth
+                       // 24896, // Lesser Olthoi Girth
+                       // 24897, // Greater Olthoi Greaves
+                       // 24898, // Lesser Olthoi Greaves
+                       // 24899, // Greater Olthoi Brood Queen Helm
+                        //24900, // Lesser Olthoi Brood Queen Helm
+                       // 24901, // Greater Olthoi Pauldrons
+                       // 24902, // Lesser Olthoi Pauldrons
+                       // 24903, // Greater Olthoi Sollerets
+                       // 24904, // Lesser Olthoi Sollerets
+                       // 24905, // Greater Olthoi Tassets
+                       // 24906, // Lesser Olthoi Tassets
+                       // 25547, // Greater Olthoi Shield
+                       // 25548, // Fine Olthoi Shield
+                       // 25549, // Lesser Olthoi Shield
+                       // 25550, // Good Olthoi Shield
+                          25702, // Bandit Mask
                         27592, // Ebon Spine Harpoon
                         30493, // Bai Den's Ring
                         30494, // Bai Den's Bracelet
