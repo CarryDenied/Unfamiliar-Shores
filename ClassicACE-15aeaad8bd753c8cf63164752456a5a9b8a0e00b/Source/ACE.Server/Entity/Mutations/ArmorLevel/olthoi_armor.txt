@@ -17,84 +17,84 @@ Tier chances: 0, 0, 0, 0, 0, 0, 1, 1
         ArmorLevel += Random(0, 100)
 
     - Chance: 2%:
-        ArmorLevel = 270
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 250
         ArmorLevel += Random(0, 100)
 
     - Chance: 1%:
-        ArmorLevel = 270
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 205
         ArmorLevel += Random(0, 100)
 
     - Chance: 2%:
-        ArmorLevel = 330
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 300
         ArmorLevel += Random(0, 80)
 
     - Chance: 2%:
-        ArmorLevel = 330
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 245
         ArmorLevel += Random(0, 80)
 
     - Chance: 10%:
-        ArmorLevel = 390
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 325
         ArmorLevel += Random(0, 50)
 
     - Chance: 10%:
-        ArmorLevel = 390
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 270
         ArmorLevel += Random(0, 50)
 
     - Chance: 15%:
-        ArmorLevel = 430
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 350
         ArmorLevel += Random(0, 40)
 
     - Chance: 15%:
-        ArmorLevel = 430
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 290
         ArmorLevel += Random(0, 40)
 
     - Chance: 15%:
-        ArmorLevel = 460
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 370
         ArmorLevel += Random(0, 30)
 
     - Chance: 15%:
-        ArmorLevel = 460
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 305
         ArmorLevel += Random(0, 30)
 
     - Chance: 5%:
-        ArmorLevel = 490
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 400
         ArmorLevel += Random(0, 30)
 
     - Chance: 5%:
-        ArmorLevel = 490
+        ArmorLevel = 220
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 330

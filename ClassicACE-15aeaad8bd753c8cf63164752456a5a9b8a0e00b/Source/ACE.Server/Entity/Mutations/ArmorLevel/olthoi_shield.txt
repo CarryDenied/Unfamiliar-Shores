@@ -24,63 +24,63 @@ Tier chances: 0, 0, 0, 0, 0, 0, 1, 1
         ArmorLevel += Random(0, 100)
 
     - Chance: 9%:
-        ArmorLevel = 220
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 250
         ArmorLevel += Random(0, 100)
 
     - Chance: 8%:
-        ArmorLevel = 220
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 205
         ArmorLevel += Random(0, 100)
 
     - Chance: 8%:
-        ArmorLevel = 220
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MagicDefense
         WieldDifficulty = 185
         ArmorLevel += Random(0, 100)
 
     - Chance: 9%:
-        ArmorLevel = 310
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 300
         ArmorLevel += Random(0, 50)
 
     - Chance: 8%:
-        ArmorLevel = 310
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 245
         ArmorLevel += Random(0, 50)
 
     - Chance: 8%:
-        ArmorLevel = 310
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MagicDefense
         WieldDifficulty = 225
         ArmorLevel += Random(0, 50)
 
     - Chance: 9%:
-        ArmorLevel = 360
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MeleeDefense
         WieldDifficulty = 325
         ArmorLevel += Random(0, 50)
 
     - Chance: 8%:
-        ArmorLevel = 360
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MissileDefense
         WieldDifficulty = 270
         ArmorLevel += Random(0, 50)
 
     - Chance: 8%:
-        ArmorLevel = 360
+        ArmorLevel = 120
         WieldRequirements = RawSkill
         WieldSkillType = MagicDefense
         WieldDifficulty = 245
