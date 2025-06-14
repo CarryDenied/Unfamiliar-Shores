@@ -317,8 +317,9 @@ namespace ACE.Server.WorldObjects
 
         public static int GetCreatureDeathXP(int level, int hitpoints = 0, bool usedSpells = false, bool usedRangedAttacks = false, int formulaVersion = 0)
         {
+            Console.WriteLine($"[DEBUG] GetCreatureDeathXP called with level={level}, hitpoints={hitpoints}, usedSpells={usedSpells}, usedRangedAttacks={usedRangedAttacks}, formulaVersion={formulaVersion}");
             double baseXp = Math.Min((1.75 * Math.Pow(level, 2)) + (20 * level), 30000);
-
+            Console.WriteLine($"[DEBUG] Base XP calculated: {baseXp} (level={level})");
             switch (formulaVersion)
             {
                 case 1:
@@ -349,6 +350,8 @@ namespace ACE.Server.WorldObjects
             double rangedXp = usedRangedAttacks ? xp * 0.15f : 0f;
 
             xp += casterXp + rangedXp;
+
+            Console.WriteLine($"[DEBUG] Calculated death XP: {xp} (baseXp={baseXp}, hitpointsXp={hitpointsXp}, casterXp={casterXp}, rangedXp={rangedXp})");
 
             return (int)Math.Round(xp);
         }
@@ -423,6 +426,8 @@ namespace ACE.Server.WorldObjects
                     killTaskCredits = playerCredits;
                     cap = 1;
                 }
+
+                log.Debug(playerDamager.QuestManager.GetQuests());
 
                 if (playerDamager.QuestManager.HasQuest(killQuest))
                 {
@@ -843,7 +848,7 @@ namespace ACE.Server.WorldObjects
         {
             var droppedItems = new List<WorldObject>();
 
-            if (IsMonster && Tier > 1 && ThreadSafeRandom.NextDouble() < 0.005f) // 0.5% overall drop chance
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.005f) // 0.5% overall drop chance
             {
                 int quantity = ThreadSafeRandom.Next(0, 6); // Random quantity from 0 to 5
 

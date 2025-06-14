@@ -28,6 +28,7 @@ namespace ACE.Server.WorldObjects
         public void EarnXP(long amount, XpType xpType, int? xpSourceLevel, uint? xpSourceId, uint xpSourceCampValue, double? xpSourceTier, ShareType shareType = ShareType.All, string xpMessage = "")
         {
             //Console.WriteLine($"{Name}.EarnXP({amount}, {sharable}, {fixedAmount})");
+            Console.WriteLine($"xpType: {xpType}, xpSourceLevel: {xpSourceLevel}, xpSourceId: {xpSourceId}, xpSourceCampValue: {xpSourceCampValue}, xpSourceTier: {xpSourceTier}");
 
             bool usesRewardByLevelSystem = false;
             if ((xpType == XpType.Quest || xpType == XpType.Exploration) && amount < 0 && amount > -6000) // this range is used to specify the reward by level system.
