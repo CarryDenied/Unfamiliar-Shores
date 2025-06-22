@@ -1,3 +1,4 @@
+USE `ace_world_customdm`;
 ALTER TABLE `exploration_sites` ADD COLUMN `excluded_from_pool` bit(1) NOT NULL;
 
 UPDATE `exploration_sites` SET `excluded_from_pool` = 1 WHERE HEX(landblock) = '5B49';

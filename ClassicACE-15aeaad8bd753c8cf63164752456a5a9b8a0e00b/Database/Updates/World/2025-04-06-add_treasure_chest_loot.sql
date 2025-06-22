@@ -1,3 +1,4 @@
+USE `ace_world_customdm`;
 DELETE FROM `treasure_death`
 WHERE `treasure_Type` in (1000,1001,1002,1003,1004,1005);
 

@@ -1,3 +1,4 @@
+USE `ace_world_customdm`;
 UPDATE `exploration_sites` SET `excluded_from_pool` = 0;
 UPDATE `exploration_sites` SET `excluded_from_pool` = 1 WHERE HEX(landblock) = '146';
 UPDATE `exploration_sites` SET `excluded_from_pool` = 1 WHERE HEX(landblock) = '3A6';
