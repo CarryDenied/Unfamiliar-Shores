@@ -28,13 +28,13 @@ Tier Chances: 0, 1, 0, 0, 0, 0
         Damage += 2
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 6%:
         Damage += 3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 two_handed_sword Mutation #3:
 
@@ -44,13 +44,13 @@ Tier Chances: 0, 0, 1, 0, 0, 0
         Damage += 2
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 37%:
         Damage += 3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 51%:
         Damage += 4
@@ -110,7 +110,7 @@ Tier Chances: 0, 0, 0, 0, 0, 1
         Damage += 8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 400
+        WieldDifficulty = 380
 
 two_handed_sword Mutation #7:
 

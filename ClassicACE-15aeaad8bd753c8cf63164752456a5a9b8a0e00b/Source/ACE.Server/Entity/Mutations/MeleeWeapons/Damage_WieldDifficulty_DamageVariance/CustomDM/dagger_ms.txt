@@ -16,13 +16,13 @@ Tier Chances: 0, 1, 0, 0, 0, 0
         Damage += 1
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 6.5%:
         Damage += 2
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 DaggerMS Mutation #3:
 
@@ -32,25 +32,25 @@ Tier Chances: 0, 0, 1, 0, 0, 0
         Damage += 1
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 38%:
         Damage += 2
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 38%:
         Damage += 3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 300
+        WieldDifficulty = 250
 
     - Chance: 12%:
         Damage += 4
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 300
+        WieldDifficulty = 250
 
 DaggerMS Mutation #4:
 
@@ -60,19 +60,19 @@ Tier Chances: 0, 0, 0, 1, 0, 0
         Damage += 3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 300
+        WieldDifficulty = 250
 
     - Chance: 12%:
         Damage += 4
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 300
+        WieldDifficulty = 250
 
     - Chance: 50%:
         Damage += 5
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
 DaggerMS Mutation #5:
 
@@ -82,7 +82,7 @@ Tier Chances: 0, 0, 0, 0, 1, 0
         Damage += 5
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 325
+        WieldDifficulty = 300
 
     - Chance: 37%:
         Damage += 6
@@ -122,7 +122,7 @@ Tier Chances: 0, 0, 0, 0, 0, 1
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 400
+        WieldDifficulty = 370
 
 DaggerMS Mutation #7:
 

@@ -18,7 +18,7 @@ Tier Chances: 1, 0, 0, 0, 0, 0
         Damage += 3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
 Dagger Mutation #2:
 
@@ -28,7 +28,7 @@ Tier Chances: 0, 1, 0, 0, 0, 0
         Damage += 3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 10%:
         Damage += 4
@@ -40,31 +40,31 @@ Tier Chances: 0, 1, 0, 0, 0, 0
         Damage += 5
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 3.7%:
         Damage += 6
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 2.3%:
         Damage += 7
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.8%:
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 0.9%:
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 Dagger Mutation #3:
 
@@ -74,37 +74,37 @@ Tier Chances: 0, 0, 1, 0, 0, 0
         Damage += 4
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 3.7%:
         Damage += 5
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 4.5%:
         Damage += 6
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 7.6%:
         Damage += 7
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 12%:
         Damage += 8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 20%:
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 20%:
         Damage += 10

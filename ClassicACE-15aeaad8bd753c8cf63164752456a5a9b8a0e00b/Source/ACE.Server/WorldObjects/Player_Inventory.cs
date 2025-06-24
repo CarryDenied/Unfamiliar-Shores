@@ -49,7 +49,10 @@ namespace ACE.Server.WorldObjects
         {
             var strength = Attributes[PropertyAttribute.Strength].Current;
 
-            return (int)((150 * (strength + 40)) + (AugmentationIncreasedCarryingCapacity * 30 * strength));
+            if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+                strength += 40;
+
+            return (int)((150 * strength) + (AugmentationIncreasedCarryingCapacity * 30 * strength));
         }
 
         public bool HasEnoughBurdenToAddToInventory(WorldObject worldObject)
@@ -274,6 +277,10 @@ namespace ACE.Server.WorldObjects
             // do the appropriate combat stance shuffling, based on the item types
             // todo: instead of switching the weapon immediately, the weapon should be swapped in the middle of the animation chain
 
+            // todo: find better / more appropriate logic for this
+            // should this be based on something else, such as CombatUse?
+            if ((wieldedLocation & EquipMask.Selectable) == 0) return;
+
             if (CombatMode != CombatMode.NonCombat && CombatMode != CombatMode.Undef)
             {
                 switch (wieldedLocation)
@@ -285,6 +292,16 @@ namespace ACE.Server.WorldObjects
 
                     case EquipMask.Held:
                         HandleActionChangeCombatMode(CombatMode.Magic);
+                        break;
+
+                    case EquipMask.Shield:
+
+                        var weapon = GetEquippedWeapon(true);
+
+                        if (weapon != null && weapon.DefaultCombatStyle == CombatStyle.ThrownWeapon)
+                            HandleActionChangeCombatMode(CombatMode.Missile);
+                        else
+                            HandleActionChangeCombatMode(CombatMode.Melee);
                         break;
 
                     default:
@@ -455,6 +472,11 @@ namespace ACE.Server.WorldObjects
 
                     if (CombatMode == CombatMode.Missile && wieldedLocation == EquipMask.MissileAmmo)
                         newCombatMode = CombatMode.NonCombat;
+
+                    var weapon = GetEquippedWeapon(true);
+
+                    if (weapon != null && weapon.DefaultCombatStyle == CombatStyle.ThrownWeapon)
+                        newCombatMode = CombatMode.Missile;
 
                     HandleActionChangeCombatMode(newCombatMode);
                 }
@@ -1238,13 +1260,6 @@ namespace ACE.Server.WorldObjects
 
         private bool VerifyQuest(WorldObject item, Container itemRootOwner, out bool questSolve, out bool isFromAPlayerCorpse)
         {
-            if (IsInLimboMode)
-            {
-                questSolve = false;
-                isFromAPlayerCorpse = false;
-                return true;
-            }
-
             questSolve = false;
             isFromAPlayerCorpse = false;
 
@@ -1295,7 +1310,11 @@ namespace ACE.Server.WorldObjects
                 var itemFoundOnMyCorpse = itemFoundOnCorpse && (itemRootOwner.VictimId == Guid.Full);
                 if (item.GeneratorId != null || (itemFoundOnCorpse && !itemFoundOnMyCorpse)) // item is controlled by a generator or is on a corpse that is not my own
                 {
-                    if (QuestManager.CanSolve(item.Quest))
+                    if (GameplayMode == GameplayModes.Limbo && (item.Quest == "SkillForgetfulnessGemPickedUp" || item.Quest == "SkillEnlightenmentGemPickedUp" || item.Quest == "AttributeLoweringGemPickedUp" || item.Quest == "AttributeRaisingGemPickedUp" || item.Quest == "SkillPrimaryGemPickedUp" || item.Quest == "SkillSecondaryGemPickedUp"))
+                    {
+                        questSolve = false;
+                    }
+                    else if (QuestManager.CanSolve(item.Quest))
                     {
                         questSolve = true;
                     }
@@ -1488,6 +1507,8 @@ namespace ACE.Server.WorldObjects
 
                 if (TryDropItem(item))
                 {
+                    EndSneaking();
+
                     // drop success
                     Session.Network.EnqueueSend(
                         new GameMessagePublicUpdateInstanceID(item, PropertyInstanceId.Container, ObjectGuid.Invalid),
@@ -1553,7 +1574,107 @@ namespace ACE.Server.WorldObjects
             }
             item.Ethereal = ethereal;
 
+            if (item.Ethereal == null)
+            {
+                var defaultPhysicsState = (PhysicsState)(item.GetProperty(PropertyInt.PhysicsState) ?? 0);
+
+                if (defaultPhysicsState.HasFlag(PhysicsState.Ethereal))
+                    item.Ethereal = true;
+                else
+                    item.Ethereal = false;
+            }
+
+            item.EnqueueBroadcastPhysicsState();
+
             return true;
+        }
+
+        private bool HasIncompatibleOffhand(WorldObject itemToEquip, EquipMask wieldedLocation)
+        {
+            // Only remove offhand for primary weapon equips
+            if (wieldedLocation != EquipMask.MeleeWeapon && wieldedLocation != EquipMask.TwoHanded && wieldedLocation != EquipMask.MissileWeapon && wieldedLocation != EquipMask.Held)
+                return false;
+
+            var offhand = GetEquippedOffHand();
+            if (offhand == null)
+                return false;
+
+            if (itemToEquip.IsTwoHanded || // Two-handed weapons always require removing offhand
+               (offhand.IsShield && offhand.Mass > 140 && (itemToEquip.IsCaster || itemToEquip.IsAmmoLauncher)) || // For missile/caster weapons, only remove heavy shields (mass > 140)
+               (!offhand.IsShield && (itemToEquip.IsCaster || itemToEquip.IsAmmoLauncher)) || // For non-shield offhands, remove if equipping missile/caster
+               (itemToEquip.IsThrownWeapon && !offhand.IsShield)) // For thrown weapons, remove anything but shields
+                return true;
+            else
+                return false;
+        }
+
+        private bool Unequip(EquipMask location)
+        {
+            var item = EquippedObjects.Values.FirstOrDefault(e => e.CurrentWieldedLocation == location);
+            if (item == null)
+                return false;
+
+            if (TryDequipObjectWithNetworking(item.Guid, out var dequippedItem, DequipObjectAction.DequipToPack))
+            {
+                if (!TryCreateInInventoryWithNetworking(dequippedItem))
+                {
+                    if (!TryEquipObjectWithNetworking(dequippedItem, location))
+                        log.Warn($"0x{dequippedItem.Guid}:{dequippedItem.Name} for player {Name} lost from Unequip failure.");
+                    return false;
+                }
+
+                if (!FixStuckEquippedItemIconPending)
+                {
+                    FixStuckEquippedItemIconPending = true;
+
+                    var actionChain = new ActionChain();
+                    actionChain.AddDelaySeconds(0.25);
+                    actionChain.AddAction(this, () => FixStuckEquippedItemIcon(location));
+                    actionChain.EnqueueChain();
+                }
+
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private bool FixStuckEquippedItemIconPending;
+
+        /// <summary>
+        // There appears to be a bug possibly on the client that causes item icons to become stuck as wielded when the unwield is initiated by the server.
+        // This seems to happens more often when the client is under heavy load.
+        // This function will check for and fix the issue without the player having to relog.
+        /// <summary>
+        public void FixStuckEquippedItemIcon(EquipMask location)
+        {
+            if (EquippedObjects.Values.FirstOrDefault(e => e.CurrentWieldedLocation == location) == null)
+            {
+                WorldObject item = WorldObjectFactory.CreateNewWorldObject((int)ACE.Server.Factories.Enum.WeenieClassName.placeholder);
+                if (item != null)
+                {
+                    item.IconId = 0x000F6C; // Use the shield slot icon so it draws less attention when it briefly shows as wielded.
+                    Session.Network.EnqueueSend(new GameMessageCreateObject(item));
+
+                    var actionChain = new ActionChain();
+                    actionChain.AddDelaySeconds(0.25);
+                    actionChain.AddAction(this, () =>
+                    {
+                        if (EquippedObjects.Values.FirstOrDefault(e => e.CurrentWieldedLocation == location) == null)
+                            Session.Network.EnqueueSend(new GameEventWieldItem(Session, item.Guid.Full, location));
+                    });
+                    actionChain.AddDelaySeconds(0.1);
+                    actionChain.AddAction(this, () =>
+                    {
+                        Session.Network.EnqueueSend(new GameMessageDeleteObject(item));
+                        item.Destroy();
+                        FixStuckEquippedItemIconPending = false;
+                    });
+                    actionChain.EnqueueChain();
+                }
+            }
+            else
+                FixStuckEquippedItemIconPending = false;
         }
 
         /// <summary>
@@ -1568,13 +1689,12 @@ namespace ACE.Server.WorldObjects
         {
             //Console.WriteLine($"{Name}.HandleActionGetAndWieldItem({itemGuid:X8}, {wieldedLocation})");
 
-            // todo fix this, it seems IsAnimating is always true for a player
-            // todo we need to know when a player is busy to avoid additional actions during that time
-            /*if (IsAnimating)
+            if (IsBusy || suicideInProgress)
             {
-                Session.Network.EnqueueSend(new GameEventInventoryServerSaveFailed(Session, WeenieError.YoureTooBusy));
+                Session.Network.EnqueueSend(new GameEventWeenieError(Session, WeenieError.YoureTooBusy));
+                Session.Network.EnqueueSend(new GameEventInventoryServerSaveFailed(Session, itemGuid));
                 return;
-            }*/
+            }
 
             var item = FindObject(new ObjectGuid(itemGuid), SearchLocations.LocationsICanMove, out var fromContainer, out var rootOwner, out var wasEquipped);
 
@@ -1660,27 +1780,52 @@ namespace ACE.Server.WorldObjects
                             return;
                         }
 
-                        if (DoHandleActionGetAndWieldItem(item, fromContainer, rootOwner, wasEquipped, wieldedLocation))
+                        var equipChain = new ActionChain();
+                        if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
                         {
-                            EndSneaking();
-
-                            Session.Network.EnqueueSend(new GameMessagePrivateUpdatePropertyInt(this, PropertyInt.EncumbranceVal, EncumbranceVal ?? 0));
-
-                            EnqueueBroadcast(new GameMessageSound(Guid, Sound.PickUpItem));
-
-                            item.EmoteManager.OnPickup(this);
-                            item.NotifyOfEvent(RegenerationType.PickUp);
-
-                            if (questSolve)
-                                item.EmoteManager.OnQuest(this);
-
-                            if (isFromAPlayerCorpse)
+                            if (HasIncompatibleOffhand(item, wieldedLocation))
                             {
-                                log.Debug($"[CORPSE] {Name} (0x{Guid}) picked up and wielded {item.Name} (0x{item.Guid}) from {rootOwner.Name} (0x{rootOwner.Guid})");
-                                item.SaveBiotaToDatabase();
+                                equipChain.AddAction(this, () => Unequip(EquipMask.Shield));
+                                equipChain.AddDelaySeconds(0.1);
+                            }
+                            else if (wieldedLocation == EquipMask.Cloak && GetEquippedLeyLineAmulet != null)
+                            {
+                                equipChain.AddAction(this, () => Unequip(EquipMask.Cloak));
+                                equipChain.AddDelaySeconds(0.1);
+                            }
+                            else if (wieldedLocation == EquipMask.TrinketOne && GetEquippedTrinket() != null)
+                            {
+                                equipChain.AddAction(this, () => Unequip(EquipMask.TrinketOne));
+                                equipChain.AddDelaySeconds(0.1);
                             }
                         }
-                        EnqueuePickupDone(pickupMotion);
+
+                        equipChain.AddAction(this, () =>
+                        {
+                            if (DoHandleActionGetAndWieldItem(item, fromContainer, rootOwner, wasEquipped, wieldedLocation))
+                            {
+                                EndSneaking();
+
+                                Session.Network.EnqueueSend(new GameMessagePrivateUpdatePropertyInt(this, PropertyInt.EncumbranceVal, EncumbranceVal ?? 0));
+
+                                EnqueueBroadcast(new GameMessageSound(Guid, Sound.PickUpItem));
+
+                                item.EmoteManager.OnPickup(this);
+                                item.NotifyOfEvent(RegenerationType.PickUp);
+
+                                if (questSolve)
+                                    item.EmoteManager.OnQuest(this);
+
+                                if (isFromAPlayerCorpse)
+                                {
+                                    log.DebugFormat("[CORPSE] {0} (0x{1}) picked up and wielded {2} (0x{3}) from {4} (0x{5})", Name, Guid, item.Name, item.Guid, rootOwner.Name, rootOwner.Guid);
+                                    item.SaveBiotaToDatabase();
+                                }
+                            }
+                            EnqueuePickupDone(pickupMotion);
+                        });
+
+                        equipChain.EnqueueChain();
                     });
 
                     pickupChain.EnqueueChain();
@@ -1689,7 +1834,28 @@ namespace ACE.Server.WorldObjects
             }
             else
             {
-                DoHandleActionGetAndWieldItem(item, fromContainer, rootOwner, wasEquipped, wieldedLocation);
+                var equipChain = new ActionChain();
+                if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+                {
+                    if (HasIncompatibleOffhand(item, wieldedLocation))
+                    {
+                        equipChain.AddAction(this, () => Unequip(EquipMask.Shield));
+                        equipChain.AddDelaySeconds(0.1);
+                    }
+                    else if (wieldedLocation == EquipMask.Cloak && GetEquippedLeyLineAmulet != null)
+                    {
+                        equipChain.AddAction(this, () => Unequip(EquipMask.Cloak));
+                        equipChain.AddDelaySeconds(0.1);
+                    }
+                    else if (wieldedLocation == EquipMask.TrinketOne && GetEquippedTrinket() != null)
+                    {
+                        equipChain.AddAction(this, () => Unequip(EquipMask.TrinketOne));
+                        equipChain.AddDelaySeconds(0.1);
+                    }
+                }
+
+                equipChain.AddAction(this, () => DoHandleActionGetAndWieldItem(item, fromContainer, rootOwner, wasEquipped, wieldedLocation));
+                equipChain.EnqueueChain();
             }
         }
 
@@ -2769,7 +2935,10 @@ namespace ACE.Server.WorldObjects
 
                 if (TryDropItem(newStack))
                 {
+                    EndSneaking();
+
                     EnqueueBroadcast(new GameMessageSound(Guid, Sound.DropItem));
+                    stack.EmoteManager.OnDrop(this);
                 }
                 else
                 {
@@ -3302,8 +3471,19 @@ namespace ACE.Server.WorldObjects
                             return;
                         }
 
+                        var questSolve = false;
+                        var isFromAPlayerCorpse = false;
+                        if (sourceStackRootOwner != this && !VerifyQuest(sourceStack, sourceStackRootOwner, out questSolve, out isFromAPlayerCorpse))
+                        {
+                            // InventoryServerSaveFailed previously sent in QuestManager
+                            EnqueuePickupDone(pickupMotion);
+                            return;
+                        }
+
                         if (DoHandleActionStackableMerge(sourceStack, targetStack, amount))
                         {
+                            EndSneaking();
+
                             // If the client used the R key to merge a partial stack from the landscape, it also tries to add the "ghosted" item of the picked up stack to the inventory as well.
                             if (sourceStackRootOwner != this && sourceStack.StackSize > 0)
                                 Session.Network.EnqueueSend(new GameMessageCreateObject(sourceStack));
@@ -3317,9 +3497,28 @@ namespace ACE.Server.WorldObjects
                                 UpdateTradeNoteValue();
 
                             if (sourceStackRootOwner == this)
+                            {
                                 EnqueueBroadcast(new GameMessageSound(Guid, Sound.DropItem));
+                                sourceStack.EmoteManager.OnDrop(this);
+                            }
                             else if (targetStackRootOwner == this)
+                            {
                                 EnqueueBroadcast(new GameMessageSound(Guid, Sound.PickUpItem));
+                                sourceStack.EmoteManager.OnPickup(this);
+                                sourceStack.NotifyOfEvent(RegenerationType.PickUp);
+
+                                if (questSolve)
+                                    sourceStack.EmoteManager.OnQuest(this);
+
+                                if (isFromAPlayerCorpse)
+                                {
+                                    log.DebugFormat("[CORPSE] {0} (0x{1}) picked up {2} (0x{3}) from {4} (0x{5})", Name, Guid, sourceStack.Name, sourceStack.Guid, sourceStackRootOwner.Name, sourceStackRootOwner.Guid);
+                                    if (!sourceStack.IsDestroyed)
+                                        sourceStack.SaveBiotaToDatabase();
+                                    if (!targetStack.IsDestroyed)
+                                        targetStack.SaveBiotaToDatabase();
+                                }
+                            }
                         }
                         EnqueuePickupDone(pickupMotion);
                     });
@@ -3449,7 +3648,8 @@ namespace ACE.Server.WorldObjects
 
             if (isFromAPlayerCorpse)
             {
-                log.Debug($"[CORPSE] {Name} (0x{Guid}) merged {amount:N0} {(sourceStack.IsDestroyed ? $"which resulted in the destruction" : $"leaving behind {sourceStack.StackSize:N0}")} of {sourceStack.Name} (0x{sourceStack.Guid}) to {targetStack.Name} (0x{targetStack.Guid}) from {sourceStackRootOwner.Name} (0x{sourceStackRootOwner.Guid})");
+                if (log.IsDebugEnabled)
+                    log.Debug($"[CORPSE] {Name} (0x{Guid}) merged {amount:N0} {(sourceStack.IsDestroyed ? $"which resulted in the destruction" : $"leaving behind {sourceStack.StackSize:N0}")} of {sourceStack.Name} (0x{sourceStack.Guid}) to {targetStack.Name} (0x{targetStack.Guid}) from {sourceStackRootOwner.Name} (0x{sourceStackRootOwner.Guid})");
                 targetStack.SaveBiotaToDatabase();
             }
 
@@ -3693,17 +3893,18 @@ namespace ACE.Server.WorldObjects
 
             if (target.HasGiveOrRefuseEmoteForItem(item, out var emoteResult) || acceptAll)
             {
-                if (acceptAll || (emoteResult.Category == EmoteCategory.Give && target.AllowGive))
+                if (acceptAll ||(emoteResult.Category == EmoteCategory.Give && target.AllowGive))
                 {
                     if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM && !acceptAll && item.MaxStructure.HasValue && item.Structure < item.MaxStructure)
                     {
-                        if (item.ItemType == ItemType.TinkeringMaterial)
-                            Session.Network.EnqueueSend(new GameMessageSystemChat($"{target.Name} is not interested in partial bags of {item.NameWithMaterial.Substring(0, item.NameWithMaterial.LastIndexOf(' '))}.", ChatMessageType.Broadcast));
+                        if(item.ItemType == ItemType.TinkeringMaterial)
+                            Session.Network.EnqueueSend(new GameMessageSystemChat($"{target.Name} is not interested in partial bags of {item.NameWithMaterial.Substring(0,item.NameWithMaterial.LastIndexOf(' '))}.", ChatMessageType.Broadcast));
                         else
                             Session.Network.EnqueueSend(new GameMessageSystemChat($"{target.Name} is not interested in the {item.NameWithMaterial} as it is partially used up.", ChatMessageType.Broadcast));
                         Session.Network.EnqueueSend(new GameEventInventoryServerSaveFailed(Session, item.Guid.Full, WeenieError.TradeAiRefuseEmote));
                         return;
                     }
+
                     // for NPCs that accept items with EmoteCategory.Give,
                     // if stacked item, only give 1, ignoring amount indicated, unless they are AiAcceptEverything in which case, take full amount indicated
                     if (RemoveItemForGive(item, itemFoundInContainer, itemWasEquipped, itemRootOwner, acceptAll ? amount : 1, out WorldObject itemToGive))

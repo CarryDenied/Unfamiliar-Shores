@@ -519,7 +519,7 @@ namespace ACE.Server.WorldObjects
 
             while (IsEnraged && IsAlive)
             {
-                var playersInRange = GetPlayersInRange(250.0f);
+                var playersInRange = GetPlayersInRange(50.0f);
                 if (playersInRange.Count > 1)
                 {
                     var validTargets = playersInRange.Where(p => p != lastHotspotTarget).ToList();
@@ -530,7 +530,7 @@ namespace ACE.Server.WorldObjects
                         Console.WriteLine($"[DEBUG] Targeted {targetPlayer.Name} for grapple effect.");
 
                         // **Broadcast Grapple Warning**
-                        BroadcastMessage($"{Name} Lashes out, attempting to drag his next victim closer!", 1000.0f);
+                        BroadcastMessage($"{Name} Lashes out, attempting to drag his next victim closer!", 50.0f);
 
                         // **Delay before executing the grapple (2.5 seconds)**
                         await Task.Delay(2500);
@@ -563,7 +563,7 @@ namespace ACE.Server.WorldObjects
 
             while (IsEnraged && IsAlive && CanAOE)
             {
-                var playersInRange = GetPlayersInRange(250.0f);
+                var playersInRange = GetPlayersInRange(50.0f);
                 if (playersInRange.Count > 0)
                 {
                     var targetPlayer = playersInRange[random.Next(playersInRange.Count)];
@@ -595,7 +595,7 @@ namespace ACE.Server.WorldObjects
             Console.WriteLine($"[DEBUG] Moving {targetPlayer.Name} to {Name}'s location...");
 
             // **Broadcast a warning message first**
-            BroadcastMessage($"Get Over Here {targetPlayer.Name}!", 1000.0f);
+            BroadcastMessage($"Get Over Here {targetPlayer.Name}!", 50.0f);
 
             // **Use ThreadSafeTeleport for movement**
             var destination = new Position(this.Location);
@@ -702,7 +702,7 @@ namespace ACE.Server.WorldObjects
             Console.WriteLine($"[DEBUG] Spawned {(damageObj != null ? "damage" : "visual-only")} object(s) at {targetPlayer.Name}'s location.");
 
             // Broadcast warning
-            BroadcastMessage($"The enraged mob targets {targetPlayer.Name}! {message}", 1000.0f);
+            BroadcastMessage($"The enraged mob targets {targetPlayer.Name}! {message}", 50.0f);
 
             // Remove objects after 20 seconds
             RemoveObjectsAfterDelay(damageObj, visualObj, 20);

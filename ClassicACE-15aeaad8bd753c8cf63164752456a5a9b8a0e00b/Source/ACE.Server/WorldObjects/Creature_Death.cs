@@ -268,7 +268,7 @@ namespace ACE.Server.WorldObjects
                     extraXp = 0;
                 else if (extraXp > 10000 && killerLevel < (killer.MaxReachedLevel ?? 1))
                 {
-                    var xpWithRelive = extraXp + (long)(extraXp * (float)PropertyManager.GetDouble("relive_bonus_xp").Item);
+                    var xpWithRelive = extraXp + (long)(extraXp * (float)PropertyManager.GetDouble("relive_bonus_xp_pvp").Item);
                     if (xpWithRelive > 10000 && xpWithRelive > extraXp)
                     {
                         extraXp = extraXp * (extraXp / xpWithRelive); // Reduce to what it would have been without relive
@@ -844,13 +844,13 @@ namespace ACE.Server.WorldObjects
         {
             var droppedItems = new List<WorldObject>();
 
-            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.005f) // 0.5% overall drop chance
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.5% overall drop chance
             {
-                int quantity = ThreadSafeRandom.Next(0, 6); // Random quantity from 0 to 5
+                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2
 
                 for (int i = 0; i < quantity; i++)
                 {
-                    var doubloon = WorldObjectFactory.CreateNewWorldObject(36518);
+                    var doubloon = WorldObjectFactory.CreateNewWorldObject(116057);
 
                     if (doubloon != null)
                     {
