@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.vsconfig = .vsconfig
 		global.json = global.json
+		nuget.config = nuget.config
 		Settings.StyleCop = Settings.StyleCop
 		test.runsettings = test.runsettings
 	EndProjectSection
@@ -40,6 +41,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACE.Database", "ACE.Database\ACE.Database.csproj", "{CD2B6DEE-6809-458A-B45A-E0B0BD1308FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACE.Adapter", "ACE.Adapter\ACE.Adapter.csproj", "{3C925D75-B149-4898-8806-054D3E63A4BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\docker.env = ..\docker.env
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

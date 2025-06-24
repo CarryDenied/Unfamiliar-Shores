@@ -25,3 +25,5 @@ COPY ./Database/Updates/Shard/ace_shard_customdm_*.sql /docker-entrypoint-initdb
 
 # world db updates
 COPY ./Database/Updates/World/*.sql /docker-entrypoint-initdb.d/
+
+COPY ./Content/sql/weenies/2025-06-22-50059-arcanumticketseller.sql /docker-entrypoint-initdb.d/
