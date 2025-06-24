@@ -318,7 +318,6 @@ namespace ACE.Server.WorldObjects
         public static int GetCreatureDeathXP(int level, int hitpoints = 0, bool usedSpells = false, bool usedRangedAttacks = false, int formulaVersion = 0)
         {
             double baseXp = Math.Min((1.75 * Math.Pow(level, 2)) + (20 * level), 30000);
-
             switch (formulaVersion)
             {
                 case 1:
@@ -423,6 +422,8 @@ namespace ACE.Server.WorldObjects
                     killTaskCredits = playerCredits;
                     cap = 1;
                 }
+
+                log.Debug(playerDamager.QuestManager.GetQuests());
 
                 if (playerDamager.QuestManager.HasQuest(killQuest))
                 {

@@ -1,3 +1,4 @@
+USE `ace_world_customdm`;
 DELETE FROM `encounter`
 WHERE `weenie_Class_Id`
 IN (1996,1997,1998,1999,2000,2001,4622);

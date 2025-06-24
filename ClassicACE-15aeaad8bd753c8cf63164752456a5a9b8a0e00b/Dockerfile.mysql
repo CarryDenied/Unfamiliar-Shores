@@ -1,0 +1,29 @@
+FROM mysql:8.0-debian
+
+# Install 7zip
+RUN apt-get update && \
+    apt-get install -y p7zip-full && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create target dir for SQLs
+RUN mkdir -p /docker-entrypoint-initdb.d
+
+# Copy .sql files directly
+COPY ./Database/Base/CustomDM/AuthenticationBase.sql /docker-entrypoint-initdb.d/000_AuthenticationBase.sql
+COPY ./Database/Base/CustomDM/ShardBase.sql /docker-entrypoint-initdb.d/001_ShardBase.sql
+
+# Copy 7z archive and extract it
+COPY ./Database/ACE-World-CE16PY-db-v0.7.18-CustomDM-v2.38a.7z /tmp/
+
+RUN 7z e /tmp/ACE-World-CE16PY-db-v0.7.18-CustomDM-v2.38a.7z -o/docker-entrypoint-initdb.d/ && \
+    mv /docker-entrypoint-initdb.d/ACE-World-CE16PY-db-v0.7.18-CustomDM-v2.38a.sql /docker-entrypoint-initdb.d/002_WorldBase.sql && \
+    rm /tmp/ACE-World-CE16PY-db-v0.7.18-CustomDM-v2.38a.7z
+
+# Auction House initialization
+COPY ./Database/Updates/Shard/ace_shard_customdm_*.sql /docker-entrypoint-initdb.d/
+
+# world db updates
+COPY ./Database/Updates/World/*.sql /docker-entrypoint-initdb.d/
+
+COPY ./Content/sql/weenies/2025-06-22-50059-arcanumticketseller.sql /docker-entrypoint-initdb.d/
