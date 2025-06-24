@@ -3701,7 +3701,6 @@ namespace ACE.Server.WorldObjects
                             Session.Network.EnqueueSend(new GameMessageSystemChat($"{target.Name} is not interested in partial bags of {item.NameWithMaterial.Substring(0, item.NameWithMaterial.LastIndexOf(' '))}.", ChatMessageType.Broadcast));
                         else
                             Session.Network.EnqueueSend(new GameMessageSystemChat($"{target.Name} is not interested in the {item.NameWithMaterial} as it is partially used up.", ChatMessageType.Broadcast));
-
                         Session.Network.EnqueueSend(new GameEventInventoryServerSaveFailed(Session, item.Guid.Full, WeenieError.TradeAiRefuseEmote));
                         return;
                     }

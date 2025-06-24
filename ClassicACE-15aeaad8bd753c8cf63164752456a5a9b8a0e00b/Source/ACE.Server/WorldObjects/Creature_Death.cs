@@ -317,9 +317,7 @@ namespace ACE.Server.WorldObjects
 
         public static int GetCreatureDeathXP(int level, int hitpoints = 0, bool usedSpells = false, bool usedRangedAttacks = false, int formulaVersion = 0)
         {
-            Console.WriteLine($"[DEBUG] GetCreatureDeathXP called with level={level}, hitpoints={hitpoints}, usedSpells={usedSpells}, usedRangedAttacks={usedRangedAttacks}, formulaVersion={formulaVersion}");
             double baseXp = Math.Min((1.75 * Math.Pow(level, 2)) + (20 * level), 30000);
-            Console.WriteLine($"[DEBUG] Base XP calculated: {baseXp} (level={level})");
             switch (formulaVersion)
             {
                 case 1:
@@ -350,8 +348,6 @@ namespace ACE.Server.WorldObjects
             double rangedXp = usedRangedAttacks ? xp * 0.15f : 0f;
 
             xp += casterXp + rangedXp;
-
-            Console.WriteLine($"[DEBUG] Calculated death XP: {xp} (baseXp={baseXp}, hitpointsXp={hitpointsXp}, casterXp={casterXp}, rangedXp={rangedXp})");
 
             return (int)Math.Round(xp);
         }
