@@ -33,13 +33,13 @@ Tier Chances: 1, 0, 0, 0, 0, 0
         Damage += 7
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 4.9%:
         Damage += 8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
 Mace Mutation #2:
 
@@ -49,61 +49,61 @@ Tier Chances: 0, 1, 0, 0, 0, 0
         Damage += 7
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 18%:
         Damage += 8
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 125
+        WieldDifficulty = 100
 
     - Chance: 8.6%:
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 5.7%:
         Damage += 10
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 3.8%:
         Damage += 11
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 2.6%:
         Damage += 12
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.8%:
         Damage += 13
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.2%:
         Damage += 16
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.7%:
         Damage += 15
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 0.6%:
         Damage += 16
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 Mace Mutation #3:
 
@@ -113,49 +113,49 @@ Tier Chances: 0, 0, 1, 0, 0, 0
         Damage += 9
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 1.6%:
         Damage += 10
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 2.3%:
         Damage += 11
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 4.4%:
         Damage += 12
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 5%:
         Damage += 13
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 7.7%:
         Damage += 14
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 11%:
         Damage += 15
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 18%:
         Damage += 16
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance: 26%:
         Damage += 17

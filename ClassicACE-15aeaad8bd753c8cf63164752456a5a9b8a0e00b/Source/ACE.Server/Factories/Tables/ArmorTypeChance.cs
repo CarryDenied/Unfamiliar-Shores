@@ -10,51 +10,80 @@ namespace ACE.Server.Factories.Tables
     {
         private static ChanceTable<TreasureArmorType> T1_Chances = new ChanceTable<TreasureArmorType>()
         {
-            ( TreasureArmorType.Leather,        0.34f ),
-            ( TreasureArmorType.StuddedLeather, 0.33f ),
-            ( TreasureArmorType.Chainmail,      0.33f ),
+            ( TreasureArmorType.Leather,        0.25f ),
+            ( TreasureArmorType.StuddedLeather, 0.25f ),
+            ( TreasureArmorType.Chainmail,      0.25f ),
+            ( TreasureArmorType.Platemail,      0.11f ),
+            ( TreasureArmorType.HeritageLow,    0.14f ),
+           
         };
 
         private static ChanceTable<TreasureArmorType> T2_Chances = new ChanceTable<TreasureArmorType>()
         {
-            ( TreasureArmorType.Leather,        0.25f ),
-            ( TreasureArmorType.StuddedLeather, 0.25f ),
-            ( TreasureArmorType.Chainmail,      0.25f ),
-            ( TreasureArmorType.Platemail,      0.25f ),
+			( TreasureArmorType.Leather,        0.10f ),
+            ( TreasureArmorType.StuddedLeather, 0.10f ),
+            ( TreasureArmorType.Chainmail,      0.10f ),
+            ( TreasureArmorType.Platemail,      0.10f ),
+            ( TreasureArmorType.HeritageLow,    0.11f ),
+            ( TreasureArmorType.Covenant,       0.07f ),
+            ( TreasureArmorType.HeritageHigh,   0.14f ),
+            ( TreasureArmorType.Olthoi,         0.06f ),
+            ( TreasureArmorType.OlthoiHeritage, 0.12f ),
+            ( TreasureArmorType.Haebrean,       0.04f ),
+            ( TreasureArmorType.KnorrAcademy,   0.02f ),
+            ( TreasureArmorType.Sedgemail,      0.02f ),
+            ( TreasureArmorType.Overrobe,       0.02f ),
         };
 
         private static ChanceTable<TreasureArmorType> T3_Chances = new ChanceTable<TreasureArmorType>()
         {
-            ( TreasureArmorType.Leather,        0.22f ),
-            ( TreasureArmorType.StuddedLeather, 0.22f ),
-            ( TreasureArmorType.Chainmail,      0.22f ),
-            ( TreasureArmorType.Platemail,      0.22f ),
-            ( TreasureArmorType.HeritageLow,    0.05f ),
-            ( TreasureArmorType.Covenant,       0.05f ),
+            ( TreasureArmorType.Leather,        0.10f ),
+            ( TreasureArmorType.StuddedLeather, 0.10f ),
+            ( TreasureArmorType.Chainmail,      0.10f ),
+            ( TreasureArmorType.Platemail,      0.10f ),
+            ( TreasureArmorType.HeritageLow,    0.11f ),
+            ( TreasureArmorType.Covenant,       0.07f ),
+            ( TreasureArmorType.HeritageHigh,   0.14f ),
+            ( TreasureArmorType.Olthoi,         0.06f ),
+            ( TreasureArmorType.OlthoiHeritage, 0.12f ),
+            ( TreasureArmorType.Haebrean,       0.04f ),
+            ( TreasureArmorType.KnorrAcademy,   0.02f ),
+            ( TreasureArmorType.Sedgemail,      0.02f ),
             ( TreasureArmorType.Overrobe,       0.02f ),    // added
         };
 
         private static ChanceTable<TreasureArmorType> T4_Chances = new ChanceTable<TreasureArmorType>()
         {
-            ( TreasureArmorType.Leather,        0.16f ),
-            ( TreasureArmorType.StuddedLeather, 0.16f ),
-            ( TreasureArmorType.Chainmail,      0.17f ),
-            ( TreasureArmorType.Platemail,      0.17f ),
-            ( TreasureArmorType.HeritageLow,    0.16f ),
-            ( TreasureArmorType.Covenant,       0.16f ),
-            ( TreasureArmorType.Overrobe,       0.02f ),    // added
+           ( TreasureArmorType.Leather,         0.10f ),
+            ( TreasureArmorType.StuddedLeather, 0.10f ),
+            ( TreasureArmorType.Chainmail,      0.10f ),
+            ( TreasureArmorType.Platemail,      0.10f ),
+            ( TreasureArmorType.HeritageLow,    0.11f ),
+            ( TreasureArmorType.Covenant,       0.07f ),
+            ( TreasureArmorType.HeritageHigh,   0.14f ),
+            ( TreasureArmorType.Olthoi,         0.06f ),
+            ( TreasureArmorType.OlthoiHeritage, 0.12f ),
+            ( TreasureArmorType.Haebrean,       0.04f ),
+            ( TreasureArmorType.KnorrAcademy,   0.02f ),
+            ( TreasureArmorType.Sedgemail,      0.02f ),
+            ( TreasureArmorType.Overrobe,       0.02f ),   // added
         };
 
         private static ChanceTable<TreasureArmorType> T5_Chances = new ChanceTable<TreasureArmorType>()
         {
-            ( TreasureArmorType.Leather,        0.15f ),
-            ( TreasureArmorType.StuddedLeather, 0.15f ),
-            ( TreasureArmorType.Chainmail,      0.16f ),
-            ( TreasureArmorType.Platemail,      0.16f ),
-            ( TreasureArmorType.HeritageLow,    0.15f ),
-            ( TreasureArmorType.Covenant,       0.16f ),
-            ( TreasureArmorType.HeritageHigh,   0.05f ),
-            ( TreasureArmorType.Overrobe,       0.02f ),    // added
+            ( TreasureArmorType.Leather,        0.10f ),
+            ( TreasureArmorType.StuddedLeather, 0.10f ),
+            ( TreasureArmorType.Chainmail,      0.10f ),
+            ( TreasureArmorType.Platemail,      0.10f ),
+            ( TreasureArmorType.HeritageLow,    0.11f ),
+            ( TreasureArmorType.Covenant,       0.07f ),
+            ( TreasureArmorType.HeritageHigh,   0.14f ),
+            ( TreasureArmorType.Olthoi,         0.06f ),
+            ( TreasureArmorType.OlthoiHeritage, 0.12f ),
+            ( TreasureArmorType.Haebrean,       0.04f ),
+            ( TreasureArmorType.KnorrAcademy,   0.02f ),
+            ( TreasureArmorType.Sedgemail,      0.02f ),
+            ( TreasureArmorType.Overrobe,       0.02f ),   // added
         };
 
         private static ChanceTable<TreasureArmorType> T6_Chances = new ChanceTable<TreasureArmorType>()
@@ -126,64 +155,133 @@ namespace ACE.Server.Factories.Tables
             {
                 T1_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
+					( TreasureArmorType.Cloth,          1.0f ),
                     ( TreasureArmorType.Leather,        2.0f ),
                     ( TreasureArmorType.StuddedLeather, 2.0f ),
+                    ( TreasureArmorType.Chainmail,      2.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+                    
                 };
 
                 T2_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Leather,        2.0f ),
-                    ( TreasureArmorType.StuddedLeather, 2.0f ),
-                    ( TreasureArmorType.Chainmail,      2.0f ),
+					( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
+                    
                 };
 
                 T3_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Leather,        2.0f ),
-                    ( TreasureArmorType.StuddedLeather, 2.0f ),
-                    ( TreasureArmorType.Chainmail,      2.0f ),
+                  ( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
                 };
 
                 T4_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Chainmail,      2.0f ),
-                    ( TreasureArmorType.Platemail,      2.0f ),
+					( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
                 };
 
                 T5_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Chainmail,      1.0f ),
-                    ( TreasureArmorType.Platemail,      2.0f ),
-                    ( TreasureArmorType.HeritageLow,    2.0f ),
+                    ( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
                 };
 
                 T6_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Platemail,      2.0f ),
-                    ( TreasureArmorType.HeritageLow,    2.0f ),
-                    ( TreasureArmorType.HeritageHigh,   2.0f ),
+					( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
                 };
 
                 T7_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Platemail,      2.0f ),
-                    ( TreasureArmorType.HeritageLow,    2.0f ),
-                    ( TreasureArmorType.HeritageHigh,   2.0f ),
+                    ( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
                 };
 
                 T8_Chances = new ChanceTable<TreasureArmorType>(ChanceTableType.Weight)
                 {
-                    ( TreasureArmorType.Cloth,          1.0f ),
-                    ( TreasureArmorType.Platemail,      2.0f ),
-                    ( TreasureArmorType.HeritageLow,    2.0f ),
-                    ( TreasureArmorType.HeritageHigh,   2.0f ),
+                    ( TreasureArmorType.Leather,        1.0f ),
+					( TreasureArmorType.StuddedLeather, 1.0f ),
+					( TreasureArmorType.Chainmail,      1.0f ),
+					( TreasureArmorType.Platemail,      1.0f ),
+					( TreasureArmorType.HeritageLow,    1.0f ),
+					( TreasureArmorType.Covenant,       1.0f ),
+					( TreasureArmorType.HeritageHigh,   1.0f ),
+					( TreasureArmorType.Olthoi,         1.0f ),
+					( TreasureArmorType.OlthoiHeritage, 1.0f ),
+					( TreasureArmorType.Haebrean,       1.0f ),
+					( TreasureArmorType.KnorrAcademy,   1.0f ),
+					( TreasureArmorType.Sedgemail,      1.0f ),
+					( TreasureArmorType.Overrobe,       1.0f ),
                 };
 
                 // we have to refresh this list or it will still contain the previous values.

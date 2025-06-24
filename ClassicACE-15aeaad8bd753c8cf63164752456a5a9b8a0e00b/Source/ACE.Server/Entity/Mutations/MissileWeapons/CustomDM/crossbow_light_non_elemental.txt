@@ -49,28 +49,28 @@ Tier chances: 0, 1, 0, 0, 0, 0
         WieldDifficulty = 125
 
     - Chance 13%:
-        DamageMod = 2.03
+        DamageMod = 2.08
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 7.6%:
-        DamageMod = 2.05
+        DamageMod = 2.10
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 3.3%:
-        DamageMod = 2.07
+        DamageMod = 2.12
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 2.1%:
-        DamageMod = 2.1
+        DamageMod = 2.17
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
 Light Crossbow Mutation #3:
 
@@ -80,49 +80,49 @@ Tier chances: 0, 0, 1, 0, 0, 0
         DamageMod = 2.03
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 20%:
         DamageMod = 2.05
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 15%:
         DamageMod = 2.07
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 5%:
         DamageMod = 2.1
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 250
+        WieldDifficulty = 225
 
     - Chance 10%:
         DamageMod = 2.13
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 20%:
         DamageMod = 2.15
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 15%:
         DamageMod = 2.17
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 5%:
         DamageMod = 2.2
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
 Light Crossbow Mutation #4:
 
@@ -132,49 +132,49 @@ Tier chances: 0, 0, 0, 1, 0, 0
         DamageMod = 2.13
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 20%:
         DamageMod = 2.15
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 15%:
         DamageMod = 2.17
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 5%:
         DamageMod = 2.2
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 270
+        WieldDifficulty = 265
 
     - Chance 10%:
         DamageMod = 2.23
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 20%:
         DamageMod = 2.25
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 15%:
         DamageMod = 2.27
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 5%:
         DamageMod = 2.3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
 Light Crossbow Mutation #5:
 
@@ -184,22 +184,22 @@ Tier chances: 0, 0, 0, 0, 1, 1
         DamageMod = 2.23
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 35%:
         DamageMod = 2.25
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 35%:
         DamageMod = 2.27
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
 
     - Chance 15%:
         DamageMod = 2.3
         WieldRequirements = RawSkill
         WieldSkillType = WeaponSkill
-        WieldDifficulty = 290
+        WieldDifficulty = 285
