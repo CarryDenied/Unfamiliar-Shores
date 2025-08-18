@@ -328,9 +328,13 @@ namespace ACE.Server.WorldObjects
 
             var hadVitae = HasVitae;
 
+            var isPkDeath = IsPKDeath(topDamager);
+
+            var prevVitae = Vitae;
+
             // update vitae
             // players who died in a PKLite fight do not accrue vitae
-            if (!IsPKLiteDeath(topDamager) && !IsHardcore && !IsOnArenaLandblock)
+            if (!IsPKLiteDeath(topDamager) && !IsHardcore && !IsOnArenaLandblock && !ArenaLocation.IsArenaLandblock(Location.Landblock))
                 InflictVitaePenalty();
 
             if ((IsPKDeath(topDamager) || AugmentationSpellsRemainPastDeath == 0) && !IsOnArenaLandblock)
@@ -341,6 +345,59 @@ namespace ACE.Server.WorldObjects
             }
             else
                 Session.Network.EnqueueSend(new GameMessageSystemChat("Your augmentation prevents the tides of death from ripping away your current enchantments!", ChatMessageType.Broadcast));
+
+            //Handle arena deaths and logging PK kills
+            bool isArenaDeath = false;
+            if (topDamager != null)
+            {
+                var killerPlayer = PlayerManager.FindByGuid(topDamager.Guid);
+                if (killerPlayer != null && KillerId.HasValue)
+                {
+                    uint? victimMonarchId = null;
+                    uint? killerMonarchId = null;
+                    var killerAllegiance = AllegianceManager.GetAllegiance(killerPlayer);
+                    var victimAllegiance = AllegianceManager.GetAllegiance(this);
+
+                    if (killerAllegiance != null)
+                    {
+                        killerMonarchId = killerAllegiance.MonarchId;
+                    }
+
+                    if (victimAllegiance != null)
+                    {
+                        victimMonarchId = victimAllegiance.MonarchId;
+                    }
+
+                    //Handle arena kills
+                    try
+                    {
+                        if (ArenaLocation.IsArenaLandblock(Location.Landblock))
+                        {
+                            var victimArenaPlayer = ArenaManager.GetArenaPlayerByCharacterId(Character.Id);
+                            var killerArenaPlayer = ArenaManager.GetArenaPlayerByCharacterId(killerPlayer.Guid.Full);
+
+                            if (victimArenaPlayer != null)
+                            {
+                                ArenaManager.HandlePlayerDeath((uint)Character.Id, (uint)killerPlayer.Guid.Full);
+                                isArenaDeath = true;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Error in Player_Death handling arena logic. Ex: {ex}");
+                    }
+
+                    try
+                    {
+                        DatabaseManager.Shard.BaseDatabase.CreateArenaPKKill((uint)Character.Id, (uint)killerPlayer.Guid.Full, victimMonarchId, killerMonarchId);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Exception logging PK Kill to DB. Ex: {ex}");
+                    }
+                }
+            }
 
             // wait for the death animation to finish
             var dieChain = new ActionChain();
@@ -384,8 +441,10 @@ namespace ACE.Server.WorldObjects
             {
                 ThreadSafeTeleportOnDeath(topDamager); // enter portal space
 
-                if ((IsPKDeath(topDamager) || IsPKLiteDeath(topDamager)) && !IsHardcore)
-                    SetMinimumTimeSincePK();
+                var isArenaLandblock = IsOnArenaLandblock || isArenaDeath;
+
+                if (!IsGhost && IsPK && PropertyManager.GetBool("pve_death_respite").Item || (isPkDeath || IsPKLiteDeath(topDamager)) && !IsHardcore)
+                    SetMinimumTimeSincePK(isPkDeath, isArenaLandblock);
 
                 IsBusy = false;
             });
@@ -528,7 +587,7 @@ namespace ACE.Server.WorldObjects
         /// </summary>
         public void HandleActionDie()
         {
-            if (IsDead || Teleporting)
+            if (IsDead || Teleporting || IsArenaObserver)
             {
                 Session.Network.EnqueueSend(new GameEventWeenieError(Session, WeenieError.YoureTooBusy));
                 return;
@@ -1343,8 +1402,9 @@ namespace ACE.Server.WorldObjects
             set { if (!value.HasValue) RemoveProperty(PropertyFloat.MinimumTimeSincePk); else SetProperty(PropertyFloat.MinimumTimeSincePk, value.Value); }
         }
 
-        public void SetMinimumTimeSincePK()
+        public void SetMinimumTimeSincePK(bool isPkDeath, bool isArenaLandblock)
         {
+            var pveDeathRespite = PropertyManager.GetBool("pve_death_respite").Item;
             if (IsOlthoiPlayer)
                 return;
 
@@ -1353,7 +1413,16 @@ namespace ACE.Server.WorldObjects
 
             var prevStatus = PlayerKillerStatus;
 
-            MinimumTimeSincePk = 0;
+            var respiteTimer = PropertyManager.GetDouble("pk_respite_timer").Item;
+            var pveDeathRespiteTimer = PropertyManager.GetDouble("pve_death_respite_timer").Item;
+
+            if (isArenaLandblock)
+                MinimumTimeSincePk = Math.Max(respiteTimer - 45, 0);
+            else if (pveDeathRespite && !isPkDeath)
+                MinimumTimeSincePk = Math.Max(respiteTimer - pveDeathRespiteTimer, 0);
+            else
+                MinimumTimeSincePk = 0;
+
             PlayerKillerStatus = PlayerKillerStatus.NPK;
 
             if (prevStatus == PlayerKillerStatus.PK)

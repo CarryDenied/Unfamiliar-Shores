@@ -120,6 +120,7 @@ namespace ACE.Entity.Enum.Properties
         ChargenClothing                 = 9018,
         [ServerOnly]
         ChargenSkillsSecondary          = 9019,
+        ArenaRewardsByOpponent          = 9300,
     }
 
     public static class PropertyStringExtensions

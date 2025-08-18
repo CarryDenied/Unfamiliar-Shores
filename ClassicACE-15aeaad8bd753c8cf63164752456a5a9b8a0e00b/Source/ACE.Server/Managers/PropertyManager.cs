@@ -491,6 +491,8 @@ namespace ACE.Server.Managers
             ));
         }
 
+        public const bool SEASON4_PATCH_1_6 = true;
+
         public static void LoadDefaultProperties()
         {
             // Place any default properties to load in here
@@ -550,6 +552,19 @@ namespace ACE.Server.Managers
                 PropertyManager.ModifyDouble("quest_mindelta_rate", 0.2412);
 
                 PropertyManager.ModifyBool("useable_gems", false);
+
+                if (SEASON4_PATCH_1_6)
+                {
+                    PropertyManager.ModifyLong("arenas_min_level", 5);
+                    PropertyManager.ModifyLong("arenas_reward_min_level", 1);
+                    PropertyManager.ModifyLong("arenas_reward_min_age", 1);
+                    PropertyManager.ModifyDouble("arena_corpse_rot_seconds", 900);
+                    PropertyManager.ModifyString("arenas_blacklist", "");
+                    PropertyManager.ModifyString("arena_globals_webhook", "");
+                    PropertyManager.ModifyBool("disable_arenas", false);
+                    PropertyManager.ModifyBool("arena_allow_same_ip_match", false);
+                    PropertyManager.ModifyBool("arena_allow_observers", true);
+                }
             }
         }
 
@@ -692,7 +707,10 @@ namespace ACE.Server.Managers
                 ("fall_damage_enabled", new Property<bool>(true, "Toggles whether fall damage is enabled")),
                 ("dekaru_dual_wield_speed_mod", new Property<bool>(true, "Toggles whether Dekaru's dual wield speed changes (other than for dagger) are enabled")),
                 ("dekaru_hc_keep_non_equippable_bonded_on_death", new Property<bool>(true, "Toggles whether bonded items are kept on a hardcore death despite being non-equippable")),
-                ("auction_system_enabled", new Property<bool>(true, "If FALSE, the auction system will be disabled."))
+                ("auction_system_enabled", new Property<bool>(true, "If FALSE, the auction system will be disabled.")),
+                ("disable_arenas", new Property<bool>(false, "set to true to disable arena events")),
+                ("arena_allow_same_ip_match", new Property<bool>(false, "enable this allow two characters connected from the same IP to be matched in an arena event")),
+                ("arena_allow_observers", new Property<bool>(true, "enable this to allow players to watch arena matches as invisible observers"))
 
                 );
 
@@ -725,7 +743,10 @@ namespace ACE.Server.Managers
                 ("ms_dagger_2x", new Property<long>(250, "Multistrike Dagger 2x skill threshold.")),
                 ("ms_dagger_3x", new Property<long>(325, "Multistrike Dagger 2x skill threshold.")),
                 ("ms_sword_2x", new Property<long>(250, "Multistrike Sword 2x skill threshold.")),
-                ("ms_sword_3x", new Property<long>(325, "Multistrike Sword 3x skill threshold."))
+                ("ms_sword_3x", new Property<long>(325, "Multistrike Sword 3x skill threshold.")),
+                ("arenas_min_level", new Property<long>(25, "the minimum level required to join an arena queue")),
+                ("arenas_reward_min_level", new Property<long>(25, "the minimum level required to get arena rewards")),
+                ("arenas_reward_min_age", new Property<long>(864000, "the minimum in-game age in seconds required to get arena rewards"))
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<double>> DefaultDoubleProperties =
@@ -1077,7 +1098,8 @@ namespace ACE.Server.Managers
                 ("quest_mutation_tier_2_major_chance", new Property<double>(0.25, "The % chance a tier 2 quest item cantrip mutation will be a major cantrip (otherwise will be a minor cantrip).")),
                 ("quest_mutation_tier_3_major_chance", new Property<double>(0.90, "The % chance a tier 3 quest item cantrip mutation will be a major cantrip (otherwise will be a minor cantrip).")),
 
-                ("treasure_map_chance", new Property<double>(0.002, "Probability of a creature dropping a treasure map. 1.0 means 100%"))
+                ("treasure_map_chance", new Property<double>(0.002, "Probability of a creature dropping a treasure map. 1.0 means 100%")),
+                ("arena_corpse_rot_seconds", new Property<double>(900, "the number of seconds a corpse that is generated in an arena landblock takes to rot. Default 15 mins."))
 
                 );
         
@@ -1099,7 +1121,9 @@ namespace ACE.Server.Managers
                 ("proxycheck_api_key", new Property<string>("", "API key for proxycheck.io service for VPN detection")),
                 ("vpn_account_whitelist", new Property<string>("", "A comma separated list of account names for which VPN detection is bypassed")),
                 ("discord_login_token", new Property<string>("", "Login Token used for Discord chat integration")),
-                ("discord_server_id", new Property<string>("", "Discord server ID used for Discord chat integration"))
+                ("discord_server_id", new Property<string>("", "Discord server ID used for Discord chat integration")),
+                ("arenas_blacklist", new Property<string>("", "A comma separated list of CharacterID values that cannot participate in Arenas")),
+                ("arena_globals_webhook", new Property<string>("", "Webhook to be send Arena global messages."))
                 );
     }
 }
