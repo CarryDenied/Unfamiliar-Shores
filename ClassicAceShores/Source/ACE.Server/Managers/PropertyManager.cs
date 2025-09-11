@@ -805,6 +805,12 @@ namespace ACE.Server.Managers
                 // Thrown Weapon Attack Speed Modifier
                 ("dekaru_tw_animation_speed", new Property<double>(1.0, "Multiplier for thrown weapon attack animation speed")),
 
+                // Crossbow Attack Speed Modifier
+                ("crossbow_animation_speed", new Property<double>(1.0, "Multiplier for thrown weapon attack animation speed")),
+
+                // Bow Attack Speed Modifier
+                ("bow_animation_speed", new Property<double>(1.0, "Multiplier for thrown weapon attack animation speed")),
+
                 // PvP Damage modifiers
                 //
                 // For CustomDM:

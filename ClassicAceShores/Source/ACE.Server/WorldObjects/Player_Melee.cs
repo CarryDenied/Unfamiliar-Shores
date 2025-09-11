@@ -540,19 +540,21 @@ namespace ACE.Server.WorldObjects
                         else
                             animSpeedMod = (float)PropertyManager.GetDouble("sword_ms_animation_speed_shielded").Item;
                     }
+                    
+
                 }
                 else
                 {
                     if (PropertyManager.GetBool("dekaru_dual_wield_speed_mod").Item)
                     {
                         if (GetEquippedOffHand() == null && !TwoHandedCombat)
-                            animSpeedMod = 1.2f;
+                            animSpeedMod = 1.3f;
                         else
                             animSpeedMod = 1.0f;
                     }
                     else
                     {
-                        animSpeedMod = IsDualWieldAttack ? 1.2f : 1.0f;     // dual wield swing animation 20% faster
+                        animSpeedMod = IsDualWieldAttack ? 1.3f : 1.0f;     // dual wield swing animation 30% faster
                     }
                 }
             }

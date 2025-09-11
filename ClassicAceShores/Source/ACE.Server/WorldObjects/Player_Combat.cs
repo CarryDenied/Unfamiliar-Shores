@@ -1082,8 +1082,6 @@ namespace ACE.Server.WorldObjects
             return target.Attackable && !target.Teleporting && !(target is CombatPet);
         }
 
-        // http://acpedia.org/wiki/Announcements_-_2002/04_-_Betrayal
-
         // Some combination of strength and endurance (the two are roughly of equivalent importance) now allows one to have a level of "natural resistances" to the 7 damage types,
         // and to partially resist drain health and harm attacks.
 
@@ -1103,7 +1101,7 @@ namespace ACE.Server.WorldObjects
         // A few other important notes:
 
         // - The abilities that Endurance or Endurance/Strength conveys are not increased by Strength or Endurance buffs.
-        //   It is the raw Strength and/or Endurance scores that determine the various bonuses.
+        //   It is the raw Endurance score that determines the various bonuses.
         // - For April, natural resistances will offer some protection versus hollow type damage, whether it is from a Hollow Minion or a Hollow weapon. This will be changed in May.
         // - These abilities are player-only, creatures with high endurance will not benefit from any of these changes.
         // - Come May, you can type @help endurance for a summary of the April changes to Endurance.
@@ -1118,30 +1116,32 @@ namespace ACE.Server.WorldObjects
             if (damageType == DamageType.Nether)
                 return 0.5f;
 
-            // base strength and endurance give the player a natural resistance to damage,
+            // base endurance gives the player a natural resistance to damage,
             // which caps at 50% (equivalent to level 5 life prots)
             // these do not stack with life protection spells
 
             // - natural resistances are ignored by hollow damage
 
-            var strAndEnd = Strength.Base + Endurance.Base;
+            var end = Endurance.Base;
 
-            if (strAndEnd <= 200)
+            if (end <= 100)
                 return 1.0f;
-
 
             if (Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
             {
-                // (cap) 60% (0.4 incoming damage multi) at 250 base str/end
-                // 40% at 200 base str/end
-                // 20% at 150 base str/end
-                var naturalResistance = 1.0f - (float)(strAndEnd - 200) / 250 * 0.5f;
+                // (cap) 60% (0.4 incoming damage multi) at 180 base end
+                // 40% at 100 base end
+                // 20% at 60 base end
+                var naturalResistance = 1.0f - (float)(end - 100) / 160 * 0.5f;
                 naturalResistance = Math.Max(naturalResistance, 0.4f);
                 return naturalResistance;
             }
             else
             {
-                var naturalResistance = 1.0f - (float)(strAndEnd - 200) / 300 * 0.5f;
+                // (cap) 50% (0.5 incoming damage multi) at 180 base end
+                // 40% at 100 base end
+                // 20% at 60 base end
+                var naturalResistance = 1.0f - (float)(end - 100) / 160 * 0.5f;
                 naturalResistance = Math.Max(naturalResistance, 0.5f);
                 return naturalResistance;
             }
@@ -1149,26 +1149,26 @@ namespace ACE.Server.WorldObjects
 
         public string GetNaturalResistanceString(ResistanceType resistanceType)
         {
-            var strAndEnd = Strength.Base + Endurance.Base;
+            var end = Endurance.Base;
 
-            if (strAndEnd > 440)        return "Indomitable";
-            else if (strAndEnd > 380)   return "Resilient";
-            else if (strAndEnd > 320)   return "Hardy";
-            else if (strAndEnd > 260)   return "Mediocre";
-            else if (strAndEnd > 200)   return "Poor";
+            if (end > 260) return "Indomitable";
+            else if (end > 220) return "Resilient";
+            else if (end > 180) return "Hardy";
+            else if (end > 140) return "Mediocre";
+            else if (end > 100) return "Poor";
             else
                 return "None";
         }
 
         public string GetRegenBonusString()
         {
-            var strAndEnd = Strength.Base + 2 * Endurance.Base;
+            var End = Endurance.Base;
 
-            if (strAndEnd > 690)        return "Indomitable";
-            else if (strAndEnd > 580)   return "Resilient";
-            else if (strAndEnd > 470)   return "Hardy";
-            else if (strAndEnd > 346)   return "Mediocre";
-            else if (strAndEnd > 200)   return "Poor";
+            if (End > 330) return "Indomitable";
+            else if (End > 280) return "Resilient";
+            else if (End > 200) return "Hardy";
+            else if (End > 160) return "Mediocre";
+            else if (End > 100) return "Poor";
             else
                 return "None";
         }
