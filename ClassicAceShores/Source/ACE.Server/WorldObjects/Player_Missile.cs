@@ -272,6 +272,14 @@ namespace ACE.Server.WorldObjects
                 if (weapon?.WeaponSkill == Skill.ThrownWeapon)
                     animSpeedMod = (float)PropertyManager.GetDouble("dekaru_tw_animation_speed").Item;
             }
+            {
+                if (weapon?.WeaponSkill == Skill.Bow)
+                    animSpeedMod = (float)PropertyManager.GetDouble("bow_animation_speed").Item;
+            }
+            {
+                if (weapon?.WeaponSkill == Skill.Crossbow)
+                    animSpeedMod = (float)PropertyManager.GetDouble("crossbow_animation_speed").Item;
+            }
             var animSpeed = baseSpeed * animSpeedMod;
 
             var reloadTime = EnqueueMotionPersist(actionChain, stance, MotionCommand.Reload, animSpeed);

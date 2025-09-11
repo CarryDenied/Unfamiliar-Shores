@@ -1112,7 +1112,7 @@ namespace ACE.Server.WorldObjects
                     if (isRobe)
                         worldObject.ExtraSpellsMaxOverride = 6;
                     else
-                        worldObject.ExtraSpellsMaxOverride = 2;
+                        worldObject.ExtraSpellsMaxOverride = new Random().Next(2, 5);
 
                     worldObject.BaseItemDifficultyOverride = worldObject.ItemDifficulty ?? 0;
                     worldObject.BaseSpellcraftOverride = worldObject.ItemSpellcraft ?? 0;

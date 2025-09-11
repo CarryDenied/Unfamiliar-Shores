@@ -1179,9 +1179,10 @@ namespace ACE.Server.WorldObjects
             if (ExtraSpellsMaxOverride != null)
                 return Math.Max(ExtraSpellsMaxOverride ?? 0, 0);
 
-            var baseSlots = (int)Math.Floor((ItemWorkmanship ?? 0) / 2f);
+            // Expanded: 1 slot per 1 Workmanship, double for robes
+            var baseSlots = (int)Math.Floor((ItemWorkmanship ?? 0) / 0.6f);
             if (ItemType == ItemType.Clothing && ClothingPriority.HasValue && ClothingPriority.Value.HasFlag(CoverageMask.OuterwearChest)) // Robes
-                return baseSlots == 0 ? 1 : (baseSlots * 2);
+                return baseSlots == 0 ? 1 : (baseSlots * 1.5);
             return baseSlots;
         }
 
@@ -1195,8 +1196,9 @@ namespace ACE.Server.WorldObjects
 
         public int GetMaxTinkerCount()
         {
+            // Expanded: 1 tinker per 2 Workmanship, +1 base
             if (ItemWorkmanship > 0 && (ItemType & (ItemType.WeaponOrCaster | ItemType.Armor | ItemType.Jewelry)) != 0)
-                return (int)Math.Floor((ItemWorkmanship ?? 0) / 3.1f) + 3;
+                return (int)Math.Floor((ItemWorkmanship ?? 0) / 2f) + 1;
             else
                 return 0;
         }

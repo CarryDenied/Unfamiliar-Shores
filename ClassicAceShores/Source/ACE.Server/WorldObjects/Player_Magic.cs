@@ -348,19 +348,13 @@ namespace ACE.Server.WorldObjects
                 MagicState.OnCastDone();
         }
 
-        /// <summary>
-        /// Verifies spell is contained in player's spellbook,
-        /// or in the weapon's spellbook in the case of built-in spells
-        /// </summary>
-        /// <param name="builtInSpell">If TRUE, casting a built-in spell from a weapon</param>
+        // Verifies spell is contained in player's spellbook, or in the weapon's spellbook in the case of built-in spells
         public bool VerifySpell(uint spellId, WorldObject casterItem = null)
         {
             if (casterItem != null)
                 return IsWeaponSpell(spellId, casterItem);
             else
-                return SpellIsKnown(spellId);
-
-            // send error message?
+                return true; // Always return true, even if the spell is not in the spellbook
         }
 
         /// <summary>
