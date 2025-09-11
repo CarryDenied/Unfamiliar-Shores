@@ -1,0 +1,9 @@
+0x3800001F Mutation #1:
+
+Tier chances: 1
+
+    - Chance: 100%:
+        Value += 30000
+        OriginalValue += 30000
+        NumTimesTinkered (>= 1 ? add : set) 1
+
