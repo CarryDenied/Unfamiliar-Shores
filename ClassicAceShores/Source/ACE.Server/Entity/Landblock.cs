@@ -1136,6 +1136,11 @@ namespace ACE.Server.Entity
 
             if (wo is Corpse && wo.Level.HasValue)
             {
+                //Set corpse rot time in arena landblocks based on config
+                if (IsArenaLandblock)
+                {
+                    wo.TimeToRot = PropertyManager.GetDouble("arena_corpse_rot_seconds", 300).Item;
+                }
                 var corpseLimit = PropertyManager.GetLong("corpse_spam_limit").Item;
                 var corpseList = worldObjects.Values.Union(pendingAdditions.Values).Where(w => w is Corpse && w.Level.HasValue && w.VictimId == wo.VictimId).OrderBy(w => w.CreationTimestamp);
 
@@ -1623,6 +1628,27 @@ namespace ACE.Server.Entity
             }
 
             return locationString;
+        }
+
+        public List<Player> GetCurrentLandblockPlayers()
+        {
+            var playerList = new List<Player>();
+            playerList.AddRange(players);
+            return playerList;
+        }
+
+        private bool? _isArenaLandblock = null;
+        public bool IsArenaLandblock
+        {
+            get
+            {
+                if (!_isArenaLandblock.HasValue)
+                {
+                    _isArenaLandblock = ArenaLocation.IsArenaLandblock(this.Id.Landblock);
+                }
+
+                return _isArenaLandblock.Value;
+            }
         }
     }
 }

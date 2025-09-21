@@ -262,6 +262,13 @@ namespace ACE.Entity.Enum.Properties
         EnrageDamageReduction          = 9006,
         [ServerOnly]
         EnrageThreshold                = 9007,
+        ArenaHourlyTimestamp           = 9300,
+        ArenaHourlyCount               = 9301,
+        ArenaDailyRewardTimestamp      = 9302,
+        ArenaDailyRewardCount          = 9303,
+        ArenaSameClanDailyRewardCount  = 9304,
+        LastArenaCommandTimestamp      = 9305,
+        MinimumTimeSinceGhost          = 9401,
     }
 
     public static class PropertyFloatExtensions
