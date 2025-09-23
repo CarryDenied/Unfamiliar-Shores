@@ -276,6 +276,9 @@ namespace ACE.Server
             AuctionHouse.LoadAuctionsFromDB();
             AuctionHouse.LoadPendingReturnsFromDB();
 
+            log.Info("Initializing ArenaManager...");
+            ArenaManager.Initialize();
+
             if (ConfigManager.Config.Server.ServerPerformanceMonitorAutoStart)
             {
                 log.Info("Server Performance Monitor auto starting...");

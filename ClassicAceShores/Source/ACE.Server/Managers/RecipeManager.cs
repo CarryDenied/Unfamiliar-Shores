@@ -340,6 +340,10 @@ namespace ACE.Server.Managers
             4.5f    // 10
         };
 
+        /// <summary>
+        /// Returns TRUE if this material requires a skill check
+        /// </summary>
+
         public static void ShowDialog(Player player, WorldObject source, WorldObject target, Recipe recipe, double successChance)
         {
             if(recipe == null)
@@ -462,14 +466,938 @@ namespace ACE.Server.Managers
                 player.MoveItemToFirstContainerSlot(obj);
         }
 
+        public static void Tinkering_ModifyItem(Player player, WorldObject tool, WorldObject target, bool incItemTinkered = true)
+        {
+            var materialType = tool.MaterialType ?? MaterialType.Unknown;
+            var xtramodroll = ThreadSafeRandom.Next(1, 300); // helps determine which mod occurs
+            var alamountlow = ThreadSafeRandom.Next(10, 30); // common base bonus AL
+            var cfal = ThreadSafeRandom.Next(1, 25); // critical fail AL amount
+            var modchance = ThreadSafeRandom.Next(1, 200);// the chance that a mod even will roll
+            var resistroll = ThreadSafeRandom.Next(1, 187);
+            var meleedmg = ThreadSafeRandom.Next(1, 4); // the roll for flat dmg for iron
+            var cfaldmg = ThreadSafeRandom.Next(1, 3); //1min 3 max loss to dmg if critical fail
+            var bowmoddmg = ThreadSafeRandom.Next(0.03f, 0.6f); // 1-2% bonus
+            var bowmodfail = ThreadSafeRandom.Next(0.01f, 0.05f); // 1-5% failure amount
+            var wandmodfail = ThreadSafeRandom.Next(0.001f, 0.007f); // .1% - .7% failure
+            var wanddamage = ThreadSafeRandom.Next(0.002f, 0.007f); // .1% - .4% bonus
+            var splitmodchance = ThreadSafeRandom.Next(1, 187);
+            var retainlore = target.GetProperty(PropertyInt.ItemDifficulty); // ensure that the lore difficulty doesnt increase when spells are added.
+
+            switch (materialType)
+            {
+                // armor tinkering
+                case MaterialType.Steel:
+                    if (modchance > 50) // 25% chance that an an extra mod bonus occurs
+                    {
+                        target.ArmorLevel += 65;
+                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time. New Target AL {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                    }
+                    else
+                    {
+                        if (xtramodroll <= 200)
+                        {
+                            var alresult = 55 + alamountlow;
+                            target.ArmorLevel += 55 + alamountlow;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained {alamountlow} extra AL! New Target AL {target.ArmorLevel}(+{alresult})", ChatMessageType.Broadcast));
+                        }
+                        else if (xtramodroll >= 201 && xtramodroll <= 251) // rolls for resistance mods.
+                        {
+                            if (resistroll >= 1 && resistroll <= 20) // pierce
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsPierce = Math.Min((target.ArmorModVsPierce ?? 0) + 0.2f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 20% Piercing resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 21 && resistroll <= 41) // slash
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsSlash = Math.Min((target.ArmorModVsSlash ?? 0) + 0.2f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 20% Slashing resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 42 && resistroll <= 62) // bludge
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsBludgeon = Math.Min((target.ArmorModVsBludgeon ?? 0) + 0.2f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 20% Bludgeon resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 63 && resistroll <= 83) // acid
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsAcid = Math.Min((target.ArmorModVsAcid ?? 0) + 0.4f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 40% Acid resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 84 && resistroll <= 104) // fire
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsFire = Math.Min((target.ArmorModVsFire ?? 0) + 0.4f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 40% Fire resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 105 && resistroll <= 125) // cold
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsCold = Math.Min((target.ArmorModVsCold ?? 0) + 0.4f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 40% Cold resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 126 && resistroll <= 146) // lightning
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsElectric = Math.Min((target.ArmorModVsElectric ?? 0) + 0.4f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 40% Lightning resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 147 && resistroll <= 167) // Nether
+                            {
+                                target.ArmorLevel += 55;
+                                target.ArmorModVsNether = Math.Min((target.ArmorModVsNether ?? 0) + 0.4f, 2.0f);
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained an extra 40% Nether resistance to your armor. {target.ArmorLevel}(+25)", ChatMessageType.Broadcast));
+                            }
+                        }
+                        else if (xtramodroll >= 252 && xtramodroll <= 297)
+                        {
+                            target.ArmorLevel -= cfal;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Critical failure! You lost {cfal} to your {target.NameWithMaterial} total AL. New Target AL {target.ArmorLevel}(-{cfal}).", ChatMessageType.Broadcast));
+                        }
+
+                        else if (xtramodroll == 298)
+                        {
+                            target.ArmorLevel += 80;
+                            PlayerManager.BroadcastToAll(new GameMessageSystemChat($"{player.Name} Rolled a {xtramodroll}!! They just got super lucky applying steel to an item! Triple Value! New Target AL {target.ArmorLevel}(+80)", ChatMessageType.Broadcast));
+                        }
+                        else if (xtramodroll >= 299)
+                        {
+                            target.SetProperty(PropertyInt.Bonded, 1);
+                            PlayerManager.BroadcastToAll(new GameMessageSystemChat($"{player.Name} Rolled a perfect {xtramodroll}!! They just got super lucky applying steel to their {target.NameWithMaterial}! The item is now bonded", ChatMessageType.Broadcast));
+                        }
+                    }
+                    break;
+                case MaterialType.Alabaster:
+                    target.ArmorModVsPierce = Math.Min((target.ArmorModVsPierce ?? 0) + 0.2f, 2.0f);
+                    break;
+                case MaterialType.Bronze:
+                    target.ArmorModVsSlash = Math.Min((target.ArmorModVsSlash ?? 0) + 0.2f, 2.0f);
+                    break;
+                case MaterialType.Marble:
+                    target.ArmorModVsBludgeon = Math.Min((target.ArmorModVsBludgeon ?? 0) + 0.2f, 2.0f);
+                    break;
+                case MaterialType.ArmoredilloHide:
+                    target.ArmorModVsAcid = Math.Min((target.ArmorModVsAcid ?? 0) + 0.4f, 2.0f);
+                    break;
+                case MaterialType.Ceramic:
+                    target.ArmorModVsFire = Math.Min((target.ArmorModVsFire ?? 0) + 0.4f, 2.0f);
+                    break;
+                case MaterialType.Wool:
+                    target.ArmorModVsCold = Math.Min((target.ArmorModVsCold ?? 0) + 0.4f, 2.0f);
+                    break;
+                case MaterialType.ReedSharkHide:
+                    target.ArmorModVsElectric = Math.Min((target.ArmorModVsElectric ?? 0) + 0.4f, 2.0f);
+                    break;
+                case MaterialType.Peridot:
+                    AddImbuedEffect(player, target, ImbuedEffectType.MeleeDefense);
+                    break;
+                case MaterialType.YellowTopaz:
+                    AddImbuedEffect(player, target, ImbuedEffectType.MissileDefense);
+                    break;
+                case MaterialType.Zircon:
+                    AddImbuedEffect(player, target, ImbuedEffectType.MagicDefense);
+                    break;
+
+                // item tinkering
+                case MaterialType.Pine:
+                    target.Value = (int)Math.Round((target.Value ?? 1) * 0.75f);
+                    break;
+                case MaterialType.Gold:
+                    target.Value = (int)Math.Round((target.Value ?? 1) * 1.25f);
+                    break;
+                case MaterialType.Linen:
+                    target.EncumbranceVal = (int)Math.Round((target.EncumbranceVal ?? 1) * 0.75f);
+                    break;
+                case MaterialType.Ivory:
+                    // Recipe already handles this correctly
+                    //target.SetProperty(PropertyInt.Attuned, 0);
+                    break;
+                case MaterialType.Leather:
+                    target.Retained = true;
+                    break;
+                case MaterialType.Sandstone:
+                    target.Retained = false;
+                    break;
+                case MaterialType.Moonstone:
+                    target.ItemMaxMana += 500;
+                    break;
+                case MaterialType.Teak:
+                    target.HeritageGroup = HeritageGroup.Aluvian;
+                    break;
+                case MaterialType.Ebony:
+                    target.HeritageGroup = HeritageGroup.Gharundim;
+                    break;
+                case MaterialType.Porcelain:
+                    target.HeritageGroup = HeritageGroup.Sho;
+                    break;
+                case MaterialType.Satin:
+                    target.HeritageGroup = HeritageGroup.Viamontian;
+                    break;
+
+
+                case MaterialType.Silk:
+
+                    // remove allegiance rank limit, increase item difficulty by spellcraft?
+                    target.ItemAllegianceRankLimit = null;
+                    target.ItemDifficulty = (target.ItemDifficulty ?? 0) + target.ItemSpellcraft;
+                    break;
+
+                // armatures / trinkets
+                // these are handled in recipe mod
+                case MaterialType.Amber:
+                case MaterialType.Diamond:
+                case MaterialType.GromnieHide:
+                case MaterialType.Pyreal:
+                case MaterialType.Ruby:
+                case MaterialType.Sapphire:
+                    return;
+
+                // magic item tinkering
+
+                case MaterialType.Sunstone:
+                    AddImbuedEffect(player, target, ImbuedEffectType.ArmorRending);
+                    break;
+                case MaterialType.FireOpal:
+                    AddImbuedEffect(player, target, ImbuedEffectType.CripplingBlow);
+                    break;
+                case MaterialType.BlackOpal:
+                    AddImbuedEffect(player, target, ImbuedEffectType.CriticalStrike);
+                    break;
+                case MaterialType.Opal:
+                    target.ManaConversionMod += 0.01f;
+                    break;
+
+                case MaterialType.GreenGarnet:
+
+                    if (modchance <= 60) // 30% chance to even roll a mod to begin with
+                    {
+                        // basic roll + 0.4-0.9% dmg
+                        if (xtramodroll <= 180) // 33.3%
+                        {
+                            if (target.GetProperty(PropertyInt.DamageType) == null)
+                            {
+                                if (splitmodchance >= 1 && splitmodchance <= 26)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 1);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Slashing Damage", ChatMessageType.Broadcast));
+                                }
+                                else if (splitmodchance >= 27 && splitmodchance <= 53)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 2);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Piercing Damage", ChatMessageType.Broadcast));
+                                }
+                                else if (splitmodchance >= 54 && splitmodchance <= 81)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 4);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Bludgeon Damage", ChatMessageType.Broadcast));
+                                }
+                                else if (splitmodchance >= 82 && splitmodchance <= 108)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 8);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Cold Damage", ChatMessageType.Broadcast));
+                                }
+                                else if (splitmodchance >= 109 && splitmodchance <= 136)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 16);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Fire Damage", ChatMessageType.Broadcast));
+                                }
+                                else if (splitmodchance >= 137 && splitmodchance <= 164)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 32);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Acid Damage", ChatMessageType.Broadcast));
+                                }
+                                else if (splitmodchance >= 165 && splitmodchance <= 187)
+                                {
+                                    target.SetProperty(PropertyInt.DamageType, 64);
+                                    target.SetProperty(PropertyFloat.ElementalDamageMod, 1.00);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your {target.NameWithMaterial} has just been upgraded into a random elemental type. It now does bonus Lightning Damage", ChatMessageType.Broadcast));
+                                }
+                            }// turns non elemental wands into elemental type.
+                            target.ElementalDamageMod += 0.01f + wanddamage;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained {wanddamage:N3}% extra Elemental damage modifier!", ChatMessageType.Broadcast));
+                        }//60%
+                        // fail roll
+                        else if (xtramodroll >= 181 && xtramodroll <= 190)
+                        {
+                            if (target.GetProperty(PropertyFloat.ElementalDamageMod) == null)
+                            {
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Critical failure! The salvage applies poorly and does nothing!", ChatMessageType.Broadcast));
+                            }
+                            else
+                            {
+                                target.ElementalDamageMod -= wandmodfail;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Critical failure! You lost {wandmodfail:N3}% to your {target.NameWithMaterial}.", ChatMessageType.Broadcast));
+                            }
+                        }// 3%
+                        // choose 1 mag d, melee d, Elemental Dmg.
+                        else if (xtramodroll >= 191 && xtramodroll <= 209)
+                        {
+                            if (resistroll >= 1 && resistroll <= 60) // mag resist
+                            {
+                                target.WeaponMagicDefense += 0.01;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}, Not bad! You gained bonus Magic Defense {target.WeaponMagicDefense:N2}(+1%)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 61 && resistroll <= 120) // melee d
+                            {
+                                target.WeaponDefense += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. You got bonus Melee Defense {target.WeaponDefense:N2}(+1%)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 121 && resistroll <= 187) // elemental bonus + upgrade to
+                            {
+                                if (target.GetProperty(PropertyInt.DamageType) != null)
+                                {
+                                    target.ElementalDamageBonus += 2;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. You got bonus Elemental Damage {target.ElementalDamageBonus:N0}(+2)", ChatMessageType.Broadcast));
+                                }
+                                else
+                                {
+                                    if (splitmodchance >= 1 && splitmodchance <= 26)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 1);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Slashing Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 27 && splitmodchance <= 53)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 2);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Piercing Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 54 && splitmodchance <= 81)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 4);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Bludgeon Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 82 && splitmodchance <= 108)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 8);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Cold Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 109 && splitmodchance <= 136)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 16);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Fire Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 137 && splitmodchance <= 164)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 32);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Acid Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 165 && splitmodchance <= 187)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 64);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Lightning Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else
+                                    {
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"BUG 1", ChatMessageType.Broadcast));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"BUG 3", ChatMessageType.Broadcast));
+                            }
+                        }// 6%
+                         // Resistance Cleaving
+                        else if (xtramodroll >= 210 && xtramodroll <= 234)
+                        {
+                            var dmgtype = target.GetProperty(PropertyInt.DamageType);
+
+                            if (dmgtype == 1 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.SlashRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 1);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Slashing", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 2 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.PierceRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 2);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Piercing", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 4 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.BludgeonRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 4);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Bludgeon", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 8 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.ColdRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 8);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Cold", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 16 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.FireRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 16);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Fire", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 32 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.AcidRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 32);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Acid", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 64 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.ElectricRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 64);
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You got lucky applying Green Garnet to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Electric", ChatMessageType.Broadcast));
+                            }
+                            else if (target.GetProperty(PropertyInt.ResistanceModifierType) != null)
+                            {
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time.", ChatMessageType.Broadcast));
+                            }
+                            else
+                            {
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time.", ChatMessageType.Broadcast));
+                            }
+                        }// 8%
+                        // Special Properties BS, CB, ETC
+                        else if (xtramodroll == 235) // 2.6%
+                        {
+                            // biting Strike
+
+                            if (resistroll >= 1 && resistroll <= 94 && target.GetProperty(PropertyFloat.CriticalFrequency) == null)
+                            {
+                                target.ElementalDamageMod += 0.01f;
+                                target.SetProperty(PropertyFloat.CriticalFrequency, 0.10); // flat 10%?
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying Green Garnet to their {target.NameWithMaterial}! The item now has Biting Strike!", ChatMessageType.Broadcast));
+                            }
+                            // Critical Blow
+                            else if (resistroll >= 95 && resistroll <= 187 && target.GetProperty(PropertyFloat.CriticalMultiplier) == null)
+                            {
+                                target.ElementalDamageMod += 0.01f;
+                                target.SetProperty(PropertyFloat.CriticalMultiplier, 1.2); // is this really 1.2x? 20%?
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying Green Garnet to their {target.NameWithMaterial}! The item now has Crushing Blow!", ChatMessageType.Broadcast));
+                            }
+                            else
+                            {
+                                target.ElementalDamageMod += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time.", ChatMessageType.Broadcast));
+                            }
+                        }
+                    }
+                    break;
+                // weapon tinkering
+
+                case MaterialType.Iron:
+
+                    if (modchance <= 70) // 38% chance to even roll a mod to begin with
+                    {
+                        // basic roll + 1-4 flat dmg
+                        if (xtramodroll <= 180) // 33.3%
+                        {
+                            string variancenote = null;
+                            if (target.Damage >= 80)
+                            {
+                                target.DamageVariance += 0.05;
+                                variancenote = " You've also gained 5% variance.";
+                                if (target.DamageVariance >= 1.0)
+                                {
+                                    target.DamageVariance = 0.9;
+                                    variancenote = " Your weapon has reached maximum variance.";
+                                }
+                            }
+
+                            var dmgresult = 3 + meleedmg;
+                            target.Damage += 3 + meleedmg;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained {meleedmg} extra Flat damage! New Target Damage {target.Damage}(+{dmgresult}){variancenote}", ChatMessageType.Broadcast));
+
+                        }// 60%
+                        // fail roll
+                        else if (xtramodroll >= 181 && xtramodroll <= 190)
+                        {
+                            target.Damage -= cfaldmg;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Critical failure! You lost {cfaldmg} to your {target.NameWithMaterial} total Damage. New Target Damage {target.Damage}(-{cfaldmg}).", ChatMessageType.Broadcast));
+                        }// 3%
+                        // choose 1 mag d, melee d, attack mod.
+                        else if (xtramodroll >= 191 && xtramodroll <= 209)
+                        {
+                            if (resistroll >= 1 && resistroll <= 60) // mag resist
+                            {
+                                target.Damage += 3;
+                                target.WeaponMagicDefense += .05;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}, Not bad! You gained bonus Magic Defense {target.WeaponMagicDefense:N2}(+5%)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 61 && resistroll <= 120) // melee d
+                            {
+                                target.Damage += 3;
+                                target.WeaponDefense += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. You got bonus Melee Defense {target.WeaponDefense:N2}(+1%)", ChatMessageType.Broadcast));
+                            }
+                            if (resistroll >= 121 && resistroll <= 187) // attack mod
+                            {
+                                target.Damage += 3;
+                                target.WeaponOffense += 0.05f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. You got bonus Attack Mod {target.WeaponOffense:N2}(+5%)", ChatMessageType.Broadcast));
+                            }
+                        }// 6%
+                        // Resistance Cleaving
+                        else if (xtramodroll >= 210 && xtramodroll <= 234)
+                        {
+                            var dmgtype = target.GetProperty(PropertyInt.DamageType);
+
+                            if (dmgtype == 1 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.SlashRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 1);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Slashing", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 2 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.PierceRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 2);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Piercing", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 3 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.PierceRending) && !target.HasImbuedEffect(ImbuedEffectType.SlashRending))
+                            {
+                                var halfchance = ThreadSafeRandom.Next(1, 100);
+                                if (halfchance >= 1 && halfchance <= 50)
+                                {
+                                    target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                    target.SetProperty(PropertyInt.ResistanceModifierType, 1);
+                                    target.Damage += 3;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Slashing", ChatMessageType.Broadcast));
+                                }
+                                else if (halfchance >= 51 && halfchance <= 100)
+                                {
+                                    target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                    target.SetProperty(PropertyInt.ResistanceModifierType, 2);
+                                    target.Damage += 3;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Piercing", ChatMessageType.Broadcast));
+                                }
+                            }
+                            else if (dmgtype == 4 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.BludgeonRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 4);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Bludgeon", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 8 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.ColdRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 8);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Cold", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 16 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.FireRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 16);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Fire", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 32 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.AcidRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 32);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Acid", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 64 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.ElectricRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 64);
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying iron to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Electric", ChatMessageType.Broadcast));
+                            }
+                            else if (target.GetProperty(PropertyInt.ResistanceModifierType) != null)
+                            {
+                                target.Damage += 3;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time. New Target Damage {target.Damage}(+3)", ChatMessageType.Broadcast));
+                            }
+                        }//8%
+                         // Special Properties ArmorCleaving /*Cleave*/, BS, CB, ETC
+                        else if (xtramodroll == 235) // 2.6%
+                        {
+
+                            int procs = 0;
+                            if (target.GetProperty(PropertyBool.IgnoreMagicArmor) != null)
+                                procs++;
+                            if (target.GetProperty(PropertyBool.IgnoreMagicResist) != null)
+                                procs++;
+                            if (target.GetProperty(PropertyFloat.CriticalFrequency) != null)
+                                procs++;
+                            if (target.GetProperty(PropertyFloat.CriticalMultiplier) != null)
+                                procs++;
+                            if (target.GetProperty(PropertyInt.Cleaving) != null)
+                                procs++;
+
+                            //hollow properties
+                            if (resistroll >= 1 && resistroll <= 30 && target.GetProperty(PropertyBool.IgnoreMagicArmor) == null)
+                            {
+                                target.Damage += 3;
+                                target.SetProperty(PropertyBool.IgnoreMagicArmor, true);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying iron to their {target.NameWithMaterial}! The item now ignores Partial armor values!", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 31 && resistroll <= 61 && target.GetProperty(PropertyBool.IgnoreMagicResist) == null)
+                            {
+                                target.Damage += 3;
+                                target.SetProperty(PropertyBool.IgnoreMagicResist, true);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying iron to their {target.NameWithMaterial}! The item now has ignores partial magical protections!", ChatMessageType.Broadcast));
+                            }
+                            // biting Strike
+                            if (resistroll >= 62 && resistroll <= 92 && target.GetProperty(PropertyFloat.CriticalFrequency) == null)
+                            {
+                                target.Damage += 3;
+                                target.SetProperty(PropertyFloat.CriticalFrequency, 0.13);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying iron to their {target.NameWithMaterial}! The item now has Biting Strike!", ChatMessageType.Broadcast));
+                            }
+                            // Critical Blow
+                            else if (resistroll >= 93 && resistroll <= 123 && target.GetProperty(PropertyFloat.CriticalMultiplier) == null)
+                            {
+                                target.Damage += 3;
+                                target.SetProperty(PropertyFloat.CriticalMultiplier, 3);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying iron to their {target.NameWithMaterial}! The item now has Crushing Blow!", ChatMessageType.Broadcast));
+                            }
+                        }
+                    }
+                    break;
+
+                case MaterialType.Mahogany:
+                    if (modchance <= 60) // 30% chance to even roll a mod to begin with
+                    {
+                        // basic roll + 1-4 flat dmg
+                        if (xtramodroll <= 180) // 33.3%
+                        {
+                            var dmgresult = 0.04f + bowmoddmg;
+                            target.DamageMod += 0.04f + bowmoddmg;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Not so lucky, but you also gained {bowmoddmg:N2} extra Bow Damage Modifier! New Target Damage Mod {target.DamageMod:N2}(+{dmgresult:N2})", ChatMessageType.Broadcast));
+                        }// 60%
+                         // fail roll
+                        else if (xtramodroll >= 181 && xtramodroll <= 190)
+                        {
+                            target.DamageMod -= bowmodfail;
+                            player.Session.Network.EnqueueSend(new GameMessageSystemChat($"Rolled {xtramodroll}. Critical failure! You lost {bowmodfail:N2}% to your {target.NameWithMaterial}. New Target Damage {target.DamageMod:N2}(-{bowmodfail:N2}%).", ChatMessageType.Broadcast));
+                        }// 3%
+                         // choose 1 mag d, melee d, Elemental Dmg.
+                        else if (xtramodroll >= 191 && xtramodroll <= 209)
+                        {
+                            if (resistroll >= 1 && resistroll <= 60) // mag resist
+                            {
+                                if (target.WeaponMagicDefense == null)
+                                {
+                                    target.SetProperty(PropertyFloat.WeaponMagicDefense, 1.01);
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}, Not bad! You gained bonus Magic Defense {target.WeaponMagicDefense:N2}(+1%)", ChatMessageType.Broadcast));
+                                    target.DamageMod += 0.04f;
+                                }
+                                else
+                                {
+                                    target.DamageMod += 0.04f;
+                                    target.WeaponMagicDefense += 0.01;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}, Not bad! You gained bonus Magic Defense {target.WeaponMagicDefense:N2}(+1%)", ChatMessageType.Broadcast));
+                                }
+                            }
+                            else if (resistroll >= 61 && resistroll <= 120) // melee d
+                            {
+                                target.DamageMod += 0.04f;
+                                target.WeaponDefense += 0.01f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. You got bonus Melee Defense {target.WeaponDefense:N2}(+1%)", ChatMessageType.Broadcast));
+                            }
+                            else if (resistroll >= 121 && resistroll <= 187) // elemental bonus + upgrade to
+                            {
+                                if (target.GetProperty(PropertyInt.DamageType) != null)
+                                {
+                                    target.ElementalDamageBonus += 3;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. You got bonus Elemental Damage {target.ElementalDamageBonus:N0}(+3)", ChatMessageType.Broadcast));
+                                }
+                                else
+                                {
+                                    if (splitmodchance >= 1 && splitmodchance <= 26)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 1);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Slashing Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 27 && splitmodchance <= 53)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 2);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Piercing Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 54 && splitmodchance <= 81)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 4);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Bludgeon Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 82 && splitmodchance <= 108)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 8);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Cold Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 109 && splitmodchance <= 136)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 16);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Fire Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 137 && splitmodchance <= 164)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 32);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Acid Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else if (splitmodchance >= 165 && splitmodchance <= 187)
+                                    {
+                                        target.SetProperty(PropertyInt.DamageType, 64);
+                                        target.SetProperty(PropertyInt.ElementalDamageBonus, 2);
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"You rolled {xtramodroll}. Your missile weapon has just been upgraded into a random elemental weapon. It has gained +2 Lightning Damage", ChatMessageType.Broadcast));
+                                    }
+                                    else
+                                    {
+                                        player.Session.Network.EnqueueSend(new GameMessageSystemChat($"BUG 1", ChatMessageType.Broadcast));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"BUG 3", ChatMessageType.Broadcast));
+                            }
+                        }// 6%
+                         // Resistance Cleaving
+                        else if (xtramodroll >= 210 && xtramodroll <= 234)
+                        {
+                            var dmgtype = target.GetProperty(PropertyInt.DamageType);
+
+                            if (dmgtype == 1 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.SlashRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 1);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Slashing", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 2 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.PierceRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 2);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Piercing", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 3 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.PierceRending) && !target.HasImbuedEffect(ImbuedEffectType.SlashRending))
+                            {
+                                var halfchance = ThreadSafeRandom.Next(1, 100);
+                                if (halfchance >= 1 && halfchance <= 50)
+                                {
+                                    target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                    target.SetProperty(PropertyInt.ResistanceModifierType, 1);
+                                    target.DamageMod += 0.04f;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Slashing", ChatMessageType.Broadcast));
+                                }
+                                else if (halfchance >= 51 && halfchance <= 100)
+                                {
+                                    target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                    target.SetProperty(PropertyInt.ResistanceModifierType, 2);
+                                    target.DamageMod += 0.04f;
+                                    player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Piercing", ChatMessageType.Broadcast));
+                                }
+                            }
+                            else if (dmgtype == 4 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.BludgeonRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 4);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Bludgeon", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 8 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.ColdRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 8);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Cold", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 16 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.FireRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 16);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Fire", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 32 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.AcidRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 32);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Acid", ChatMessageType.Broadcast));
+                            }
+                            else if (dmgtype == 64 && target.GetProperty(PropertyInt.ResistanceModifierType) == null && !target.HasImbuedEffect(ImbuedEffectType.ElectricRending))
+                            {
+                                target.SetProperty(PropertyFloat.ResistanceModifier, 1);
+                                target.SetProperty(PropertyInt.ResistanceModifierType, 64);
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"[TINKERING] You just got lucky applying Mahogany to your {target.NameWithMaterial}! The item now has Resistance Cleaving: Electric", ChatMessageType.Broadcast));
+                            }
+                            else if (target.GetProperty(PropertyInt.ResistanceModifierType) != null)
+                            {
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time. New Target Damage {target.DamageMod:N2}(+4%)", ChatMessageType.Broadcast));
+
+                            }
+                            else
+                            {
+                                target.DamageMod += 0.04f;
+                                player.Session.Network.EnqueueSend(new GameMessageSystemChat($"No mod chance roll. Better luck next time. New Target Damage Mod {target.DamageMod:N2}(+4%)", ChatMessageType.Broadcast));
+                            }
+                        }// 8%
+                         // Special Properties Armor Cleave, BS, CB, ETC
+                        else if (xtramodroll == 235) // 2.6%
+                        {
+                            //Armor rend
+                            if (resistroll >= 1 && resistroll <= 61 && target.GetProperty(PropertyFloat.IgnoreArmor) != 1)
+                            {
+                                target.DamageMod += 0.04f;
+                                target.SetProperty(PropertyFloat.IgnoreArmor, 1);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying Mahogony to their {target.NameWithMaterial}! The item now has Armor Cleaving!", ChatMessageType.Broadcast));
+                            }
+                            // biting Strike
+                            else if (resistroll >= 62 && resistroll <= 124 && target.GetProperty(PropertyFloat.CriticalFrequency) == null)
+                            {
+                                target.DamageMod += 0.04f;
+                                target.SetProperty(PropertyFloat.CriticalFrequency, 0.15);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying Mahogony to their {target.NameWithMaterial}! The item now has Biting Strike!", ChatMessageType.Broadcast));
+                            }
+                            // Critical Blow
+                            else if (resistroll >= 125 && resistroll <= 187 && target.GetProperty(PropertyFloat.CriticalMultiplier) == null)
+                            {
+                                target.DamageMod += 0.04f;
+                                target.SetProperty(PropertyFloat.CriticalMultiplier, 3);
+                                PlayerManager.BroadcastToAll(new GameMessageSystemChat($"[TINKERING] {player.Name} just got super lucky applying Mahogony to their {target.NameWithMaterial}! The item now has Crushing Blow!", ChatMessageType.Broadcast));
+                            }
+                        }
+                    }
+                    break;
+
+                case MaterialType.Granite:
+                    target.DamageVariance *= 0.8f;
+                    break;
+                case MaterialType.Oak:
+                    target.WeaponTime = Math.Max(0, (target.WeaponTime ?? 0) - ThreadSafeRandom.Next(25, 70));
+                    break;
+                case MaterialType.Brass:
+                    target.WeaponDefense += 0.05f;
+                    break;
+                case MaterialType.Velvet:
+                    target.WeaponOffense += 0.05f;
+                    break;
+
+                // imbued effects
+                case MaterialType.Emerald:
+                    AddImbuedEffect(player, target, ImbuedEffectType.AcidRending);
+                    break;
+                case MaterialType.WhiteSapphire:
+                    AddImbuedEffect(player, target, ImbuedEffectType.BludgeonRending);
+                    break;
+                case MaterialType.Aquamarine:
+                    AddImbuedEffect(player, target, ImbuedEffectType.ColdRending);
+                    break;
+                case MaterialType.Jet:
+                    AddImbuedEffect(player, target, ImbuedEffectType.ElectricRending);
+                    break;
+                case MaterialType.RedGarnet:
+                    AddImbuedEffect(player, target, ImbuedEffectType.FireRending);
+                    break;
+                case MaterialType.BlackGarnet:
+                    AddImbuedEffect(player, target, ImbuedEffectType.PierceRending);
+                    break;
+                case MaterialType.ImperialTopaz:
+                    AddImbuedEffect(player, target, ImbuedEffectType.SlashRending);
+                    break;
+
+                default:
+                    log.Error($"{player.Name}.RecipeManager.Tinkering_ModifyItem({tool.Name} ({tool.Guid}), {target.Name} ({target.Guid})) - Unknown material type: {materialType}");
+                    return;
+            }
+
+            // increase # of times tinkered, if appropriate
+            if (incItemTinkered)
+            {
+                target.NumTimesTinkered++;
+
+                if (target.TinkerLog != null)
+                    target.TinkerLog += ",";
+                target.TinkerLog += (int)materialType;
+            }
+        }
+        
+
+        public static bool AddImbuedEffect(Player player, WorldObject target, ImbuedEffectType effect)
+        {
+            var imbuedEffects = GetImbuedEffects(target);
+
+            if (imbuedEffects.HasFlag(effect))
+                return false;     // already present
+
+            imbuedEffects |= effect;
+
+            if (target.GetProperty(PropertyInt.ImbuedEffect) == null)
+                target.SetProperty(PropertyInt.ImbuedEffect, (int)effect);
+
+            else if (target.GetProperty(PropertyInt.ImbuedEffect2) == null)
+                target.SetProperty(PropertyInt.ImbuedEffect2, (int)effect);
+
+            else if (target.GetProperty(PropertyInt.ImbuedEffect3) == null)
+                target.SetProperty(PropertyInt.ImbuedEffect3, (int)effect);
+
+            else if (target.GetProperty(PropertyInt.ImbuedEffect4) == null)
+                target.SetProperty(PropertyInt.ImbuedEffect4, (int)effect);
+
+            else if (target.GetProperty(PropertyInt.ImbuedEffect5) == null)
+                target.SetProperty(PropertyInt.ImbuedEffect5, (int)effect);
+
+            else
+                return false;
+
+            return true;
+        }
+
         public static bool TryMutateNative(Player player, WorldObject source, WorldObject target, Recipe recipe, uint dataId)
         {
+            // For tinkering operations, use the enhanced system
+            if (recipe.IsTinkering() && Common.ConfigManager.Config.Server.WorldRuleset == Common.Ruleset.CustomDM)
+            {
+                // No skill check required for any material
+                Tinkering_ModifyItem(player, source, target, true);
+
+                HandleTinkerLog(source, target);
+
+                return true;
+            }
+            
             // legacy method, unused by default
             switch (dataId)
             {
                 // armor tinkering
                 case 0x38000011:    // Steel
-                    target.ArmorLevel += 20;
+                    target.ArmorLevel += 60;
                     break;
 
                  // mutations apparently didn't cap to 2.0 here, clamps are applied in damage calculations though
@@ -654,10 +1582,10 @@ namespace ACE.Server.Managers
                 // weapon tinkering
 
                 case 0x3800001A:    // Iron
-                    target.Damage += 1;
+                    target.Damage += 3;
                     break;
                 case 0x3800001B:    // Mahogany
-                    target.DamageMod += 0.04f;
+                    target.DamageMod += 0.12f;
                     break;
                 case 0x3800001C:    // Granite / Lucky Rabbit's Foot
                     target.DamageVariance *= 0.8f;
@@ -666,10 +1594,10 @@ namespace ACE.Server.Managers
                     target.WeaponTime = Math.Max(0, (target.WeaponTime ?? 0) - 50);
                     break;
                 case 0x38000020:    // Brass
-                    target.WeaponDefense += 0.01f;
+                    target.WeaponDefense += 0.05f;
                     break;
                 case 0x38000021:    // Velvet
-                    target.WeaponOffense += 0.01f;
+                    target.WeaponOffense += 0.05f;
                     break;
 
                 // only 1 imbue can be applied per piece of armor?
@@ -1149,11 +2077,7 @@ namespace ACE.Server.Managers
         /// </summary>
         public static HashSet<uint> CreateDestroyItems(Player player, Recipe recipe, WorldObject source, WorldObject target, double successChance, bool success)
         {
-            var destroyTargetChance = success ? recipe.SuccessDestroyTargetChance : recipe.FailDestroyTargetChance;
             var destroySourceChance = success ? recipe.SuccessDestroySourceChance : recipe.FailDestroySourceChance;
-
-            var destroyTarget = ThreadSafeRandom.Next(0.0f, 1.0f) < destroyTargetChance;
-            var destroySource = ThreadSafeRandom.Next(0.0f, 1.0f) < destroySourceChance;
 
             var createItem = success ? recipe.SuccessWCID : recipe.FailWCID;
             var createAmount = success ? recipe.SuccessAmount : recipe.FailAmount;
@@ -1165,16 +2089,8 @@ namespace ACE.Server.Managers
                 return null;
             }
 
-            if (destroyTarget)
-            {
-                var destroyTargetAmount = success ? recipe.SuccessDestroyTargetAmount : recipe.FailDestroyTargetAmount;
-                var destroyTargetMessage = success ? recipe.SuccessDestroyTargetMessage : recipe.FailDestroyTargetMessage;
-
-                if (recipe.IsTinkering() && target.WeenieType == WeenieType.Missile)
-                    destroyTargetAmount = (uint)(target.StackSize ?? 1); // Thrown weapons tinkering should destroy the whole stack on failure.
-
-                DestroyItem(player, recipe, target, destroyTargetAmount, destroyTargetMessage);
-            }
+            // Only destroy the salvage (source), not the target
+            bool destroySource = ThreadSafeRandom.Next(0.0f, 1.0f) < destroySourceChance;
 
             if (destroySource)
             {
@@ -1190,22 +2106,11 @@ namespace ACE.Server.Managers
             {
                 result = CreateItem(player, createItem, createAmount);
 
-                if (destroyTarget && result != null && target.ExtraSpellsList != null)
-                {
-                    // Transfer spells to the new item.
-                    var spells = target.ExtraSpellsList.Split(",");
-
-                    foreach (string spellString in spells)
-                    {
-                        if (uint.TryParse(spellString, out var spellId))
-                            SpellTransferScroll.InjectSpell(spellId, result);
-                    }
-
-                    player.EnqueueBroadcast(new GameMessageUpdateObject(result));
-                }
+                // No spell transfer or destruction of target
             }
 
             var modified = ModifyItem(player, recipe, source, target, result, success);
+
             // New method need for tracking tool and type
             if (result != null && QuestItemMutations.IsToolValidForQuestMutation(source.WeenieClassId))
             {
@@ -1225,7 +2130,7 @@ namespace ACE.Server.Managers
 
                 player.Session.Network.EnqueueSend(new GameMessageSystemChat(message, ChatMessageType.Craft));
 
-                log.Debug($"[CRAFTING] {player.Name} used {source.NameWithMaterial} on {target.NameWithMaterial} {(success ? "" : "un")}successfully. {(destroySource ? $"| {source.NameWithMaterial} was destroyed " : "")}{(destroyTarget ? $"| {target.NameWithMaterial} was destroyed " : "")}| {message}");
+                log.Debug($"[CRAFTING] {player.Name} used {source.NameWithMaterial} on {target.NameWithMaterial} {(success ? "" : "un")}successfully. {(destroySource ? $"| {source.NameWithMaterial} was destroyed " : "")}| {message}");
             }
             else
                 BroadcastTinkering(player, source, target, successChance, success);
@@ -1445,7 +2350,7 @@ namespace ACE.Server.Managers
                     if (Debug) Console.WriteLine($"{target.Name}.SetProperty({prop}, {sourceMod.GetProperty(prop) ?? 0}) - {op}");
                     break;
                 case ModificationOperation.CopyFromSourceToResult:
-                    player.UpdateProperty(result, prop, player.GetProperty(prop) ?? 0);     // ??
+                    player.UpdateProperty(result, prop, player.GetProperty(prop) ?? 0);
                     modified.Add(result.Guid.Full);
                     if (Debug) Console.WriteLine($"{result.Name}.SetProperty({prop}, {player.GetProperty(prop) ?? 0}) - {op}");
                     break;
@@ -1696,7 +2601,7 @@ namespace ACE.Server.Managers
         /// <summary>
         /// flag to use c# logic instead of mutate script logic
         /// </summary>
-        private static readonly bool useMutateNative = false;
+        private static readonly bool useMutateNative = true;
 
         public static bool TryMutate(Player player, WorldObject source, WorldObject target, Recipe recipe, uint dataId, HashSet<uint> modified)
         {

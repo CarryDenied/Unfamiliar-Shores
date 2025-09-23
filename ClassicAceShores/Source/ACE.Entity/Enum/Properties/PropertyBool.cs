@@ -267,6 +267,11 @@ namespace ACE.Entity.Enum.Properties
         CanAOE                           = 9127,
         [ServerOnly]
         EnragedHotspot                   = 9128,
+        IsArenaObserver                  = 9300,
+        IsPendingArenaObserver           = 9301,
+        HasArenaRareDmgBuff              = 9302,
+        HasArenaRareDmgReductionBuff     = 9303,
+        IsGhost                          = 9401,
     }
 
     public static class PropertyBoolExtensions
