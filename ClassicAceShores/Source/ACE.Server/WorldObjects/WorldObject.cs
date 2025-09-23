@@ -1182,7 +1182,7 @@ namespace ACE.Server.WorldObjects
             // Expanded: 1 slot per 1 Workmanship, double for robes
             var baseSlots = (int)Math.Floor((ItemWorkmanship ?? 0) / 0.6f);
             if (ItemType == ItemType.Clothing && ClothingPriority.HasValue && ClothingPriority.Value.HasFlag(CoverageMask.OuterwearChest)) // Robes
-                return baseSlots == 0 ? 1 : (baseSlots * 1.5);
+                return (int)(baseSlots == 0 ? 1 : (baseSlots * .75));
             return baseSlots;
         }
 
