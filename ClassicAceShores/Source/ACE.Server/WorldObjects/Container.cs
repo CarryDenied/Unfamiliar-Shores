@@ -1110,9 +1110,9 @@ namespace ACE.Server.WorldObjects
 
                     // Quest robes get 6
                     if (isRobe)
-                        worldObject.ExtraSpellsMaxOverride = 6;
+                        worldObject.ExtraSpellsMaxOverride = 5;
                     else
-                        worldObject.ExtraSpellsMaxOverride = new Random().Next(2, 5);
+                        worldObject.ExtraSpellsMaxOverride = new Random().Next(2, 4);
 
                     worldObject.BaseItemDifficultyOverride = worldObject.ItemDifficulty ?? 0;
                     worldObject.BaseSpellcraftOverride = worldObject.ItemSpellcraft ?? 0;

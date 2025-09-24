@@ -845,14 +845,13 @@ namespace ACE.Server.WorldObjects
         {
             var droppedItems = new List<WorldObject>();
 
-            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.5% overall drop chance
+            // Original doubloon code
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.5% overall drop chance    
             {
-                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2
-
+                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2        
                 for (int i = 0; i < quantity; i++)
                 {
                     var doubloon = WorldObjectFactory.CreateNewWorldObject(116057);
-
                     if (doubloon != null)
                     {
                         if (corpse != null)
@@ -862,11 +861,82 @@ namespace ACE.Server.WorldObjects
                     }
                     else
                     {
-                        // Optional: debug
-                        // Console.WriteLine("[DEBUG] Failed to create doubloon.");
+                        // Optional: debug                
+                        // Console.WriteLine("[DEBUG] Failed to create doubloon.");            
                     }
                 }
             }
+
+            // Option 1 - Active
+            if (IsMonster && Tier > 2 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.0005f) // 0.05% overall drop chance
+
+            {
+                int quantity = ThreadSafeRandom.Next(1, 1); // Random quantity from 1 to 1
+                for (int i = 0; i < quantity; i++)
+                {
+                    var chronoglyph = WorldObjectFactory.CreateNewWorldObject(1115084); // Replace with your WCID
+                    if (chronoglyph != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(chronoglyph);
+                        else
+                            droppedItems.Add(chronoglyph);
+                    }
+                    else
+                    {
+                        // Optional: debug
+                        // Console.WriteLine("[DEBUG] Failed to create item.");
+                    }
+                }
+            }
+
+            // Option 2 - Commented out
+            /*
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.4% overall drop chance
+            {
+                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2
+                for (int i = 0; i < quantity; i++)
+                {
+                    var item = WorldObjectFactory.CreateNewWorldObject(116059); // Replace with your WCID
+                    if (item != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(item);
+                        else
+                            droppedItems.Add(item);
+                    }
+                    else
+                    {
+                        // Optional: debug
+                        // Console.WriteLine("[DEBUG] Failed to create item.");
+                    }
+                }
+            }
+            */
+
+            // Option 3 - Commented out
+            /*
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.4% overall drop chance
+            {
+                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2
+                for (int i = 0; i < quantity; i++)
+                {
+                    var item = WorldObjectFactory.CreateNewWorldObject(116060); // Replace with your WCID
+                    if (item != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(item);
+                        else
+                            droppedItems.Add(item);
+                    }
+                    else
+                    {
+                        // Optional: debug
+                        // Console.WriteLine("[DEBUG] Failed to create item.");
+                    }
+                }
+            }
+            */
 
             // create death treasure from loot generation factory
             if (DeathTreasure != null)
@@ -995,16 +1065,16 @@ namespace ACE.Server.WorldObjects
                 }
             }
 
-            if (IsElite)
-            {
+            if(IsElite)
+{
                 for (int i = 1; i <= Tier; i++)
                 {
                     var wo = WorldObjectFactory.CreateNewWorldObject((uint)Factories.Enum.WeenieClassName.coinstack);
                     wo.StackSize = ThreadSafeRandom.Next(2000, 8000);
                     if (Tier >= 5)
-                        wo.StackSize *= 2;
+                        wo.StackSize *= 3;
                     if (Tier >= 6)
-                        wo.StackSize *= 2;
+                        wo.StackSize *= 4;
 
                     if (wo != null)
                     {
@@ -1012,6 +1082,34 @@ namespace ACE.Server.WorldObjects
                             corpse.TryAddToInventory(wo);
                         else
                             droppedItems.Add(wo);
+                    }
+                }
+
+                // Ultra-rare drop (1/10000 chance - 0.01%)
+                if (ThreadSafeRandom.Next(1, 10000) == 1)
+                {
+                    var coin2 = WorldObjectFactory.CreateNewWorldObject(5084111); // Replace with actual WCID
+
+                    if (coin2 != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(coin2);
+                        else
+                            droppedItems.Add(coin2);
+                    }
+                }
+
+                // Rare drop (1/500 chance - 0.2%)
+                if (ThreadSafeRandom.Next(1, 500) == 1)
+                {
+                    var skull1 = WorldObjectFactory.CreateNewWorldObject(1115084); // Replace with actual WCID
+
+                    if (skull1 != null)
+                    {
+                        if (corpse != null)
+                            corpse.TryAddToInventory(skull1);
+                        else
+                            droppedItems.Add(skull1);
                     }
                 }
             }

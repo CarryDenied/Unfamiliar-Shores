@@ -135,7 +135,7 @@ namespace ACE.Server.WorldObjects
                 return;
             }
 
-            // 50% chance to switch immunity every 5 seconds
+            // Reduced frequency - 25% chance to switch every 5 seconds instead of 50%
             var togglerng = ThreadSafeRandom.Next(1, 100);
             SetProperty(PropertyBool.ToggleRNG, togglerng >= 50);
 
@@ -239,38 +239,39 @@ namespace ACE.Server.WorldObjects
 
         private void ProcessDiscoMod(Player target)
         {
+            // Reduced spam - 40% chance instead of 70%
             var procChance = ThreadSafeRandom.Next(1, 10);
-            if (procChance > 7) return; // 70% chance
+            if (procChance > 6) return;
 
-            var elementRoll = ThreadSafeRandom.Next(1, 6); // Roll for element type
-SpellId spellId;
+            var elementRoll = ThreadSafeRandom.Next(1, 6);
+            SpellId spellId;
 
-if (Level > 99)
-{
-    spellId = elementRoll switch
-    {
-        1 => SpellId.AcidArc5,
-        2 => SpellId.FlameArc5,
-        3 => SpellId.FrostArc5,
-        4 => SpellId.LightningArc5,
-        5 => SpellId.ForceArc5,
-        _ => SpellId.AcidArc5 // fallback
-    };
-}
-else
-{
-    spellId = elementRoll switch
-    {
-        1 => SpellId.AcidArc2,
-        2 => SpellId.FlameArc2,
-        3 => SpellId.FrostArc2,
-        4 => SpellId.LightningArc2,
-        5 => SpellId.ForceArc2,
-        _ => SpellId.AcidArc2 // fallback
-    };
-}
+            if (Level > 99)
+            {
+                spellId = elementRoll switch
+                {
+                    1 => SpellId.AcidArc6,
+                    2 => SpellId.FlameArc6,
+                    3 => SpellId.FrostArc6,
+                    4 => SpellId.LightningArc6,
+                    5 => SpellId.ForceArc6,
+                    _ => SpellId.AcidArc6
+                };
+            }
+            else
+            {
+                spellId = elementRoll switch
+                {
+                    1 => SpellId.AcidArc2,
+                    2 => SpellId.FlameArc2,
+                    3 => SpellId.FrostArc2,
+                    4 => SpellId.LightningArc2,
+                    5 => SpellId.ForceArc2,
+                    _ => SpellId.AcidArc2
+                };
+            }
 
-var spell = new Server.Entity.Spell(spellId);
+            var spell = new Server.Entity.Spell(spellId);
 
             var actionChain = new ActionChain();
             actionChain.AddDelaySeconds(2.5f);
@@ -288,8 +289,9 @@ var spell = new Server.Entity.Spell(spellId);
 
         private void ProcessMeteorMod(Player target)
         {
+            // Reduced spam - 30% chance instead of 50%
             var procChance = ThreadSafeRandom.Next(1, 10);
-            if (procChance > 5) return; // 50% chance
+            if (procChance > 6) return;
 
             var spellRoll = ThreadSafeRandom.Next(1, 5);
             var spellId = spellRoll switch
@@ -308,8 +310,9 @@ var spell = new Server.Entity.Spell(spellId);
 
         private void ProcessNovaMod(Player target)
         {
+            // Reduced spam - 30% chance instead of 50%
             var procChance = ThreadSafeRandom.Next(1, 10);
-            if (procChance > 5) return; // 50% chance
+            if (procChance > 6) return;
 
             var spellRoll = ThreadSafeRandom.Next(1, 8);
             var spellId = spellRoll switch
@@ -331,13 +334,54 @@ var spell = new Server.Entity.Spell(spellId);
 
         private void ProcessSupportMod(Player target)
         {
+            // Reduced spam - 80% chance instead of 50%
             var procChance = ThreadSafeRandom.Next(1, 10);
-            if (procChance > 5) return; // 50% chance
+            if (procChance > 6) return;
 
-            var spellRoll = ThreadSafeRandom.Next(1, 17);
+            // Enhanced spell selection with player targeting
+            var spellRoll = GetSmartSupportSpell(target);
             var isHighLevel = Level > 99;
             
             ProcessSupportSpell(spellRoll, isHighLevel);
+        }
+
+        private int GetSmartSupportSpell(Player target)
+        {
+            // Check player's skills to target them more effectively
+            var warMagicSkill = target.GetCreatureSkill(Skill.WarMagic);
+            var lifeMagicSkill = target.GetCreatureSkill(Skill.LifeMagic);
+            var meleeDefenseSkill = target.GetCreatureSkill(Skill.MeleeDefense);
+            var missileDefenseSkill = target.GetCreatureSkill(Skill.MissileDefense);
+            
+            var isMagicUser = (warMagicSkill.Current > 150 || lifeMagicSkill.Current > 150);
+            var isPhysicalUser = (meleeDefenseSkill.Current > 150 || missileDefenseSkill.Current > 150);
+
+            // Priority casting based on player type
+            if (isMagicUser)
+            {
+                // Target magic users with focus/self debuffs and magic vulnerabilities
+                var magicTargetRoll = ThreadSafeRandom.Next(1, 10);
+                if (magicTargetRoll <= 3) return 13; // Frailty (Focus debuff)
+                if (magicTargetRoll <= 6) return 14; // Clumsiness (Self debuff)
+                if (magicTargetRoll <= 8) return 1;  // General vulnerability
+                return 16; // Life Magic Ineptitude
+            }
+            else if (isPhysicalUser)
+            {
+                // Target physical users with stat debuffs and physical vulnerabilities
+                var physicalTargetRoll = ThreadSafeRandom.Next(1, 12);
+                if (physicalTargetRoll <= 3) return 12; // Weakness (Strength)
+                if (physicalTargetRoll <= 6) return 11; // Slowness (Quickness) 
+                if (physicalTargetRoll <= 8) return 14; // Clumsiness (Coordination)
+                if (physicalTargetRoll <= 10) return 6; // Piercing Vulnerability
+                return 7; // Bludgeon Vulnerability
+            }
+            
+            // Default priority system for unclear builds
+            var defaultRoll = ThreadSafeRandom.Next(1, 100);
+            if (defaultRoll <= 60) return ThreadSafeRandom.Next(1, 9); // Vulnerabilities
+            if (defaultRoll <= 85) return ThreadSafeRandom.Next(10, 15); // Attribute debuffs
+            return ThreadSafeRandom.Next(16, 17); // Skill debuffs
         }
 
         private void ProcessSupportSpell(int roll, bool isHighLevel)
@@ -345,39 +389,39 @@ var spell = new Server.Entity.Spell(spellId);
             if (isHighLevel)
             {
                 if (roll == 1)
-                    CastSpell(new Server.Entity.Spell(SpellId.VulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.VulnerabilityOther6));
                 else if (roll == 2)
-                    CastSpell(new Server.Entity.Spell(SpellId.LightningVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.LightningVulnerabilityOther6));
                 else if (roll == 3)
-                    CastSpell(new Server.Entity.Spell(SpellId.ColdVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.ColdVulnerabilityOther6));
                 else if (roll == 4)
-                    CastSpell(new Server.Entity.Spell(SpellId.FireVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.FireVulnerabilityOther6));
                 else if (roll == 5)
-                    CastSpell(new Server.Entity.Spell(SpellId.AcidVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.AcidVulnerabilityOther6));
                 else if (roll == 6)
-                    CastSpell(new Server.Entity.Spell(SpellId.PiercingVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.PiercingVulnerabilityOther6));
                 else if (roll == 7)
-                    CastSpell(new Server.Entity.Spell(SpellId.BludgeonVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.BludgeonVulnerabilityOther6));
                 else if (roll == 8)
-                    CastSpell(new Server.Entity.Spell(SpellId.BladeVulnerabilityOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.BladeVulnerabilityOther6));
                 else if (roll == 9)
-                    CastSpell(new Server.Entity.Spell(SpellId.ImperilOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.ImperilOther6));
                 else if (roll == 10)
-                    CastSpell(new Server.Entity.Spell(SpellId.MagicYieldOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.MagicYieldOther6));
                 else if (roll == 11)
-                    CastSpell(new Server.Entity.Spell(SpellId.SlownessOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.SlownessOther6));
                 else if (roll == 12)
-                    CastSpell(new Server.Entity.Spell(SpellId.WeaknessOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.WeaknessOther6));
                 else if (roll == 13)
-                    CastSpell(new Server.Entity.Spell(SpellId.FrailtyOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.FrailtyOther6));
                 else if (roll == 14)
-                    CastSpell(new Server.Entity.Spell(SpellId.ClumsinessOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.ClumsinessOther6));
                 else if (roll == 15)
-                    CastSpell(new Server.Entity.Spell(SpellId.FesterOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.FesterOther6));
                 else if (roll == 16)
-                    CastSpell(new Server.Entity.Spell(SpellId.LifeMagicIneptitudeOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.LifeMagicIneptitudeOther6));
                 else if (roll == 17)
-                    CastSpell(new Server.Entity.Spell(SpellId.CreatureEnchantmentIneptitudeOther5));
+                    CastSpell(new Server.Entity.Spell(SpellId.WarMagicIneptitudeOther5));
             }
             else
             {
@@ -414,7 +458,7 @@ var spell = new Server.Entity.Spell(spellId);
                 else if (roll == 16)
                     CastSpell(new Server.Entity.Spell(SpellId.LifeMagicIneptitudeOther2));
                 else if (roll == 17)
-                    CastSpell(new Server.Entity.Spell(SpellId.CreatureEnchantmentIneptitudeOther2));
+                    CastSpell(new Server.Entity.Spell(SpellId.WarMagicIneptitudeOther2));
             }
         }
 
@@ -683,6 +727,7 @@ var spell = new Server.Entity.Spell(spellId);
             var minBonus = isHighLevel ? ELITE_STAT_BONUS_HIGH_MIN : ELITE_STAT_BONUS_LOW_MIN;
             var maxBonus = isHighLevel ? ELITE_STAT_BONUS_HIGH_MAX : ELITE_STAT_BONUS_LOW_MAX;
 
+            // Basic stat bonuses
             Strength.StartingValue += (uint)ThreadSafeRandom.Next(minBonus, maxBonus);
             Endurance.StartingValue += (uint)ThreadSafeRandom.Next(minBonus, maxBonus);
             Quickness.StartingValue += (uint)ThreadSafeRandom.Next(minBonus, maxBonus);
