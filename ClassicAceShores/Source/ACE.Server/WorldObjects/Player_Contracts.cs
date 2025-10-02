@@ -1,4 +1,3 @@
-
 using ACE.Common;
 using ACE.Database;
 using ACE.Entity.Enum;
@@ -58,7 +57,7 @@ namespace ACE.Server.WorldObjects
 
             if (explorationList.Count == 0)
             {
-                if(!fromAcademy)
+                if (!fromAcademy)
                     Session.Network.EnqueueSend(new GameMessageSystemChat(msg, useName ? ChatMessageType.Tell : ChatMessageType.Broadcast));
 
                 if (sourceObject != null)
@@ -220,7 +219,7 @@ namespace ACE.Server.WorldObjects
 
             if (sourceObject != null)
             {
-                if(!fromAcademy)
+                if (!fromAcademy)
                     QuestManager.Stamp("ExplorationAssignmentsGiven");
                 GiveFromEmote(sourceObject, (uint)Factories.Enum.WeenieClassName.explorationContract); // Give new contract.
             }
@@ -270,11 +269,38 @@ namespace ACE.Server.WorldObjects
                 var rewardTier = Math.Clamp(RollTier(CalculateExtendedTier(Level ?? 1)) + 3, 1, 7);
                 int rewardAmount;
 
+                // ASSIGNMENT 1 - COMPLETE BLOCK WITH TIERED REWARDS
                 if (assignment1Complete)
                 {
                     rewardAmount = ThreadSafeRandom.Next(3, 5);
                     for (int i = 0; i < rewardAmount; i++)
                         TryGiveRandomSalvage(sourceObject, rewardTier);
+
+                    // Give 3 tiered WCID items as bonus rewards
+                    if (sourceObject != null)
+                    {
+                        if (rewardTier <= 2)
+                        {
+                            // Low tier rewards (levels 1-20ish)
+                            GiveFromEmote(sourceObject, 116057);  // REPLACE WITH YOUR LOW TIER WCID #1
+                            GiveFromEmote(sourceObject, 1115084);  // REPLACE WITH YOUR LOW TIER WCID #2
+                            GiveFromEmote(sourceObject, 2225084);  // REPLACE WITH YOUR LOW TIER WCID #3
+                        }
+                        else if (rewardTier <= 5)
+                        {
+                            // Mid tier rewards (levels 21-80ish) - YOUR CURRENT ITEMS
+                            GiveFromEmote(sourceObject, 36518);
+                            GiveFromEmote(sourceObject, 1115084);
+                            GiveFromEmote(sourceObject, 44240111);
+                        }
+                        else
+                        {
+                            // High tier rewards (levels 81-100+)
+                            GiveFromEmote(sourceObject, 5084111);  // REPLACE WITH YOUR HIGH TIER WCID #1
+                            GiveFromEmote(sourceObject, 20630);  // REPLACE WITH YOUR HIGH TIER WCID #2
+                            GiveFromEmote(sourceObject, 50184);  // REPLACE WITH YOUR HIGH TIER WCID #3
+                        }
+                    }
 
                     Exploration1LandblockId = 0;
                     Exploration1KillProgressTracker = 0;
@@ -282,11 +308,39 @@ namespace ACE.Server.WorldObjects
                     Exploration1Description = "";
                     Exploration1LandblockReached = false;
                 }
+
+                // ASSIGNMENT 2 - COMPLETE BLOCK WITH TIERED REWARDS
                 if (assignment2Complete)
                 {
                     rewardAmount = ThreadSafeRandom.Next(3, 5);
                     for (int i = 0; i < rewardAmount; i++)
                         TryGiveRandomSalvage(sourceObject, rewardTier);
+
+                    // Give 3 tiered WCID items as bonus rewards
+                    if (sourceObject != null)
+                    {
+                        if (rewardTier <= 2)
+                        {
+                            // Low tier rewards (levels 1-20ish)
+                            GiveFromEmote(sourceObject, 116057);  // REPLACE WITH YOUR LOW TIER WCID #1
+                            GiveFromEmote(sourceObject, 1115084);  // REPLACE WITH YOUR LOW TIER WCID #2
+                            GiveFromEmote(sourceObject, 2225084);  // REPLACE WITH YOUR LOW TIER WCID #3
+                        }
+                        else if (rewardTier <= 5)
+                        {
+                            // Mid tier rewards (levels 21-80ish) - YOUR CURRENT ITEMS
+                            GiveFromEmote(sourceObject, 36518);
+                            GiveFromEmote(sourceObject, 1115084);
+                            GiveFromEmote(sourceObject, 44240111);
+                        }
+                        else
+                        {
+                            // High tier rewards (levels 81-100+)
+                            GiveFromEmote(sourceObject, 5084111);  // REPLACE WITH YOUR HIGH TIER WCID #1
+                            GiveFromEmote(sourceObject, 20630);  // REPLACE WITH YOUR HIGH TIER WCID #2
+                            GiveFromEmote(sourceObject, 50184);  // REPLACE WITH YOUR HIGH TIER WCID #3
+                        }
+                    }
 
                     Exploration2LandblockId = 0;
                     Exploration2KillProgressTracker = 0;
@@ -294,11 +348,39 @@ namespace ACE.Server.WorldObjects
                     Exploration2Description = "";
                     Exploration2LandblockReached = false;
                 }
+
+                // ASSIGNMENT 3 - COMPLETE BLOCK WITH TIERED REWARDS
                 if (assignment3Complete)
                 {
                     rewardAmount = ThreadSafeRandom.Next(3, 5);
                     for (int i = 0; i < rewardAmount; i++)
                         TryGiveRandomSalvage(sourceObject, rewardTier);
+
+                    // Give 3 tiered WCID items as bonus rewards
+                    if (sourceObject != null)
+                    {
+                        if (rewardTier <= 2)
+                        {
+                            // Low tier rewards (levels 1-20ish)
+                            GiveFromEmote(sourceObject, 116057);  // REPLACE WITH YOUR LOW TIER WCID #1
+                            GiveFromEmote(sourceObject, 1115084);  // REPLACE WITH YOUR LOW TIER WCID #2
+                            GiveFromEmote(sourceObject, 2225084);  // REPLACE WITH YOUR LOW TIER WCID #3
+                        }
+                        else if (rewardTier <= 5)
+                        {
+                            // Mid tier rewards (levels 21-80ish) - YOUR CURRENT ITEMS
+                            GiveFromEmote(sourceObject, 36518);
+                            GiveFromEmote(sourceObject, 1115084);
+                            GiveFromEmote(sourceObject, 44240111);
+                        }
+                        else
+                        {
+                            // High tier rewards (levels 81-100+)
+                            GiveFromEmote(sourceObject, 5084111);  // REPLACE WITH YOUR HIGH TIER WCID #1
+                            GiveFromEmote(sourceObject, 20630);  // REPLACE WITH YOUR HIGH TIER WCID #2
+                            GiveFromEmote(sourceObject, 50184);  // REPLACE WITH YOUR HIGH TIER WCID #3
+                        }
+                    }
 
                     Exploration3LandblockId = 0;
                     Exploration3KillProgressTracker = 0;
@@ -318,7 +400,7 @@ namespace ACE.Server.WorldObjects
         {
             var landblockDescription = DatabaseManager.World.GetLandblockDescriptionsByLandblock(CurrentLandblock.Id.Landblock).FirstOrDefault();
             if (landblockDescription != null)
-                return  landblockDescription.Name;
+                return landblockDescription.Name;
             else
                 return null;
         }

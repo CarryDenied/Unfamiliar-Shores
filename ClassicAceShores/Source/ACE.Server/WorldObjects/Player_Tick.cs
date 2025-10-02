@@ -42,8 +42,8 @@ namespace ACE.Server.WorldObjects
         private const double enchantmentTickInterval = 0.5;
 
         private double PvPInciteTickTimestamp;
-        private const double PvPInciteTickInterval = 600;
-        private const double PvPInciteInitialDelay = 3600;
+        private const double PvPInciteTickInterval = 900;
+        private const double PvPInciteInitialDelay =  900;
 
         public void Player_Tick(double currentUnixTime)
         {
@@ -816,11 +816,49 @@ namespace ACE.Server.WorldObjects
             }
         }
 
+
         private static List<string> PvPInciteMessages = new List<string>
         {
             "It would be a shame if someone would kill them...",
             "Be a good boy and do your thing would you?",
-            "Just hanging around without a care in the world..."
+            "Just hanging around without a care in the world...",
+            "Be a good boy and do your thing would you?",
+            "Just hanging around without a care in the world...",
+            "That one’s practically begging for it.",
+            "Go on, do what you do best.",
+            "Loose ends don’t tie themselves.",
+            "Wouldn’t take much to end that story.",
+            "Consider this an opportunity.",
+            "Perfect chance to be useful.",
+            "Somebody should teach them fear.",
+            "Easy pickings—don’t waste it.",
+            "A clean job would be appreciated.",
+            "Finish them before they notice.",
+            "Take what’s offered to you.",
+            "The game rewards boldness.",
+            "A quick favor, if you please.",
+            "Make the room breathe easier.",
+            "It’s the sensible move here.",
+            "They’re looking like a limited-time offer… don’t miss the sale.",
+            "Go turn them into yesterday’s patch notes.",
+            "That’s not a player… that’s free loot disguised as a player.",
+            "Make them rage-quit in 3… 2… 1…",
+            "Be the content they can’t unsubscribe from.",
+            "That health bar looks awfully unguarded…",
+            "Teach them the true meaning of uninstall.exe.",
+            "Nothing personal, just business… violent business.",
+            "Why farm mobs when you can farm egos?",
+            "They’re basically a walking respawn timer.",
+            "Send them back to character creation, would you?",
+            "Imagine their face when the loading screen hits.",
+            "Show them what Ctrl+Alt+Del feels like in real life.",
+            "Consider this a pop quiz… multiple choice, but only one answer: death.",
+            "That kill would look great on your résumé.",
+            "Friendly reminder: XP tastes better when stolen.",
+            "You’re the glitch in their matrix.",
+            "Go write their obituary in the chat log.",
+            "They thought this was a safe zone… how adorable.",
+            "Do them a favor and speedrun their demise."
         };
         public void PvPInciteTick(double currentUnixTime)
         {
@@ -832,7 +870,7 @@ namespace ACE.Server.WorldObjects
 
             List<Player> possiblePlayers;
 
-            if(GameplayMode == GameplayModes.HardcorePK)
+            if (GameplayMode == GameplayModes.HardcorePK)
             {
                 if (PropertyManager.GetBool("bz_snitch_hcpk_top10").Item)
                 {
@@ -841,7 +879,7 @@ namespace ACE.Server.WorldObjects
                         .FindAllByGameplayMode(GameplayMode)
                         .Where(x => x.Account.AccessLevel == 0)
                         .OrderByDescending(x => x.GetProperty(PropertyInt64.TotalExperience) ?? 0)
-                        .Take(15)
+                        .Take(30)
                         .Where(x => x is Player) // Filter by online
                         .Cast<Player>()
                         .ToList();
