@@ -892,7 +892,7 @@ namespace ACE.Server.WorldObjects
 
            // Option 1 - Active
             
-            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.001f) // 0.1% overall drop chance
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.0001f) // 0.01% overall drop chance
             {
                 int quantity = ThreadSafeRandom.Next(1, 1); // Random quantity from 1 to 1
                 for (int i = 0; i < quantity; i++)
