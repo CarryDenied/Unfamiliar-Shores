@@ -890,14 +890,14 @@ namespace ACE.Server.WorldObjects
                 }
             }
 
-            // Option 2 - Commented out
-            /*
-            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.004f) // 0.4% overall drop chance
+           // Option 1 - Active
+            
+            if (IsMonster && Tier > 1 && ThreadSafeRandom.Next(0.0f, 1.0f) < 0.001f) // 0.1% overall drop chance
             {
-                int quantity = ThreadSafeRandom.Next(1, 2); // Random quantity from 1 to 2
+                int quantity = ThreadSafeRandom.Next(1, 1); // Random quantity from 1 to 1
                 for (int i = 0; i < quantity; i++)
                 {
-                    var item = WorldObjectFactory.CreateNewWorldObject(116059); // Replace with your WCID
+                    var item = WorldObjectFactory.CreateNewWorldObject(30258); // Replace with your WCID
                     if (item != null)
                     {
                         if (corpse != null)
@@ -912,7 +912,7 @@ namespace ACE.Server.WorldObjects
                     }
                 }
             }
-            */
+            
 
             // Option 3 - Commented out
             /*

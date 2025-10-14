@@ -379,6 +379,67 @@ namespace ACE.Server.WorldObjects
                     xpMessage = $"Relive Bonus: +{extraXP:N0}xp {xpMessage}";
                 }
             }
+			
+			    ////
+            //Custom XP bottle logic
+            ////
+            // If player has one or more XP bottles in their inventory,
+            // iterate over the list of XP bottles and try applying 10% of your earned XP to those bottles
+            // the remainder gets earned as normal XP
+            try
+            {
+                if (xpType != XpType.Allegiance &&
+                    xpType != XpType.Fellowship &&
+                    xpType != XpType.Quest)
+                { 
+                    var xpBottlesInInventory = GetInventoryItemsOfWCID(490071);
+                    if (xpBottlesInInventory.Count > 0)
+                    {
+                        long xpAppliedToBottles = 0;
+                        long xpToApplyToBottles = (int)Math.Round(amount * 0.1f);
+                        foreach (var bottle in xpBottlesInInventory)
+                        {
+                            if (!bottle.ItemTotalXp.HasValue)
+                            {
+                                bottle.ItemTotalXp = 0;
+                            }
+
+                            if (xpAppliedToBottles >= xpToApplyToBottles)
+                            {
+                                break;
+                            }
+
+                            //if xp bottle is full, skip it
+                            if (bottle.ItemTotalXp.HasValue && bottle.ItemTotalXp >= 10000000000)
+                            {
+                                continue;
+                            }
+
+                            //if xp bottle has enough space to store everything
+                            if (10000000000 - bottle.ItemTotalXp.Value >= xpToApplyToBottles - xpAppliedToBottles)
+                            {
+                                long xpToApplyToThisBottle = xpToApplyToBottles - xpAppliedToBottles;
+                                bottle.ItemTotalXp += xpToApplyToThisBottle;
+                                xpAppliedToBottles += xpToApplyToThisBottle;
+                                break;
+                            }
+                            else //if xp bottle doesn't have enough space to store the xp amount, store just enough in the bottle to cap it out, then move to the next bottle in the list
+                            {
+                                long xpToApplyToThisBottle = 10000000000 - bottle.ItemTotalXp.Value;
+                                bottle.ItemTotalXp += xpToApplyToThisBottle;
+                                xpAppliedToBottles += xpToApplyToThisBottle;
+                                continue;
+                            }
+                        }
+
+                        amount = amount - xpAppliedToBottles;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                log.Error($"Exception in Player_XP.GrantXP for player {Name}, amount = {amount}. ex: {ex}");
+            }
 
             // Make sure UpdateXpAndLevel is done on this players thread
             EnqueueAction(new ActionEventDelegate(() => UpdateXpAndLevel(amount + extraNotSharedAmount, xpType, xpMessage, sourceString)));
